@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import Logo from './Logo';
+import { AnimatedGridPattern } from '@/components/ui/animated-grid-pattern';
 
 interface LoginProps {
   onLogin: () => void;
@@ -23,14 +24,23 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50">
-      <div className="w-full max-w-md p-4">
+    <div className="flex items-center justify-center min-h-screen bg-gray-50 relative overflow-hidden">
+      {/* Background pattern */}
+      <AnimatedGridPattern
+        numSquares={40}
+        maxOpacity={0.2}
+        duration={5}
+        repeatDelay={1}
+        className="[mask-image:radial-gradient(800px_circle_at_center,white,transparent)]"
+      />
+      
+      <div className="w-full max-w-md p-4 z-10">
         <div className="flex justify-center mb-8">
-          <Logo className="h-16" />
+          <Logo className="h-24" />
         </div>
-        <p className="text-center text-gray-500 mb-6">Inteligência Artificial para Corretores Imobiliários</p>
+        <p className="text-center text-gray-700 mb-6 text-lg">O futuro da IA para Corretores</p>
         
-        <Card>
+        <Card className="backdrop-blur-sm bg-white/90 shadow-xl">
           <CardHeader>
             <CardTitle>{isLogin ? 'Login' : 'Cadastro'}</CardTitle>
             <CardDescription>
@@ -81,7 +91,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
               </div>
             </CardContent>
             <CardFooter className="flex flex-col">
-              <Button type="submit" className="w-full bg-blue-500 hover:bg-blue-600">
+              <Button type="submit" className="w-full bg-arca-purple hover:bg-arca-dark-purple">
                 {isLogin ? 'Entrar' : 'Cadastrar'}
               </Button>
               <p className="mt-4 text-center text-sm">
@@ -89,7 +99,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
                 <button
                   type="button"
                   onClick={() => setIsLogin(!isLogin)}
-                  className="text-blue-500 hover:underline"
+                  className="text-arca-purple hover:underline"
                 >
                   {isLogin ? 'Cadastre-se' : 'Faça login'}
                 </button>
