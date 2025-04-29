@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -52,16 +53,18 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
-				sidebar: {
-					DEFAULT: 'hsl(var(--sidebar-background))',
-					foreground: 'hsl(var(--sidebar-foreground))',
-					primary: 'hsl(var(--sidebar-primary))',
-					'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
-					accent: 'hsl(var(--sidebar-accent))',
-					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
-					border: 'hsl(var(--sidebar-border))',
-					ring: 'hsl(var(--sidebar-ring))'
-				}
+				// Cores personalizadas para o ARCA
+				arca: {
+					purple: '#9b87f5',
+					'dark-purple': '#7E69AB',
+					'light-purple': '#D6BCFA',
+					'soft-purple': '#E5DEFF',
+					'vivid-purple': '#8B5CF6',
+					blue: '#1EAEDB',
+					'sky-blue': '#33C3F0',
+					'cool-gray': '#aaadb0',
+					'dark-gray': '#222222',
+				},
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -84,11 +87,24 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				fadeIn: {
+					from: { opacity: '0' },
+					to: { opacity: '1' }
+				},
+				typing: {
+					from: { width: '0' },
+					to: { width: '100%' }
+				},
+				blink: {
+					'50%': { borderColor: 'transparent' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'fade-in': 'fadeIn 0.5s ease-out forwards',
+				typing: 'typing 3.5s steps(40, end), blink .75s step-end infinite'
 			}
 		}
 	},
