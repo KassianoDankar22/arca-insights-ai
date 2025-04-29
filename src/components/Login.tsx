@@ -25,10 +25,10 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50">
       <div className="w-full max-w-md p-4">
-        <div className="text-center mb-8">
-          <Logo className="justify-center" />
-          <p className="mt-2 text-gray-500">Inteligência Artificial para Corretores Imobiliários</p>
+        <div className="flex justify-center mb-8">
+          <Logo className="h-16" />
         </div>
+        <p className="text-center text-gray-500 mb-6">Inteligência Artificial para Corretores Imobiliários</p>
         
         <Card>
           <CardHeader>
@@ -81,7 +81,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
               </div>
             </CardContent>
             <CardFooter className="flex flex-col">
-              <Button type="submit" className="w-full bg-arca-purple hover:bg-arca-dark-purple">
+              <Button type="submit" className="w-full bg-blue-500 hover:bg-blue-600">
                 {isLogin ? 'Entrar' : 'Cadastrar'}
               </Button>
               <p className="mt-4 text-center text-sm">
@@ -89,7 +89,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
                 <button
                   type="button"
                   onClick={() => setIsLogin(!isLogin)}
-                  className="text-arca-purple hover:underline"
+                  className="text-blue-500 hover:underline"
                 >
                   {isLogin ? 'Cadastre-se' : 'Faça login'}
                 </button>
