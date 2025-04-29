@@ -25,12 +25,12 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-900 relative overflow-hidden">
-      {/* Updated background with blue gradient effects */}
-      <BackgroundBeams className="opacity-50" />
+      {/* Enhanced blue gradient background effects */}
+      <BackgroundBeams className="opacity-70" />
       
       <div className="w-full max-w-md p-4 z-10">
         <div className="flex justify-center mb-10">
-          <Logo className="h-24" />
+          <Logo className="h-20" />
         </div>
         
         <Card className="backdrop-blur-sm bg-white/90 shadow-xl">
@@ -92,7 +92,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
                 <button
                   type="button"
                   onClick={() => setIsLogin(!isLogin)}
-                  className="text-arca-purple hover:underline"
+                  className="text-arca-blue hover:underline"
                 >
                   {isLogin ? 'Cadastre-se' : 'Faça login'}
                 </button>
