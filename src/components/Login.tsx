@@ -25,7 +25,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-900 relative overflow-hidden">
-      {/* Enhanced blue gradient background effects */}
+      {/* Background com efeitos de gradiente preto */}
       <BackgroundBeams className="opacity-70" />
       
       <div className="w-full max-w-md p-4 z-10">
