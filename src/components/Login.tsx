@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { StarBorder } from '@/components/ui/star-border';
 import Logo from './Logo';
 import { AnimatedGridPattern } from '@/components/ui/animated-grid-pattern';
 
@@ -91,9 +92,9 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
               </div>
             </CardContent>
             <CardFooter className="flex flex-col">
-              <Button type="submit" className="w-full bg-arca-purple hover:bg-arca-dark-purple">
+              <StarBorder as="button" type="submit" className="w-full" color="#9b87f5">
                 {isLogin ? 'Entrar' : 'Cadastrar'}
-              </Button>
+              </StarBorder>
               <p className="mt-4 text-center text-sm">
                 {isLogin ? 'Não tem uma conta?' : 'Já possui uma conta?'}{' '}
                 <button
