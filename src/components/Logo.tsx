@@ -12,7 +12,7 @@ const Logo: React.FC<LogoProps> = ({ className = "", showText = true }) => {
       <img 
         src="/lovable-uploads/5de6cebf-0745-4969-adca-eb8b63437759.png" 
         alt="Arca AI Logo" 
-        className="h-32 w-auto"  // Increased height from h-16 to h-32
+        className="h-24 w-auto"  // Changed to h-24 as requested
       />
     </div>
   );

@@ -4,7 +4,6 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from '@/components/ui/input';
 import { StarBorder } from '@/components/ui/star-border';
 import Logo from './Logo';
-import { AnimatedGridPattern } from '@/components/ui/animated-grid-pattern';
 import { BackgroundBeams } from '@/components/ui/background-beams';
 
 interface LoginProps {
@@ -26,12 +25,12 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-900 relative overflow-hidden">
-      {/* Dark animated background */}
-      <BackgroundBeams className="opacity-40" />
+      {/* Updated background with blue gradient effects */}
+      <BackgroundBeams className="opacity-50" />
       
       <div className="w-full max-w-md p-4 z-10">
         <div className="flex justify-center mb-10">
-          <Logo className="h-32" />
+          <Logo className="h-24" />
         </div>
         
         <Card className="backdrop-blur-sm bg-white/90 shadow-xl">
@@ -85,7 +84,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
               </div>
             </CardContent>
             <CardFooter className="flex flex-col">
-              <StarBorder as="button" type="submit" className="w-full" color="#9b87f5">
+              <StarBorder as="button" type="submit" className="w-full" color="#1EAEDB">
                 {isLogin ? 'Entrar' : 'Cadastrar'}
               </StarBorder>
               <p className="mt-4 text-center text-sm">
