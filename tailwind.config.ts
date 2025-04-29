@@ -108,6 +108,14 @@ export default {
 					'0%': { transform: 'translateX(0)' },
 					'50%': { transform: 'translateX(-75%)' },
 					'100%': { transform: 'translateX(0)' }
+				},
+				'gradient-x': {
+					'0%, 100%': {
+						'background-position': '0% 50%'
+					},
+					'50%': {
+						'background-position': '100% 50%'
+					}
 				}
 			},
 			animation: {
@@ -116,7 +124,8 @@ export default {
 				'fade-in': 'fadeIn 0.5s ease-out forwards',
 				typing: 'typing 3.5s steps(40, end), blink .75s step-end infinite',
 				'star-movement-top': 'star-movement-top 6s ease-in-out infinite',
-				'star-movement-bottom': 'star-movement-bottom 6s ease-in-out infinite'
+				'star-movement-bottom': 'star-movement-bottom 6s ease-in-out infinite',
+				'gradient-x': 'gradient-x 3s ease infinite'
 			}
 		}
 	},

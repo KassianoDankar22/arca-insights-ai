@@ -5,6 +5,8 @@ import { Input } from '@/components/ui/input';
 import { StarBorder } from '@/components/ui/star-border';
 import Logo from './Logo';
 import { BackgroundBeams } from '@/components/ui/background-beams';
+import { AnimatedBorderInput } from './AnimatedBorderInput';
+import { Button } from '@/components/ui/button';
 
 interface LoginProps {
   onLogin: () => void;
@@ -47,46 +49,61 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
                   <label htmlFor="name" className="text-sm font-medium">
                     Nome Completo
                   </label>
-                  <Input
-                    id="name"
-                    placeholder="Seu nome completo"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    required={!isLogin}
-                  />
+                  <AnimatedBorderInput>
+                    <Input
+                      id="name"
+                      placeholder="Seu nome completo"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      required={!isLogin}
+                      className="border-0 focus-visible:ring-0 bg-transparent"
+                    />
+                  </AnimatedBorderInput>
                 </div>
               )}
               <div className="space-y-2">
                 <label htmlFor="email" className="text-sm font-medium">
                   Email
                 </label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="seu@email.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
+                <AnimatedBorderInput>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="seu@email.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    className="border-0 focus-visible:ring-0 bg-transparent"
+                  />
+                </AnimatedBorderInput>
               </div>
               <div className="space-y-2">
                 <label htmlFor="password" className="text-sm font-medium">
                   Senha
                 </label>
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="******"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
+                <AnimatedBorderInput>
+                  <Input
+                    id="password"
+                    type="password"
+                    placeholder="******"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    className="border-0 focus-visible:ring-0 bg-transparent"
+                  />
+                </AnimatedBorderInput>
               </div>
             </CardContent>
             <CardFooter className="flex flex-col">
-              <StarBorder as="button" type="submit" className="w-full" color="#1EAEDB">
-                {isLogin ? 'Entrar' : 'Cadastrar'}
-              </StarBorder>
+              <button 
+                type="submit" 
+                className="w-full h-10 relative group transition-transform duration-300 hover:scale-[1.02]"
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-400 via-blue-600 to-blue-400 opacity-80 group-hover:opacity-100 rounded-md bg-blue-500 animate-gradient-x"></div>
+                <span className="relative z-10 flex items-center justify-center text-white font-medium h-full">
+                  {isLogin ? 'Entrar' : 'Cadastrar'}
+                </span>
+              </button>
               <p className="mt-4 text-center text-sm">
                 {isLogin ? 'Não tem uma conta?' : 'Já possui uma conta?'}{' '}
                 <button
