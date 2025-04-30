@@ -125,6 +125,18 @@ export default {
 				wave: {
 					'0%': { transform: 'translateX(0)' },
 					'100%': { transform: 'translateX(-50%)' }
+				},
+				'float-slow': {
+					'0%, 100%': { transform: 'translateY(0)' },
+					'50%': { transform: 'translateY(-15px)' }
+				},
+				'float-medium': {
+					'0%, 100%': { transform: 'translateY(0)' },
+					'50%': { transform: 'translateY(-10px)' }
+				},
+				'float-fast': {
+					'0%, 100%': { transform: 'translateY(0)' },
+					'50%': { transform: 'translateY(-8px)' }
 				}
 			},
 			animation: {
@@ -136,7 +148,10 @@ export default {
 				'star-movement-bottom': 'star-movement-bottom 6s ease-in-out infinite',
 				'gradient-x': 'gradient-x 3s ease infinite',
 				'rainbow': 'rainbow 5s ease infinite',
-				'wave': 'wave 15s linear infinite'
+				'wave': 'wave 15s linear infinite',
+				'float-slow': 'float-slow 9s ease-in-out infinite',
+				'float-medium': 'float-medium 7s ease-in-out infinite',
+				'float-fast': 'float-fast 5s ease-in-out infinite'
 			}
 		}
 	},
