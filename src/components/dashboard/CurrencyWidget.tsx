@@ -32,22 +32,21 @@ const CurrencyWidget: React.FC = () => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <Card className="overflow-hidden">
-        <CardHeader className="bg-gradient-to-r from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-900/30 pb-2">
-          <CardTitle className="text-lg flex justify-between items-center">
-            <span className="flex items-center">
-              <span className="text-arca-blue font-medium">USD/BRL</span>
-            </span>
+      <Card className="shadow-sm border h-full">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-lg font-bold flex justify-between items-center">
+            <span className="flex items-center text-arca-blue">USD/BRL</span>
             <button 
               onClick={fetchDollarRate} 
-              className="text-gray-600 hover:text-blue-600 transition-colors"
+              className="text-gray-600 hover:text-blue-600 transition-colors p-1 rounded-full hover:bg-gray-100"
               disabled={isLoading}
+              aria-label="Atualizar cotação"
             >
               <RefreshCw size={16} className={`${isLoading ? 'animate-spin' : ''}`} />
             </button>
           </CardTitle>
         </CardHeader>
-        <CardContent className="pt-4">
+        <CardContent>
           <CurrencyRateDisplay 
             dollarRate={dollarRate}
             isUp={isUp}

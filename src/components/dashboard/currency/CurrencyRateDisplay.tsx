@@ -52,7 +52,7 @@ export const CurrencyRateDisplay: React.FC<CurrencyRateDisplayProps> = ({
         
         <div className="flex items-center text-xs text-gray-500 mt-1">
           <Clock size={12} className="mr-1" /> 
-          <span>Atualizado às {lastUpdate}</span>
+          <span>Atualizado {lastUpdate}</span>
         </div>
       </div>
       <div className="text-right">

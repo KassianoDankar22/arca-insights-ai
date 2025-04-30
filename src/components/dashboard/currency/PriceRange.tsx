@@ -20,8 +20,11 @@ export const PriceRange: React.FC<PriceRangeProps> = ({
     ? ((dollarRate - weeklyLow) / (weeklyHigh - weeklyLow)) * 100
     : 0;
 
+  // Ensure percentage is between 0 and 100
+  const clampedPercentage = Math.min(Math.max(rangePercentage, 0), 100);
+
   return (
-    <div className="mt-2 pt-2 border-t border-gray-100">
+    <div className="mt-3 pt-3 border-t border-gray-100">
       <div className="flex justify-between text-xs">
         <div>
           <div className="text-gray-600">Mínima {timePeriod === 'today' ? 'hoje' : timePeriod === 'week' ? 'da semana' : 'do mês'}</div>
@@ -32,10 +35,10 @@ export const PriceRange: React.FC<PriceRangeProps> = ({
           <div className="font-semibold text-right">R$ {weeklyHigh.toFixed(2)}</div>
         </div>
       </div>
-      <div className="mt-2 h-2 bg-gray-100 rounded overflow-hidden">
+      <div className="mt-2 h-2 bg-gray-100 rounded-full overflow-hidden">
         <div 
-          className="h-full bg-gradient-to-r from-blue-400 to-purple-400" 
-          style={{ width: `${rangePercentage}%` }}
+          className="h-full bg-gradient-to-r from-arca-blue to-arca-purple" 
+          style={{ width: `${clampedPercentage}%` }}
         />
       </div>
     </div>

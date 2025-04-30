@@ -13,10 +13,10 @@ export const TimePeriodSelector: React.FC<TimePeriodSelectorProps> = ({
   setTimePeriod 
 }) => {
   return (
-    <div className="flex gap-2 text-xs mt-2 mb-2">
+    <div className="flex gap-2 text-xs mt-3 mb-3">
       <button 
         onClick={() => setTimePeriod('today')} 
-        className={`px-2 py-1 rounded-full transition-colors ${
+        className={`px-3 py-1 rounded-full transition-colors ${
           timePeriod === 'today' 
             ? 'bg-arca-blue text-white' 
             : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
@@ -26,7 +26,7 @@ export const TimePeriodSelector: React.FC<TimePeriodSelectorProps> = ({
       </button>
       <button 
         onClick={() => setTimePeriod('week')} 
-        className={`px-2 py-1 rounded-full transition-colors ${
+        className={`px-3 py-1 rounded-full transition-colors ${
           timePeriod === 'week' 
             ? 'bg-arca-blue text-white' 
             : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
@@ -36,7 +36,7 @@ export const TimePeriodSelector: React.FC<TimePeriodSelectorProps> = ({
       </button>
       <button 
         onClick={() => setTimePeriod('month')} 
-        className={`px-2 py-1 rounded-full transition-colors ${
+        className={`px-3 py-1 rounded-full transition-colors ${
           timePeriod === 'month' 
             ? 'bg-arca-blue text-white' 
             : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
