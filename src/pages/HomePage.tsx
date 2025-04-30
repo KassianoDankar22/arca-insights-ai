@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { 
   BarChart2, 
@@ -125,13 +124,26 @@ const PropertyCard = ({
 };
 
 const HomePage = () => {
-  const userName = "Amanda"; // This would be dynamically fetched in a real application
+  // Update user information
+  const userName = "Juliana Lengler"; 
+  const userGender = "female";
 
   return (
     <div className="p-6 md:p-8 max-w-7xl mx-auto">
       <div className="mb-8">
-        <h1 className="text-2xl md:text-3xl font-bold">Bem-vindo à ARCA {userName}</h1>
-        <p className="text-gray-600">Sua plataforma inteligente de análise imobiliária.</p>
+        <h1 className="text-2xl md:text-3xl font-bold">
+          {/* Dynamic greeting based on time of day */}
+          {(() => {
+            const hour = new Date().getHours();
+            if (hour < 12) return 'Bom dia';
+            else if (hour < 18) return 'Boa tarde';
+            else return 'Boa noite';
+          })()}, {userName}
+        </h1>
+        <p className="text-gray-600">
+          {/* Gender-specific welcome message */}
+          {userGender === 'female' ? 'Bem-vinda' : 'Bem-vindo'} à ARCA sua plataforma inteligente de análise imobiliária.
+        </p>
       </div>
       
       {/* Metrics Cards */}
@@ -258,7 +270,7 @@ const HomePage = () => {
           />
           
           <PropertyCard 
-            imageUrl="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NXx8aG91c2V8ZW58MHx8MHx8&auto=format&fit=crop&w=800&q=60" 
+            imageUrl="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=60" 
             title="Townhouse em Lake Nona" 
             location="Lake Nona, Orlando" 
             price="R$ 425.000" 

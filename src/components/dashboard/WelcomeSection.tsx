@@ -4,17 +4,27 @@ import { useEffect, useState } from 'react';
 
 interface WelcomeSectionProps {
   userName?: string;
+  gender?: 'male' | 'female';
 }
 
-const WelcomeSection: React.FC<WelcomeSectionProps> = ({ userName = 'User' }) => {
+const WelcomeSection: React.FC<WelcomeSectionProps> = ({ 
+  userName = 'Juliana Lengler',
+  gender = 'female' 
+}) => {
   const [greeting, setGreeting] = useState('');
+  const [welcomeText, setWelcomeText] = useState('');
 
   useEffect(() => {
+    // Set time-based greeting
     const hour = new Date().getHours();
     if (hour < 12) setGreeting('Bom dia');
     else if (hour < 18) setGreeting('Boa tarde');
     else setGreeting('Boa noite');
-  }, []);
+    
+    // Set gender-based welcome text
+    const genderSpecificWelcome = gender === 'female' ? 'Bem-vinda' : 'Bem-vindo';
+    setWelcomeText(`${genderSpecificWelcome} à ARCA sua plataforma inteligente de análise imobiliária.`);
+  }, [gender]);
 
   return (
     <div className="mb-8">
@@ -22,7 +32,7 @@ const WelcomeSection: React.FC<WelcomeSectionProps> = ({ userName = 'User' }) =>
         {greeting}, <span className="text-arca-blue">{userName}</span>
       </h1>
       <p className="text-white/70 mt-2">
-        Bem-vindo ao seu dashboard da ARCA AI. O que gostaria de fazer hoje?
+        {welcomeText}
       </p>
     </div>
   );
