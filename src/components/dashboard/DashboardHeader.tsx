@@ -17,8 +17,8 @@ const DashboardHeader: React.FC = () => {
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-2xl md:text-3xl font-bold mb-1">
-            {/* Dynamic greeting with gradient text */}
-            <span className="bg-gradient-to-r from-arca-blue to-arca-sky-blue bg-clip-text text-transparent">
+            {/* Dynamic greeting with gradient text matching the reference image */}
+            <span className="bg-gradient-to-r from-arca-light-blue via-arca-blue to-arca-dark-blue bg-clip-text text-transparent">
               {(() => {
                 const hour = new Date().getHours();
                 if (hour < 12) return 'Bom dia';

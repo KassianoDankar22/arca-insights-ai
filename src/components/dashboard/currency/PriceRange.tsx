@@ -37,7 +37,7 @@ export const PriceRange: React.FC<PriceRangeProps> = ({
       </div>
       <div className="mt-2 h-2 bg-gray-100 rounded-full overflow-hidden">
         <div 
-          className="h-full bg-gradient-to-r from-arca-blue to-arca-purple" 
+          className="h-full bg-gradient-to-r from-arca-light-blue via-arca-blue to-arca-dark-blue" 
           style={{ width: `${clampedPercentage}%` }}
         />
       </div>

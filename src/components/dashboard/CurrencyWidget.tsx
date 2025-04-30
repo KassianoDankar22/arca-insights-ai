@@ -35,7 +35,7 @@ const CurrencyWidget: React.FC = () => {
       <Card className="shadow-sm border h-full">
         <CardHeader className="pb-2">
           <CardTitle className="text-lg font-bold flex justify-between items-center">
-            <span className="flex items-center text-arca-blue">USD/BRL</span>
+            <span className="flex items-center text-arca-dark-blue">USD/BRL</span>
             <button 
               onClick={fetchDollarRate} 
               className="text-gray-600 hover:text-blue-600 transition-colors p-1 rounded-full hover:bg-gray-100"

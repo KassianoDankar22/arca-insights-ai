@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -57,13 +58,15 @@ export default {
 				},
 				// Cores personalizadas para o ARCA
 				arca: {
-					purple: '#9b87f5',
-					'dark-purple': '#7E69AB',
-					'light-purple': '#D6BCFA',
-					'soft-purple': '#E5DEFF',
-					'vivid-purple': '#8B5CF6',
+					purple: '#0052CC', // Changed from #9b87f5 to a darker blue
+					'dark-purple': '#003D99', // Adjusted to match the new blue theme
+					'light-purple': '#4D94FF', // Adjusted to match the new blue theme
+					'soft-purple': '#E5F0FF', // Adjusted to match the new blue theme
+					'vivid-purple': '#1A75FF', // Adjusted to match the new blue theme
 					blue: '#1EAEDB',
 					'sky-blue': '#33C3F0',
+					'dark-blue': '#0052CC', // Added darker blue
+					'light-blue': '#4DD0E1', // Added lighter cyan/blue
 					'cool-gray': '#aaadb0',
 					'dark-gray': '#222222',
 				},
