@@ -9,7 +9,7 @@ const aiAgents: AIAgentProps[] = [
     id: 'roi-short-term',
     name: 'Tom - Análise de ROI',
     description: 'Avalia rapidamente o retorno sobre investimento de propriedades destinadas a locações de curto prazo, considerando fatores como ocupação, sazonalidade e custos. Ajuda o corretor a identificar as melhores oportunidades sem precisar de cálculos complexos.',
-    icon: 'https://images.unsplash.com/photo-1501286353178-1ec871fac838',
+    icon: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b',
     route: '/roi-curto-prazo',
     isNew: true
   },
