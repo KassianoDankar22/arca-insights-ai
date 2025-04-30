@@ -1,0 +1,30 @@
+
+import React from 'react';
+
+interface MarketInsightCardProps {
+  icon: React.ElementType;
+  title: string;
+  children: React.ReactNode;
+  iconBgColor?: string;
+}
+
+const MarketInsightCard: React.FC<MarketInsightCardProps> = ({
+  icon: Icon,
+  title,
+  children,
+  iconBgColor = "bg-blue-100"
+}) => {
+  return (
+    <div className="flex gap-4 mb-6">
+      <div className={`${iconBgColor} p-3 rounded-lg h-fit`}>
+        <Icon className="text-arca-blue" size={24} />
+      </div>
+      <div>
+        <h3 className="text-lg font-medium text-gray-800 mb-1">{title}</h3>
+        {children}
+      </div>
+    </div>
+  );
+};
+
+export default MarketInsightCard;
