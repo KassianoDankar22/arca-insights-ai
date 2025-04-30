@@ -10,7 +10,7 @@ const aiAgents: AIAgentProps[] = [
     id: 'roi-short-term',
     name: 'Tom - Análise de ROI',
     description: 'Avalia rapidamente o retorno sobre investimento de propriedades destinadas a locações de curto prazo, considerando fatores como ocupação, sazonalidade e custos. Ajuda o corretor a identificar as melhores oportunidades sem precisar de cálculos complexos.',
-    icon: '/lovable-uploads/da65bc47-d9af-483b-b089-65947a0e2081.png',
+    icon: '/lovable-uploads/19746570-56a9-4a4e-a8b9-439d7867b88c.png',
     route: '/roi-curto-prazo',
     isNew: true
   },
@@ -41,7 +41,11 @@ const ToolsPage: React.FC = () => {
       >
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Ferramentas de IA</h1>
+            <h1 className="text-3xl font-bold mb-2">
+              <span className="bg-gradient-to-r from-arca-light-blue via-arca-blue to-arca-dark-blue bg-clip-text text-transparent">
+                ARCA AI Tools
+              </span>
+            </h1>
             <p className="text-gray-600 max-w-2xl">
               Maximize seu potencial com nossas ferramentas de IA especialmente desenvolvidas para o mercado imobiliário. Analise, planeje e tome decisões melhores.
             </p>

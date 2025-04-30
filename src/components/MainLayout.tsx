@@ -9,8 +9,8 @@ const MainLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
   
-  // Only show the chat button if we're not already on the chat page
-  const showChatButton = location.pathname !== '/chat';
+  // Only show the chat button if we're not already on the chat page or tools page
+  const showChatButton = location.pathname !== '/chat' && location.pathname !== '/ferramentas';
   
   return (
     <div className="flex h-screen bg-gray-50">
