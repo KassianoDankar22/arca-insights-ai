@@ -5,7 +5,6 @@ import { Badge } from "@/components/ui/badge";
 import { HoverButton } from "@/components/ui/hover-button";
 import { ArrowRight, Lock } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { BorderTrail } from '@/components/ui/border-trail';
 
 export interface AIAgentProps {
   id: string;
@@ -31,14 +30,16 @@ const AIAgentCard: React.FC<AIAgentProps> = ({
 }) => {
   return (
     <Card className={`relative overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1 h-full ${isLocked ? 'bg-gray-800/90 text-gray-300 border-gray-700' : ''}`}>
-      <BorderTrail 
-        className={isLocked 
-          ? "bg-gradient-to-l from-purple-300 via-purple-500 to-purple-700" 
+      {/* Static gradient border instead of animated trail */}
+      <div className={`absolute inset-0 rounded-[inherit] border-2 border-transparent ${
+        isLocked 
+          ? "bg-gradient-to-l from-purple-300 via-purple-500 to-purple-700 opacity-50" 
           : "bg-gradient-to-l from-arca-light-blue via-arca-blue to-arca-dark-blue"
-        }
-        size={120}
-      />
-      <CardHeader className="pb-3">
+      } [mask-image:linear-gradient(#000,#000)]`}>
+        {/* This is an empty div that just shows the gradient on the border */}
+      </div>
+      
+      <CardHeader className="pb-3 relative z-10">
         <div className="flex justify-between items-start">
           <div className="w-12 h-12 rounded-lg overflow-hidden mb-2">
             <img
@@ -97,7 +98,7 @@ const AIAgentCard: React.FC<AIAgentProps> = ({
         </CardDescription>
       </CardHeader>
       
-      <CardContent className="pt-0">
+      <CardContent className="pt-0 relative z-10">
         {!isLocked ? (
           <Link to={route} className="block mt-4">
             <HoverButton className="w-full mt-2 flex items-center justify-center gap-2">
