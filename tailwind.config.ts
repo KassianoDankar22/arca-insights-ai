@@ -116,6 +116,11 @@ export default {
 					'50%': {
 						'background-position': '100% 50%'
 					}
+				},
+				rainbow: {
+					'0%': { backgroundPosition: '0% 50%' },
+					'50%': { backgroundPosition: '100% 50%' },
+					'100%': { backgroundPosition: '0% 50%' }
 				}
 			},
 			animation: {
@@ -125,7 +130,8 @@ export default {
 				typing: 'typing 3.5s steps(40, end), blink .75s step-end infinite',
 				'star-movement-top': 'star-movement-top 6s ease-in-out infinite',
 				'star-movement-bottom': 'star-movement-bottom 6s ease-in-out infinite',
-				'gradient-x': 'gradient-x 3s ease infinite'
+				'gradient-x': 'gradient-x 3s ease infinite',
+				'rainbow': 'rainbow 5s ease infinite'
 			}
 		}
 	},

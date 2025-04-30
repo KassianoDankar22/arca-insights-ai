@@ -6,7 +6,7 @@ import { StarBorder } from '@/components/ui/star-border';
 import Logo from './Logo';
 import { BackgroundBeams } from '@/components/ui/background-beams';
 import { AnimatedBorderInput } from './AnimatedBorderInput';
-import { Button } from '@/components/ui/button';
+import { RainbowButton } from '@/components/ui/rainbow-button';
 
 interface LoginProps {
   onLogin: () => void;
@@ -26,7 +26,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-900 relative overflow-hidden">
+    <div className="flex items-center justify-center min-h-screen bg-black relative overflow-hidden">
       {/* Background com efeitos de gradiente preto */}
       <BackgroundBeams className="opacity-70" />
       
@@ -95,15 +95,12 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
               </div>
             </CardContent>
             <CardFooter className="flex flex-col">
-              <button 
-                type="submit" 
-                className="w-full h-10 relative group transition-transform duration-300 hover:scale-[1.02]"
+              <RainbowButton 
+                type="submit"
+                className="w-full transition-transform duration-300 hover:scale-[1.02]"
               >
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-400 via-blue-600 to-blue-400 opacity-80 group-hover:opacity-100 rounded-md bg-blue-500 animate-gradient-x"></div>
-                <span className="relative z-10 flex items-center justify-center text-white font-medium h-full">
-                  {isLogin ? 'Entrar' : 'Cadastrar'}
-                </span>
-              </button>
+                {isLogin ? 'Entrar' : 'Cadastrar'}
+              </RainbowButton>
               <p className="mt-4 text-center text-sm">
                 {isLogin ? 'Não tem uma conta?' : 'Já possui uma conta?'}{' '}
                 <button
