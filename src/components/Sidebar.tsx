@@ -1,6 +1,5 @@
-
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Logo from './Logo';
 import { Home, BarChart2, TrendingUp, Calendar, Settings, LogOut, MessageSquare, FileText, Users, BookOpen } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -12,6 +11,7 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ className }) => {
   const location = useLocation();
+  const navigate = useNavigate();
   
   const navItems = [
     { icon: Home, label: 'Home', path: '/' },
@@ -21,6 +21,14 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
     { icon: BookOpen, label: 'Minhas Notas', path: '/notas' },
     { icon: Settings, label: 'Integrações', path: '/integracoes' },
   ];
+
+  const handleLogout = () => {
+    // In a real application with Supabase, you would call supabase.auth.signOut() here
+    // For now, we'll just redirect to the login page
+    navigate('/');
+    // Force a page reload to simulate logging out
+    window.location.reload();
+  };
 
   return (
     <div className={cn("flex flex-col h-full bg-white border-r border-gray-200 w-64 py-6 px-3", className)}>
@@ -103,7 +111,10 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
       </div>
 
       <div className="mt-auto px-3">
-        <button className="flex items-center gap-3 px-3 py-2 rounded-md text-gray-600 hover:bg-red-50 hover:text-red-500 w-full transition-colors">
+        <button 
+          onClick={handleLogout}
+          className="flex items-center gap-3 px-3 py-2 rounded-md text-gray-600 hover:bg-red-50 hover:text-red-500 w-full transition-colors"
+        >
           <LogOut size={20} />
           <span>Sair</span>
         </button>
