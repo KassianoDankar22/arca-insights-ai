@@ -8,7 +8,7 @@ const Logo: React.FC<LogoProps> = ({
   showText = true
 }) => {
   return <div className={`flex items-center justify-center ${className}`}>
-      <img alt="Arca AI Logo" className="h-14 w-auto object-scale-down" src="/lovable-uploads/f661dcdf-81da-40d9-b1b9-622de36233cb.png" />
+      <img alt="Arca AI Logo" src="/lovable-uploads/6954e100-c7f2-481d-a212-f2fa53fb94da.png" className="h-16 w-auto object-scale-down" />
     </div>;
 };
 export default Logo;
