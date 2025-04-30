@@ -10,22 +10,22 @@ const aiAgents: AIAgentProps[] = [
     id: 'roi-short-term',
     name: 'Tom - Análise de ROI',
     description: 'Avalia rapidamente o retorno sobre investimento de propriedades destinadas a locações de curto prazo, considerando fatores como ocupação, sazonalidade e custos. Ajuda o corretor a identificar as melhores oportunidades sem precisar de cálculos complexos.',
-    icon: '/lovable-uploads/19746570-56a9-4a4e-a8b9-439d7867b88c.png',
+    icon: '/lovable-uploads/781bb3b7-dc4b-42be-842a-086cb608c3c6.png', // Updated image path
     route: '/roi-curto-prazo',
     isNew: true
   },
   {
     id: 'roi-long-term',
     name: 'Ana - ROI Longo Prazo',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam euismod, nisl eget ultricies aliquam, nunc nisl aliquet nunc, quis aliquam nisl nunc eu nisl.',
-    icon: '/lovable-uploads/da65bc47-d9af-483b-b089-65947a0e2081.png',
+    description: 'Especialista em análise de retorno sobre investimento para propriedades de longo prazo, considerando valorização imobiliária, custos de manutenção e tendências de mercado ao longo do tempo.',
+    icon: '/lovable-uploads/695ed016-2dd6-49b3-97f0-bdbdabc3e04d.png',
     route: '/roi-longo-prazo'
   },
   {
     id: 'market-trends',
     name: 'Lucas - Tendências de Mercado',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam euismod, nisl eget ultricies aliquam, nunc nisl aliquet nunc, quis aliquam nisl nunc eu nisl.',
-    icon: '/lovable-uploads/da65bc47-d9af-483b-b089-65947a0e2081.png',
+    description: 'Acompanha e analisa as principais tendências do mercado imobiliário, oferecendo insights valiosos sobre direções futuras, áreas em desenvolvimento e oportunidades emergentes.',
+    icon: '/lovable-uploads/f661dcdf-81da-40d9-b1b9-622de36233cb.png',
     route: '/tendencias',
     isHighlight: true
   }
@@ -77,6 +77,7 @@ const ToolsPage: React.FC = () => {
               <ul className="list-disc pl-5 mt-2 text-sm text-gray-600">
                 <li>Criação de novos agentes de IA</li>
                 <li>Personalização de prompts e comportamentos</li>
+                <li>Upload de imagens personalizadas para cada agente</li>
                 <li>Análise de uso e métricas de desempenho</li>
                 <li>Gestão de APIs e integrações</li>
               </ul>
