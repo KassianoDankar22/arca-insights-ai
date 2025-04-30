@@ -14,6 +14,7 @@ import SettingsPage from "./pages/SettingsPage";
 import HomePage from "./pages/HomePage";
 import NotFound from "./pages/NotFound";
 import MainLayout from "./components/MainLayout";
+import ToolsPage from "./pages/ToolsPage";
 
 const queryClient = new QueryClient();
 
@@ -37,7 +38,7 @@ const App = () => {
               <Route path="/" element={<MainLayout />}>
                 <Route index element={<HomePage />} />
                 <Route path="chat" element={<ChatPage />} />
-                <Route path="ferramentas" element={<HomePage />} /> {/* Placeholder routes */}
+                <Route path="ferramentas" element={<ToolsPage />} />
                 <Route path="academy" element={<HomePage />} />
                 <Route path="financeiro" element={<HomePage />} />
                 <Route path="integracoes" element={<SettingsPage />} />

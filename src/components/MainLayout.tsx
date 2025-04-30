@@ -17,7 +17,7 @@ const MainLayout = () => {
       <Sidebar />
       <main className="flex-1 overflow-auto">
         {showChatButton && (
-          <div className="fixed top-6 right-8 z-10">
+          <div className="fixed top-8 right-12 z-10">
             <HoverButton 
               onClick={() => navigate('/chat')}
               className="flex items-center gap-2"
