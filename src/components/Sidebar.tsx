@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Logo from './Logo';
-import { Home, Settings, LogOut, MessageSquare, BookOpen, Tool, GraduationCap, DollarSign } from 'lucide-react';
+import { Home, Settings, LogOut, MessageSquare, BookOpen, Wrench, GraduationCap, DollarSign } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
@@ -16,7 +16,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
   
   const navItems = [
     { icon: Home, label: 'Home', path: '/' },
-    { icon: Tool, label: 'Ferramentas', path: '/ferramentas' },
+    { icon: Wrench, label: 'Ferramentas', path: '/ferramentas' },
     { icon: MessageSquare, label: 'Arca AI Chat', path: '/chat', isNew: true },
     { icon: GraduationCap, label: 'Academy', path: '/academy' },
     { icon: DollarSign, label: 'Financeiro', path: '/financeiro' },
