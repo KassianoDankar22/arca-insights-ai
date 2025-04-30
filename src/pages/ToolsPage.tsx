@@ -3,6 +3,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import AIAgentCard, { AIAgentProps } from '@/components/tools/AIAgentCard';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Upload } from 'lucide-react';
 
 // These would eventually come from a backend API or admin panel
 const aiAgents: AIAgentProps[] = [
@@ -10,7 +11,7 @@ const aiAgents: AIAgentProps[] = [
     id: 'roi-short-term',
     name: 'Tom - Análise de ROI',
     description: 'Avalia rapidamente o retorno sobre investimento de propriedades destinadas a locações de curto prazo, considerando fatores como ocupação, sazonalidade e custos. Ajuda o corretor a identificar as melhores oportunidades sem precisar de cálculos complexos.',
-    icon: '/lovable-uploads/781bb3b7-dc4b-42be-842a-086cb608c3c6.png', // Updated image path
+    icon: '/lovable-uploads/781bb3b7-dc4b-42be-842a-086cb608c3c6.png',
     route: '/roi-curto-prazo',
     isNew: true
   },
@@ -71,16 +72,26 @@ const ToolsPage: React.FC = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-gray-600">
-                Funcionalidades planejadas:
-              </p>
-              <ul className="list-disc pl-5 mt-2 text-sm text-gray-600">
-                <li>Criação de novos agentes de IA</li>
-                <li>Personalização de prompts e comportamentos</li>
-                <li>Upload de imagens personalizadas para cada agente</li>
-                <li>Análise de uso e métricas de desempenho</li>
-                <li>Gestão de APIs e integrações</li>
-              </ul>
+              <div className="flex items-start space-x-4">
+                <div className="flex-1">
+                  <p className="text-sm text-gray-600 mb-2">
+                    Funcionalidades planejadas:
+                  </p>
+                  <ul className="list-disc pl-5 mt-2 text-sm text-gray-600">
+                    <li>Criação de novos agentes de IA</li>
+                    <li>Personalização de prompts e comportamentos</li>
+                    <li className="font-medium text-blue-600">Upload de imagens personalizadas para cada agente</li>
+                    <li>Análise de uso e métricas de desempenho</li>
+                    <li>Gestão de APIs e integrações</li>
+                  </ul>
+                </div>
+                <div className="border border-dashed border-gray-300 rounded-lg p-4 bg-gray-50 w-48 flex flex-col items-center justify-center">
+                  <Upload className="text-gray-400 mb-2" />
+                  <p className="text-sm text-gray-500 text-center">
+                    Interface para upload de avatares dos agentes
+                  </p>
+                </div>
+              </div>
             </CardContent>
           </Card>
         </div>
