@@ -16,7 +16,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
   const navItems = [
     { icon: Home, label: 'Home', path: '/' },
     { icon: FileText, label: 'Minhas Análises', path: '/analises' },
-    { icon: MessageSquare, label: 'Arca AI Chat', path: '/chat', isActive: true, isNew: true },
+    { icon: MessageSquare, label: 'Arca AI Chat', path: '/chat', isNew: true },
     { icon: Users, label: 'Compartilhados comigo', path: '/compartilhados' },
     { icon: BookOpen, label: 'Minhas Notas', path: '/notas' },
     { icon: Settings, label: 'Integrações', path: '/integracoes' },
@@ -31,7 +31,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
       <div className="flex items-center p-4 border-b border-gray-200 mb-4">
         <Avatar className="h-10 w-10 mr-3">
           <AvatarImage src="/placeholder.svg" alt="@usuário" />
-          <AvatarFallback>U</AvatarFallback>
+          <AvatarFallback>A</AvatarFallback>
         </Avatar>
         <div>
           <p className="text-sm font-medium text-gray-900">Amanda Silva</p>
@@ -41,26 +41,33 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
 
       <div className="flex-1">
         <nav className="space-y-1">
-          {navItems.map((item) => (
-            <Link
-              key={item.path}
-              to={item.path}
-              className={cn(
-                "flex items-center gap-3 px-3 py-2 rounded-md transition-colors relative",
-                location.pathname === item.path 
-                  ? "bg-blue-50 text-arca-blue" 
-                  : "text-gray-600 hover:bg-gray-50"
-              )}
-            >
-              <item.icon size={20} />
-              <span>{item.label}</span>
-              {item.isNew && (
-                <span className="absolute right-2 px-1.5 py-0.5 text-xs font-medium bg-arca-blue text-white rounded">
-                  NOVO
-                </span>
-              )}
-            </Link>
-          ))}
+          {navItems.map((item) => {
+            // Check if this is the active path
+            const isActive = item.path === '/' 
+              ? location.pathname === '/' 
+              : location.pathname.startsWith(item.path);
+                
+            return (
+              <Link
+                key={item.path}
+                to={item.path}
+                className={cn(
+                  "flex items-center gap-3 px-3 py-2 rounded-md transition-colors relative",
+                  isActive
+                    ? "bg-blue-50 text-arca-blue" 
+                    : "text-gray-600 hover:bg-gray-50"
+                )}
+              >
+                <item.icon size={20} />
+                <span>{item.label}</span>
+                {item.isNew && (
+                  <span className="absolute right-2 px-1.5 py-0.5 text-xs font-medium bg-arca-blue text-white rounded">
+                    NOVO
+                  </span>
+                )}
+              </Link>
+            );
+          })}
         </nav>
       </div>
       
