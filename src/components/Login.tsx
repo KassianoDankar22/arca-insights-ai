@@ -3,9 +3,10 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import Logo from './Logo';
-import { AnimatedWaves } from '@/components/ui/animated-waves';
 import { AnimatedBorderInput } from './AnimatedBorderInput';
 import { RainbowButton } from '@/components/ui/rainbow-button';
+import { AuroraBackground } from './ui/aurora-background';
+import { motion } from 'framer-motion';
 
 interface LoginProps {
   onLogin: () => void;
@@ -25,16 +26,18 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen relative overflow-hidden">
-      {/* Animated waves background */}
-      <AnimatedWaves />
-      
-      <div className="w-full max-w-md p-4 z-10">
+    <AuroraBackground>
+      <motion.div 
+        className="w-full max-w-md p-4 z-10"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
         <div className="flex justify-center mb-10">
           <Logo className="h-20" />
         </div>
         
-        <Card className="backdrop-blur-sm bg-white/90 shadow-xl">
+        <Card className="backdrop-blur-sm bg-white/90 dark:bg-zinc-900/80 shadow-xl border-white/20 dark:border-zinc-700/30">
           <CardHeader>
             <CardTitle>{isLogin ? 'Login' : 'Cadastro'}</CardTitle>
             <CardDescription>
@@ -113,8 +116,8 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
             </CardFooter>
           </form>
         </Card>
-      </div>
-    </div>
+      </motion.div>
+    </AuroraBackground>
   );
 };
 
