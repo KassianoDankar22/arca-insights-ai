@@ -2,8 +2,9 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import Logo from './Logo';
-import { Home, BarChart2, TrendingUp, Calendar, Settings, LogOut, MessageSquare } from 'lucide-react';
+import { Home, BarChart2, TrendingUp, Calendar, Settings, LogOut, MessageSquare, FileText, Users, BookOpen } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 interface SidebarProps {
   className?: string;
@@ -13,18 +14,29 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
   const location = useLocation();
   
   const navItems = [
-    { icon: Home, label: 'Início', path: '/' },
-    { icon: MessageSquare, label: 'Arca AI Chat', path: '/chat', isNew: true },
-    { icon: BarChart2, label: 'ROI Curto Prazo', path: '/roi-curto-prazo' },
-    { icon: TrendingUp, label: 'ROI Longo Prazo', path: '/roi-longo-prazo' },
-    { icon: Calendar, label: 'Tendências', path: '/tendencias' },
-    { icon: Settings, label: 'Configurações', path: '/configuracoes' },
+    { icon: Home, label: 'Home', path: '/' },
+    { icon: FileText, label: 'Minhas Análises', path: '/analises' },
+    { icon: MessageSquare, label: 'Arca AI Chat', path: '/chat', isActive: true, isNew: true },
+    { icon: Users, label: 'Compartilhados comigo', path: '/compartilhados' },
+    { icon: BookOpen, label: 'Minhas Notas', path: '/notas' },
+    { icon: Settings, label: 'Integrações', path: '/integracoes' },
   ];
 
   return (
     <div className={cn("flex flex-col h-full bg-white border-r border-gray-200 w-64 py-6 px-3", className)}>
       <div className="px-3 mb-8">
         <Logo />
+      </div>
+      
+      <div className="flex items-center p-4 border-b border-gray-200 mb-4">
+        <Avatar className="h-10 w-10 mr-3">
+          <AvatarImage src="/placeholder.svg" alt="@usuário" />
+          <AvatarFallback>U</AvatarFallback>
+        </Avatar>
+        <div>
+          <p className="text-sm font-medium text-gray-900">Amanda Silva</p>
+          <p className="text-xs text-gray-500">Conta Gratuita</p>
+        </div>
       </div>
 
       <div className="flex-1">
@@ -50,6 +62,37 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
             </Link>
           ))}
         </nav>
+      </div>
+      
+      <div className="p-4 border-t border-gray-200">
+        <div className="flex items-center justify-between mb-4">
+          <span className="text-sm text-gray-600">Análises restantes</span>
+          <span className="text-sm font-medium">15/20</span>
+        </div>
+        <div className="w-full h-2 mb-4 bg-gray-200 rounded-full">
+          <div className="h-2 rounded-full bg-arca-blue" style={{ width: '75%' }}></div>
+        </div>
+        
+        <ul className="space-y-1">
+          <li>
+            <Link
+              to="/configuracoes"
+              className="flex items-center px-3 py-2 text-gray-700 rounded-md hover:bg-gray-100"
+            >
+              <Settings size={18} className="mr-3" />
+              <span>Configurações</span>
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/ajuda"
+              className="flex items-center px-3 py-2 text-gray-700 rounded-md hover:bg-gray-100"
+            >
+              <Calendar size={18} className="mr-3" />
+              <span>Ajuda & Suporte</span>
+            </Link>
+          </li>
+        </ul>
       </div>
 
       <div className="mt-auto px-3">

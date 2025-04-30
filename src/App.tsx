@@ -4,15 +4,13 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import MainLayout from "./components/MainLayout";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./components/Login";
-import HomePage from "./pages/HomePage";
+import ChatPage from "./pages/ChatPage";
 import RoiShortTermPage from "./pages/RoiShortTermPage";
 import RoiLongTermPage from "./pages/RoiLongTermPage";
 import MarketTrendsPage from "./pages/MarketTrendsPage";
 import SettingsPage from "./pages/SettingsPage";
-import ChatPage from "./pages/ChatPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -34,14 +32,12 @@ const App = () => {
             <Login onLogin={handleLogin} />
           ) : (
             <Routes>
+              <Route path="/" element={<Navigate to="/chat" replace />} />
               <Route path="/chat" element={<ChatPage />} />
-              <Route path="/" element={<MainLayout />}>
-                <Route index element={<HomePage />} />
-                <Route path="roi-curto-prazo" element={<RoiShortTermPage />} />
-                <Route path="roi-longo-prazo" element={<RoiLongTermPage />} />
-                <Route path="tendencias" element={<MarketTrendsPage />} />
-                <Route path="configuracoes" element={<SettingsPage />} />
-              </Route>
+              <Route path="/roi-curto-prazo" element={<RoiShortTermPage />} />
+              <Route path="/roi-longo-prazo" element={<RoiLongTermPage />} />
+              <Route path="/tendencias" element={<MarketTrendsPage />} />
+              <Route path="/configuracoes" element={<SettingsPage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           )}
