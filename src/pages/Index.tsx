@@ -6,7 +6,7 @@ const Index = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    navigate("/"); // Redirect to homepage instead of /chat
+    navigate("/");
   }, [navigate]);
 
   return (
