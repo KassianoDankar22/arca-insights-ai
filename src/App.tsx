@@ -12,6 +12,7 @@ import RoiShortTermPage from "./pages/RoiShortTermPage";
 import RoiLongTermPage from "./pages/RoiLongTermPage";
 import MarketTrendsPage from "./pages/MarketTrendsPage";
 import SettingsPage from "./pages/SettingsPage";
+import ChatPage from "./pages/ChatPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -33,6 +34,7 @@ const App = () => {
             <Login onLogin={handleLogin} />
           ) : (
             <Routes>
+              <Route path="/chat" element={<ChatPage />} />
               <Route path="/" element={<MainLayout />}>
                 <Route index element={<HomePage />} />
                 <Route path="roi-curto-prazo" element={<RoiShortTermPage />} />

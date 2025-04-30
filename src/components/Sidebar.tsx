@@ -1,8 +1,8 @@
 
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import Logo from './Logo';
-import { Home, BarChart2, TrendingUp, Calendar, Settings, LogOut } from 'lucide-react';
+import { Home, BarChart2, TrendingUp, Calendar, Settings, LogOut, MessageSquare } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface SidebarProps {
@@ -10,8 +10,11 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ className }) => {
+  const location = useLocation();
+  
   const navItems = [
     { icon: Home, label: 'Início', path: '/' },
+    { icon: MessageSquare, label: 'Arca AI Chat', path: '/chat', isNew: true },
     { icon: BarChart2, label: 'ROI Curto Prazo', path: '/roi-curto-prazo' },
     { icon: TrendingUp, label: 'ROI Longo Prazo', path: '/roi-longo-prazo' },
     { icon: Calendar, label: 'Tendências', path: '/tendencias' },
@@ -30,10 +33,20 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
             <Link
               key={item.path}
               to={item.path}
-              className="flex items-center gap-3 px-3 py-2 rounded-md text-gray-600 hover:bg-arca-soft-purple hover:text-arca-purple transition-colors"
+              className={cn(
+                "flex items-center gap-3 px-3 py-2 rounded-md transition-colors relative",
+                location.pathname === item.path 
+                  ? "bg-blue-50 text-arca-blue" 
+                  : "text-gray-600 hover:bg-gray-50"
+              )}
             >
               <item.icon size={20} />
               <span>{item.label}</span>
+              {item.isNew && (
+                <span className="absolute right-2 px-1.5 py-0.5 text-xs font-medium bg-arca-blue text-white rounded">
+                  NOVO
+                </span>
+              )}
             </Link>
           ))}
         </nav>
