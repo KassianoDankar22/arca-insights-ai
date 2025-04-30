@@ -1,7 +1,8 @@
+
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Logo from './Logo';
-import { Home, BarChart2, TrendingUp, Calendar, Settings, LogOut, MessageSquare, FileText, Users, BookOpen } from 'lucide-react';
+import { Home, Settings, LogOut, MessageSquare, BookOpen, Tool, GraduationCap, DollarSign } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
@@ -15,18 +16,18 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
   
   const navItems = [
     { icon: Home, label: 'Home', path: '/' },
-    { icon: FileText, label: 'Minhas Análises', path: '/analises' },
+    { icon: Tool, label: 'Ferramentas', path: '/ferramentas' },
     { icon: MessageSquare, label: 'Arca AI Chat', path: '/chat', isNew: true },
-    { icon: Users, label: 'Compartilhados comigo', path: '/compartilhados' },
-    { icon: BookOpen, label: 'Minhas Notas', path: '/notas' },
+    { icon: GraduationCap, label: 'Academy', path: '/academy' },
+    { icon: DollarSign, label: 'Financeiro', path: '/financeiro' },
     { icon: Settings, label: 'Integrações', path: '/integracoes' },
   ];
 
   const handleLogout = () => {
     // In a real application with Supabase, you would call supabase.auth.signOut() here
-    // For now, we'll just redirect to the login page
+    // For this application, we'll just redirect to the login page
     navigate('/');
-    // Force a page reload to simulate logging out
+    // Setting isAuthenticated to false in App component
     window.location.reload();
   };
 
@@ -103,7 +104,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
               to="/ajuda"
               className="flex items-center px-3 py-2 text-gray-700 rounded-md hover:bg-gray-100"
             >
-              <Calendar size={18} className="mr-3" />
+              <BookOpen size={18} className="mr-3" />
               <span>Ajuda & Suporte</span>
             </Link>
           </li>

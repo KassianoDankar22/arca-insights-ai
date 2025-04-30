@@ -4,7 +4,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./components/Login";
 import ChatPage from "./pages/ChatPage";
 import RoiShortTermPage from "./pages/RoiShortTermPage";
@@ -37,10 +37,15 @@ const App = () => {
               <Route path="/" element={<MainLayout />}>
                 <Route index element={<HomePage />} />
                 <Route path="chat" element={<ChatPage />} />
+                <Route path="ferramentas" element={<HomePage />} /> {/* Placeholder routes */}
+                <Route path="academy" element={<HomePage />} />
+                <Route path="financeiro" element={<HomePage />} />
+                <Route path="integracoes" element={<SettingsPage />} />
                 <Route path="roi-curto-prazo" element={<RoiShortTermPage />} />
                 <Route path="roi-longo-prazo" element={<RoiLongTermPage />} />
                 <Route path="tendencias" element={<MarketTrendsPage />} />
                 <Route path="configuracoes" element={<SettingsPage />} />
+                <Route path="ajuda" element={<HomePage />} />
               </Route>
               <Route path="*" element={<NotFound />} />
             </Routes>
