@@ -2,7 +2,7 @@
 import React from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import Sidebar from './Sidebar';
-import { ButtonColorful } from './ui/button-colorful';
+import { HoverButton } from './ui/hover-button';
 import { MessageSquare } from 'lucide-react';
 
 const MainLayout = () => {
@@ -17,11 +17,14 @@ const MainLayout = () => {
       <Sidebar />
       <main className="flex-1 overflow-auto">
         {showChatButton && (
-          <div className="absolute top-4 right-4 z-10">
-            <ButtonColorful 
-              onClick={() => navigate('/chat')} 
-              label="Abrir Chat"
-            />
+          <div className="fixed top-6 right-8 z-10">
+            <HoverButton 
+              onClick={() => navigate('/chat')}
+              className="flex items-center gap-2"
+            >
+              <span>Abrir Chat</span>
+              <MessageSquare size={16} />
+            </HoverButton>
           </div>
         )}
         <Outlet />
