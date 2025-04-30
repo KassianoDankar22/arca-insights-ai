@@ -1,14 +1,21 @@
+
 import React from 'react';
 import { 
   BarChart2, 
   TrendingUp, 
   CircleDollarSign, 
   Clock, 
-  HomeIcon, 
+  Home, 
   Building, 
-  Home
+  LandPlot,
+  MapPin,
+  Bed,
+  Bath,
+  Square
 } from 'lucide-react';
 import { Card, CardContent } from "@/components/ui/card";
+import { motion } from 'framer-motion';
+import CurrencyWidget from '@/components/dashboard/CurrencyWidget';
 
 const MetricCard = ({ 
   icon: Icon, 
@@ -24,20 +31,28 @@ const MetricCard = ({
   isPositive?: boolean;
 }) => {
   return (
-    <Card className="bg-white border border-gray-200">
-      <CardContent className="p-6">
-        <div className="flex items-center mb-2">
-          <Icon className="text-arca-blue mr-2" size={20} />
-          <p className="text-gray-600 text-sm">{title}</p>
-        </div>
-        <div className="flex items-center justify-between">
-          <p className="text-2xl font-bold">{value}</p>
-          <span className={`text-xs font-medium ${isPositive ? 'text-green-500' : 'text-red-500'}`}>
-            {isPositive ? '↑' : '↓'} {change}
-          </span>
-        </div>
-      </CardContent>
-    </Card>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+    >
+      <Card className="bg-white border border-gray-200 transition-all hover:shadow-md">
+        <CardContent className="p-6">
+          <div className="flex items-center mb-2">
+            <div className="p-2 rounded-full bg-blue-50 mr-3">
+              <Icon className="text-arca-blue" size={20} />
+            </div>
+            <p className="text-gray-600 text-sm font-medium">{title}</p>
+          </div>
+          <div className="flex items-center justify-between mt-2">
+            <p className="text-2xl font-bold text-gray-900">{value}</p>
+            <span className={`text-xs font-medium py-1 px-2 rounded-full ${isPositive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+              {isPositive ? '↑' : '↓'} {change}
+            </span>
+          </div>
+        </CardContent>
+      </Card>
+    </motion.div>
   );
 };
 
@@ -54,7 +69,7 @@ const MarketInsightCard = ({
 }) => {
   return (
     <div className="flex gap-4 mb-6">
-      <div className={`${iconBgColor} p-3 rounded-md h-fit`}>
+      <div className={`${iconBgColor} p-3 rounded-lg h-fit`}>
         <Icon className="text-arca-blue" size={24} />
       </div>
       <div>
@@ -67,15 +82,20 @@ const MarketInsightCard = ({
 
 const InvestorTipCard = ({ number, title, description }: { number: number; title: string; description: string }) => {
   return (
-    <div className="flex gap-4 mb-6">
-      <div className="bg-blue-100 text-arca-blue rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
+    <motion.div 
+      className="flex gap-4 mb-6"
+      initial={{ opacity: 0, x: -20 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.5, delay: number * 0.1 }}
+    >
+      <div className="bg-arca-purple/10 text-arca-purple rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
         {number}
       </div>
       <div>
         <h3 className="font-medium text-gray-800 mb-1">{title}</h3>
         <p className="text-sm text-gray-600">{description}</p>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
@@ -86,7 +106,8 @@ const PropertyCard = ({
   price, 
   bedrooms, 
   bathrooms, 
-  area 
+  area,
+  index = 0
 }: { 
   imageUrl: string; 
   title: string; 
@@ -95,31 +116,41 @@ const PropertyCard = ({
   bedrooms: number; 
   bathrooms: number; 
   area: number;
+  index?: number;
 }) => {
   return (
-    <div className="border border-gray-200 rounded-lg overflow-hidden bg-white">
+    <motion.div 
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: index * 0.2 }}
+      className="border border-gray-200 rounded-lg overflow-hidden bg-white hover:shadow-lg transition-all"
+    >
       <div className="h-48 overflow-hidden">
-        <img src={imageUrl} alt={title} className="w-full h-full object-cover" />
+        <img src={imageUrl} alt={title} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
       </div>
       <div className="p-4">
-        <h3 className="font-semibold text-lg mb-1">{title}</h3>
+        <h3 className="font-semibold text-lg mb-1 text-gray-900">{title}</h3>
         <div className="flex items-center text-gray-500 text-sm mb-3">
+          <MapPin size={14} className="mr-1" />
           <span>{location}</span>
         </div>
-        <p className="text-lg font-bold text-arca-blue mb-3">{price}</p>
-        <div className="flex items-center justify-between text-sm text-gray-600">
+        <p className="text-lg font-bold text-arca-blue mb-4">{price}</p>
+        <div className="grid grid-cols-3 gap-2 text-sm text-gray-600">
           <div className="flex items-center gap-1">
+            <Bed size={14} />
             <span>{bedrooms} quartos</span>
           </div>
           <div className="flex items-center gap-1">
+            <Bath size={14} />
             <span>{bathrooms} {bathrooms === 1 ? 'banheiro' : 'banheiros'}</span>
           </div>
           <div className="flex items-center gap-1">
+            <Square size={14} />
             <span>{area} m²</span>
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
@@ -130,8 +161,13 @@ const HomePage = () => {
 
   return (
     <div className="p-6 md:p-8 max-w-7xl mx-auto">
-      <div className="mb-8">
-        <h1 className="text-2xl md:text-3xl font-bold">
+      <motion.div 
+        className="mb-8"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7 }}
+      >
+        <h1 className="text-2xl md:text-3xl font-bold mb-2">
           {/* Dynamic greeting based on time of day */}
           {(() => {
             const hour = new Date().getHours();
@@ -144,84 +180,90 @@ const HomePage = () => {
           {/* Gender-specific welcome message */}
           {userGender === 'female' ? 'Bem-vinda' : 'Bem-vindo'} à ARCA sua plataforma inteligente de análise imobiliária.
         </p>
-      </div>
+      </motion.div>
       
-      {/* Metrics Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <MetricCard 
-          icon={BarChart2} 
-          title="ROI Médio" 
-          value="8.6%" 
-          change="1.2%"
-          isPositive={true}
-        />
-        <MetricCard 
-          icon={TrendingUp} 
-          title="Valorização Anual" 
-          value="5.3%" 
-          change="0.8%"
-          isPositive={true}
-        />
-        <MetricCard 
-          icon={CircleDollarSign} 
-          title="Preço Médio" 
-          value="$457,500" 
-          change="2.5%"
-          isPositive={true}
-        />
-        <MetricCard 
-          icon={Clock} 
-          title="Dias no Mercado" 
-          value="28" 
-          change="3%"
-          isPositive={false}
-        />
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-8">
+        <div className="lg:col-span-3">
+          {/* Metrics Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+            <MetricCard 
+              icon={BarChart2} 
+              title="ROI Médio" 
+              value="8.6%" 
+              change="1.2%"
+              isPositive={true}
+            />
+            <MetricCard 
+              icon={TrendingUp} 
+              title="Valorização Anual" 
+              value="5.3%" 
+              change="0.8%"
+              isPositive={true}
+            />
+            <MetricCard 
+              icon={CircleDollarSign} 
+              title="Preço Médio" 
+              value="R$ 457.500" 
+              change="2.5%"
+              isPositive={true}
+            />
+          </div>
+        </div>
+        <div className="lg:col-span-1">
+          <CurrencyWidget />
+        </div>
       </div>
       
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
         {/* Market Overview */}
         <div className="lg:col-span-2">
-          <Card className="bg-white border border-gray-200">
+          <Card className="bg-white border border-gray-200 h-full">
             <CardContent className="p-6">
-              <h2 className="text-xl font-semibold mb-1">Visão Geral do Mercado</h2>
-              <h3 className="text-lg font-medium mb-3">Tendências Imobiliárias - Maio 2025</h3>
-              <p className="text-gray-700 mb-6">
-                O mercado imobiliário da Flórida continua resiliente com crescimento consistente. 
-                Confira os principais insights:
-              </p>
-              
-              <MarketInsightCard 
-                icon={TrendingUp} 
-                title="Orlando: Crescimento Sustentável"
-                iconBgColor="bg-blue-100"
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.7 }}
               >
-                <p className="text-sm text-gray-600">
-                  Valorização média de 4.2% nos últimos 6 meses, com Lake Nona e Winter Garden liderando. 
-                  Imóveis para temporada apresentam ocupação média de 80%.
+                <h2 className="text-xl font-semibold mb-1">Visão Geral do Mercado</h2>
+                <h3 className="text-lg font-medium mb-3">Tendências Imobiliárias - Maio 2025</h3>
+                <p className="text-gray-700 mb-6">
+                  O mercado imobiliário da Flórida continua resiliente com crescimento consistente. 
+                  Confira os principais insights:
                 </p>
-              </MarketInsightCard>
-              
-              <MarketInsightCard 
-                icon={Building} 
-                title="Miami: Mercado Premium"
-                iconBgColor="bg-green-100"
-              >
-                <p className="text-sm text-gray-600">
-                  Valorização de 5.8% no último semestre. Brickell e Miami Beach continuam atraindo compradores 
-                  internacionais. Aumento de 15% nas transações de luxo.
-                </p>
-              </MarketInsightCard>
-              
-              <MarketInsightCard 
-                icon={HomeIcon} 
-                title="Tipo de Imóvel Mais Rentável"
-                iconBgColor="bg-purple-100"
-              >
-                <p className="text-sm text-gray-600">
-                  Single Family Homes (3-4 quartos) em áreas suburbanas continuam oferecendo o melhor equilíbrio 
-                  entre valorização e rendimento de aluguel. ROI médio de 8-9%.
-                </p>
-              </MarketInsightCard>
+                
+                <MarketInsightCard 
+                  icon={TrendingUp} 
+                  title="Orlando: Crescimento Sustentável"
+                  iconBgColor="bg-blue-100"
+                >
+                  <p className="text-sm text-gray-600">
+                    Valorização média de 4.2% nos últimos 6 meses, com Lake Nona e Winter Garden liderando. 
+                    Imóveis para temporada apresentam ocupação média de 80%.
+                  </p>
+                </MarketInsightCard>
+                
+                <MarketInsightCard 
+                  icon={Building} 
+                  title="Miami: Mercado Premium"
+                  iconBgColor="bg-green-100"
+                >
+                  <p className="text-sm text-gray-600">
+                    Valorização de 5.8% no último semestre. Brickell e Miami Beach continuam atraindo compradores 
+                    internacionais. Aumento de 15% nas transações de luxo.
+                  </p>
+                </MarketInsightCard>
+                
+                <MarketInsightCard 
+                  icon={Home} 
+                  title="Tipo de Imóvel Mais Rentável"
+                  iconBgColor="bg-purple-100"
+                >
+                  <p className="text-sm text-gray-600">
+                    Single Family Homes (3-4 quartos) em áreas suburbanas continuam oferecendo o melhor equilíbrio 
+                    entre valorização e rendimento de aluguel. ROI médio de 8-9%.
+                  </p>
+                </MarketInsightCard>
+              </motion.div>
             </CardContent>
           </Card>
         </div>
@@ -267,6 +309,7 @@ const HomePage = () => {
             bedrooms={4} 
             bathrooms={3} 
             area={280}
+            index={0}
           />
           
           <PropertyCard 
@@ -277,6 +320,7 @@ const HomePage = () => {
             bedrooms={3} 
             bathrooms={2.5} 
             area={210}
+            index={1}
           />
           
           <PropertyCard 
@@ -287,6 +331,7 @@ const HomePage = () => {
             bedrooms={2} 
             bathrooms={2} 
             area={175}
+            index={2}
           />
         </div>
       </div>
