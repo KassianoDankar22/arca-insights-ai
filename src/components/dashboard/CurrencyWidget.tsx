@@ -1,8 +1,25 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { TrendingUp, TrendingDown, RefreshCw, Clock } from 'lucide-react';
 import axios from 'axios';
 import { motion } from 'framer-motion';
+
+interface CurrencyResponse {
+  USDBRL: {
+    code: string;
+    codein: string;
+    name: string;
+    high: string;
+    low: string;
+    varBid: string;
+    pctChange: string;
+    bid: string;
+    ask: string;
+    timestamp: string;
+    create_date: string;
+  }
+}
 
 const CurrencyWidget: React.FC = () => {
   const [dollarRate, setDollarRate] = useState<number | null>(null);
@@ -18,38 +35,41 @@ const CurrencyWidget: React.FC = () => {
   const fetchDollarRate = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.get('https://open.er-api.com/v6/latest/USD');
-      if (response.data && response.data.rates && response.data.rates.BRL) {
+      const response = await axios.get<CurrencyResponse>('https://economia.awesomeapi.com.br/json/last/USD-BRL');
+      
+      if (response.data && response.data.USDBRL) {
+        const data = response.data.USDBRL;
+        const newRate = parseFloat(data.bid);
+        
         // Save previous rate to determine if it's going up or down
         if (dollarRate !== null) {
           setPreviousRate(dollarRate);
           
-          // Calculate percent and absolute changes
-          const newRate = response.data.rates.BRL;
-          const percentDiff = ((newRate - dollarRate) / dollarRate) * 100;
-          setPercentChange(percentDiff);
+          // Get percent change directly from API
+          setPercentChange(parseFloat(data.pctChange));
+          
+          // Calculate absolute change
           setAbsoluteChange(newRate - dollarRate);
         }
         
-        setDollarRate(response.data.rates.BRL);
+        setDollarRate(newRate);
         
-        // For demo purposes, set simulated weekly high/low
-        // In a real app, you would fetch historical data
-        if (!weeklyHigh || response.data.rates.BRL > weeklyHigh) {
-          setWeeklyHigh(response.data.rates.BRL);
+        // Use high and low from API
+        const highValue = parseFloat(data.high);
+        const lowValue = parseFloat(data.low);
+        
+        // Update weekly high/low tracking
+        if (!weeklyHigh || highValue > weeklyHigh) {
+          setWeeklyHigh(highValue);
         }
         
-        if (!weeklyLow || response.data.rates.BRL < weeklyLow) {
-          setWeeklyLow(response.data.rates.BRL);
-        } else {
-          // For demo - simulate some variation if unchanged
-          if (!weeklyHigh) setWeeklyHigh(response.data.rates.BRL * 1.05);
-          if (!weeklyLow) setWeeklyLow(response.data.rates.BRL * 0.95);
+        if (!weeklyLow || lowValue < weeklyLow) {
+          setWeeklyLow(lowValue);
         }
         
         // Format current time for last update display
-        const now = new Date();
-        setLastUpdate(now.toLocaleTimeString());
+        const updateTime = new Date(data.create_date);
+        setLastUpdate(updateTime.toLocaleTimeString());
       }
     } catch (error) {
       console.error('Error fetching dollar rate:', error);
