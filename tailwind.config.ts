@@ -121,6 +121,10 @@ export default {
 					'0%': { backgroundPosition: '0% 50%' },
 					'50%': { backgroundPosition: '100% 50%' },
 					'100%': { backgroundPosition: '0% 50%' }
+				},
+				wave: {
+					'0%': { transform: 'translateX(0)' },
+					'100%': { transform: 'translateX(-50%)' }
 				}
 			},
 			animation: {
@@ -131,7 +135,8 @@ export default {
 				'star-movement-top': 'star-movement-top 6s ease-in-out infinite',
 				'star-movement-bottom': 'star-movement-bottom 6s ease-in-out infinite',
 				'gradient-x': 'gradient-x 3s ease infinite',
-				'rainbow': 'rainbow 5s ease infinite'
+				'rainbow': 'rainbow 5s ease infinite',
+				'wave': 'wave 15s linear infinite'
 			}
 		}
 	},

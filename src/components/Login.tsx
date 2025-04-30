@@ -2,9 +2,8 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { StarBorder } from '@/components/ui/star-border';
 import Logo from './Logo';
-import { BackgroundBeams } from '@/components/ui/background-beams';
+import { AnimatedWaves } from '@/components/ui/animated-waves';
 import { AnimatedBorderInput } from './AnimatedBorderInput';
 import { RainbowButton } from '@/components/ui/rainbow-button';
 
@@ -26,9 +25,9 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-black relative overflow-hidden">
-      {/* Background com efeitos de gradiente preto */}
-      <BackgroundBeams className="opacity-70" />
+    <div className="flex items-center justify-center min-h-screen relative overflow-hidden">
+      {/* Animated waves background */}
+      <AnimatedWaves />
       
       <div className="w-full max-w-md p-4 z-10">
         <div className="flex justify-center mb-10">
