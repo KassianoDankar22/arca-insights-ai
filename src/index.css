@@ -41,6 +41,16 @@
     --color-3: 213 62% 50%;
     --color-4: 227 62% 50%;
     --color-5: 240 62% 50%;
+
+    /* Aurora background variables */
+    --white: white;
+    --black: black;
+    --transparent: transparent;
+    --blue-300: #93c5fd;
+    --blue-400: #60a5fa;
+    --blue-500: #3b82f6;
+    --indigo-300: #a5b4fc;
+    --violet-200: #ddd6fe;
   }
 
   .dark {
@@ -78,6 +88,16 @@
     --color-3: 213 62% 50%;
     --color-4: 227 62% 50%;
     --color-5: 240 62% 50%;
+
+    /* Aurora background variables */
+    --white: white;
+    --black: black;
+    --transparent: transparent;
+    --blue-300: #93c5fd;
+    --blue-400: #60a5fa;
+    --blue-500: #3b82f6;
+    --indigo-300: #a5b4fc;
+    --violet-200: #ddd6fe;
   }
 }
 
