@@ -3,8 +3,9 @@ import React from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { HoverButton } from "@/components/ui/hover-button";
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Lock } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { BorderTrail } from '@/components/ui/border-trail';
 
 export interface AIAgentProps {
   id: string;
@@ -15,6 +16,7 @@ export interface AIAgentProps {
   isNew?: boolean;
   isSponsored?: boolean;
   isHighlight?: boolean;
+  isLocked?: boolean;
 }
 
 const AIAgentCard: React.FC<AIAgentProps> = ({
@@ -24,21 +26,29 @@ const AIAgentCard: React.FC<AIAgentProps> = ({
   route,
   isNew,
   isSponsored,
-  isHighlight
+  isHighlight,
+  isLocked
 }) => {
   return (
-    <Card className="overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1 h-full">
+    <Card className={`relative overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1 h-full ${isLocked ? 'bg-gray-800/90 text-gray-300 border-gray-700' : ''}`}>
+      <BorderTrail 
+        className={isLocked 
+          ? "bg-gradient-to-l from-purple-300 via-purple-500 to-purple-700" 
+          : "bg-gradient-to-l from-arca-light-blue via-arca-blue to-arca-dark-blue"
+        }
+        size={120}
+      />
       <CardHeader className="pb-3">
         <div className="flex justify-between items-start">
           <div className="w-12 h-12 rounded-lg overflow-hidden mb-2">
             <img
               src={icon}
               alt={`${name} icon`}
-              className="w-full h-full object-cover"
+              className={`w-full h-full object-cover ${isLocked ? 'opacity-60' : ''}`}
             />
           </div>
           
-          {isNew && (
+          {isNew && !isLocked && (
             <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200">
               <span className="flex items-center">
                 <svg width="12" height="12" viewBox="0 0 16 16" fill="none" className="mr-1">
@@ -49,7 +59,7 @@ const AIAgentCard: React.FC<AIAgentProps> = ({
             </Badge>
           )}
           
-          {isSponsored && (
+          {isSponsored && !isLocked && (
             <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
               <span className="flex items-center">
                 <svg width="12" height="12" viewBox="0 0 16 16" fill="none" className="mr-1">
@@ -60,7 +70,7 @@ const AIAgentCard: React.FC<AIAgentProps> = ({
             </Badge>
           )}
           
-          {isHighlight && (
+          {isHighlight && !isLocked && (
             <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200">
               <span className="flex items-center">
                 <svg width="12" height="12" viewBox="0 0 16 16" fill="none" className="mr-1">
@@ -70,21 +80,37 @@ const AIAgentCard: React.FC<AIAgentProps> = ({
               </span>
             </Badge>
           )}
+
+          {isLocked && (
+            <Badge variant="outline" className="bg-purple-100 text-purple-800 border-purple-300">
+              <span className="flex items-center">
+                <Lock size={12} className="mr-1" />
+                Premium
+              </span>
+            </Badge>
+          )}
         </div>
         
-        <CardTitle className="text-xl mt-2">{name}</CardTitle>
-        <CardDescription className="text-sm text-gray-600">
+        <CardTitle className={`text-xl mt-2 ${isLocked ? 'text-gray-300' : ''}`}>{name}</CardTitle>
+        <CardDescription className={`text-sm ${isLocked ? 'text-gray-400' : 'text-gray-600'}`}>
           {description}
         </CardDescription>
       </CardHeader>
       
       <CardContent className="pt-0">
-        <Link to={route} className="block mt-4">
-          <HoverButton className="w-full mt-2 flex items-center justify-center gap-2">
-            <span>Acessar</span>
-            <ArrowRight size={16} />
-          </HoverButton>
-        </Link>
+        {!isLocked ? (
+          <Link to={route} className="block mt-4">
+            <HoverButton className="w-full mt-2 flex items-center justify-center gap-2">
+              <span>Acessar</span>
+              <ArrowRight size={16} />
+            </HoverButton>
+          </Link>
+        ) : (
+          <button className="w-full mt-4 py-2 rounded-md bg-orange-500 hover:bg-orange-600 transition-colors text-white flex items-center justify-center gap-2">
+            <span>Desbloquear</span>
+            <Lock size={16} />
+          </button>
+        )}
       </CardContent>
     </Card>
   );
