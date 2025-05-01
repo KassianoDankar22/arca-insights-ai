@@ -106,7 +106,9 @@ const RoiCalculator: React.FC = () => {
     <div className="p-4 max-w-5xl mx-auto">
       <h2 className="text-3xl font-bold mb-6 flex items-center justify-center text-center">
         <Calculator className="mr-2" />
-        Calculadora de ROI
+        <span className="bg-gradient-to-r from-arca-dark-blue to-arca-light-blue bg-clip-text text-transparent">
+          Calculadora de ROI
+        </span>
       </h2>
       
       <Form {...form}>

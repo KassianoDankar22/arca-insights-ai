@@ -65,7 +65,6 @@ const PropertyInfoForm: React.FC<PropertyInfoFormProps> = ({
                     <SelectContent>
                       <SelectItem value="casa_ferias">Casa de Férias</SelectItem>
                       <SelectItem value="residencial">Residencial</SelectItem>
-                      <SelectItem value="comercial">Comercial</SelectItem>
                     </SelectContent>
                   </Select>
                 </FormItem>
@@ -77,7 +76,7 @@ const PropertyInfoForm: React.FC<PropertyInfoFormProps> = ({
               name="projectName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Nome do Condomínio/Projeto</FormLabel>
+                  <FormLabel>Nome do Condomínio</FormLabel>
                   <FormControl>
                     <Input {...field} placeholder="Ex: Windsor at Westside" />
                   </FormControl>
@@ -131,11 +130,12 @@ const PropertyInfoForm: React.FC<PropertyInfoFormProps> = ({
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {[1, 2, 3, 4, 5, 6, 7, 8].map(num => (
+                  {Array.from({ length: 15 }, (_, i) => i + 1).map(num => (
                     <SelectItem key={num} value={num.toString()}>
                       {num}
                     </SelectItem>
                   ))}
+                  <SelectItem value="15+">15+</SelectItem>
                 </SelectContent>
               </Select>
             </FormItem>

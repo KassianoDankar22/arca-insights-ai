@@ -11,13 +11,13 @@ interface LogoUploaderProps {
 
 const LogoUploader: React.FC<LogoUploaderProps> = ({ logoPreview, onLogoChange, onRemoveLogo }) => {
   return (
-    <div className="md:col-span-1 flex flex-col justify-center items-center p-4 border-2 border-dashed rounded-lg bg-gray-50 hover:bg-gray-100 transition cursor-pointer relative">
+    <div className="md:col-span-1 flex flex-col justify-center items-center p-3 border-2 border-dashed rounded-lg bg-gray-50 hover:bg-gray-100 transition cursor-pointer relative">
       {logoPreview ? (
         <div className="mb-2 relative">
           <img 
             src={logoPreview} 
             alt="Logo Preview" 
-            className="max-h-24 max-w-full object-contain" 
+            className="max-h-20 max-w-full object-contain" 
           />
           <Button 
             type="button"
@@ -30,7 +30,7 @@ const LogoUploader: React.FC<LogoUploaderProps> = ({ logoPreview, onLogoChange, 
           </Button>
         </div>
       ) : (
-        <Upload className="h-10 w-10 text-gray-400 mb-2" />
+        <Upload className="h-8 w-8 text-gray-400 mb-1" />
       )}
       
       <label className="flex flex-col items-center cursor-pointer">
