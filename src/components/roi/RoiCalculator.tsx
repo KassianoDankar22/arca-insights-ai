@@ -1,14 +1,16 @@
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import RoiCalculatorForm from './RoiCalculatorForm';
 import CalculationResult from './CalculationResult';
+import { jsPDF } from 'jspdf';
 import type { FormValues } from './types';
 
 const RoiCalculator: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [showResults, setShowResults] = useState(false);
+  const reportRef = useRef<HTMLDivElement>(null);
   
   const form = useForm<FormValues>({
     defaultValues: {
@@ -57,6 +59,49 @@ const RoiCalculator: React.FC = () => {
   const handlePrevStep = () => {
     setCurrentStep((prev) => Math.max(prev - 1, 1));
   };
+  
+  const exportToPdf = () => {
+    if (reportRef.current) {
+      const doc = new jsPDF('p', 'pt', 'a4');
+      doc.html(reportRef.current, {
+        callback: function(pdf) {
+          pdf.save('roi-analysis.pdf');
+        }
+      });
+    }
+  };
+
+  // Calculate ROI values from form data
+  const calculateResults = () => {
+    const formData = form.getValues();
+    const purchasePrice = parseFloat(formData.purchasePrice) || 0;
+    const aluguelMensal = parseFloat(formData.aluguelMensal) || 0;
+    const despesasMensais = parseFloat(formData.despesasMensais) || 0;
+
+    const receitaAnual = aluguelMensal * 12;
+    const despesaAnual = despesasMensais * 12;
+    const lucroAnual = receitaAnual - despesaAnual;
+
+    // Calculate ROI
+    const roiAnual = purchasePrice > 0 ? ((lucroAnual / purchasePrice) * 100).toFixed(2) : '0.00';
+    const retornoEmAnos = purchasePrice > 0 && lucroAnual > 0 ? (purchasePrice / lucroAnual).toFixed(1) : 'N/A';
+
+    // Data for pie chart
+    const pieData = [
+      { name: 'Despesas', value: despesaAnual },
+      { name: 'Lucro', value: lucroAnual }
+    ];
+
+    return {
+      roiAnual,
+      retornoEmAnos,
+      receitaAnual,
+      despesaAnual,
+      lucroAnual,
+      pieData,
+      formData,
+    };
+  };
 
   return (
     <FormProvider {...form}>
@@ -73,13 +118,10 @@ const RoiCalculator: React.FC = () => {
           />
         ) : (
           <CalculationResult
-            formData={form.getValues()}
-            onNewCalculation={() => {
-              setShowResults(false);
-              setCurrentStep(1);
-              form.reset();
-              setLogoPreview(null);
-            }}
+            calculationResult={calculateResults()}
+            logoPreview={logoPreview}
+            exportToPdf={exportToPdf}
+            reportRef={reportRef}
           />
         )}
       </div>
