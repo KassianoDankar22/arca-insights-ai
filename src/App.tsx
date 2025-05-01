@@ -5,7 +5,7 @@ import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { useSession, useSupabaseClient } from '@supabase/auth-helpers-react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 
-// Import the Toaster from sonner instead of the shadcn Toaster
+// Import the Toaster from sonner
 import { Toaster } from 'sonner';
 
 // Import pages

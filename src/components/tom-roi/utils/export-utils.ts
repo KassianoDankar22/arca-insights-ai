@@ -1,7 +1,7 @@
 
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
-import { toast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 
 export const exportToPDF = async (elementRef: React.RefObject<HTMLDivElement>, fileName: string) => {
   if (!elementRef.current) return;
@@ -39,16 +39,13 @@ export const exportToPDF = async (elementRef: React.RefObject<HTMLDivElement>, f
     
     pdf.save(fileName);
     
-    toast({
-      title: 'PDF exportado',
-      description: 'Sua análise foi exportada com sucesso.',
+    toast.success('PDF exportado', {
+      description: 'Sua análise foi exportada com sucesso.'
     });
   } catch (error) {
     console.error('Error exporting to PDF:', error);
-    toast({
-      title: 'Erro ao exportar',
-      description: 'Não foi possível exportar a análise para PDF.',
-      variant: 'destructive',
+    toast.error('Erro ao exportar', {
+      description: 'Não foi possível exportar a análise para PDF.'
     });
   }
 };
@@ -69,16 +66,13 @@ export const exportToJPEG = async (elementRef: React.RefObject<HTMLDivElement>, 
     link.href = canvas.toDataURL('image/jpeg', 0.9);
     link.click();
     
-    toast({
-      title: 'Imagem exportada',
-      description: 'Sua análise foi exportada como imagem com sucesso.',
+    toast.success('Imagem exportada', {
+      description: 'Sua análise foi exportada como imagem com sucesso.'
     });
   } catch (error) {
     console.error('Error exporting to JPEG:', error);
-    toast({
-      title: 'Erro ao exportar',
-      description: 'Não foi possível exportar a análise como imagem.',
-      variant: 'destructive',
+    toast.error('Erro ao exportar', {
+      description: 'Não foi possível exportar a análise como imagem.'
     });
   }
 };
