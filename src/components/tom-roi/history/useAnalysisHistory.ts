@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
-import { toast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 
 export interface RoiAnalise {
   id: string;
@@ -38,10 +38,8 @@ export const useAnalysisHistory = () => {
       setAnalyses(data || []);
     } catch (error) {
       console.error('Error fetching ROI analyses:', error);
-      toast({
-        title: 'Erro',
-        description: 'Não foi possível carregar as análises de ROI.',
-        variant: 'destructive',
+      toast.error('Erro', {
+        description: 'Não foi possível carregar as análises de ROI.'
       });
     } finally {
       setLoading(false);
@@ -67,16 +65,13 @@ export const useAnalysisHistory = () => {
       }
 
       setAnalyses(analyses.filter(analysis => analysis.id !== deleteId));
-      toast({
-        title: 'Análise excluída',
-        description: 'A análise de ROI foi excluída com sucesso.',
+      toast.success('Análise excluída', {
+        description: 'A análise de ROI foi excluída com sucesso.'
       });
     } catch (error) {
       console.error('Error deleting ROI analysis:', error);
-      toast({
-        title: 'Erro',
-        description: 'Não foi possível excluir a análise de ROI.',
-        variant: 'destructive',
+      toast.error('Erro', {
+        description: 'Não foi possível excluir a análise de ROI.'
       });
     } finally {
       setDeleteDialogOpen(false);

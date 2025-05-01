@@ -1,10 +1,11 @@
 
 import { useState, useCallback } from 'react';
-import { Toaster as Sonner, toast } from "sonner";
+import { toast } from "sonner";
 
 type ToastVariant = 'default' | 'destructive' | 'success' | 'warning';
 
 export type ToastProps = {
+  id?: string;
   title?: string;
   description?: string;
   variant?: ToastVariant;
@@ -44,7 +45,9 @@ export function useToast() {
       });
     }
     
-    setToasts(prev => [...prev, props]);
+    // Generate a unique ID if not provided
+    const id = props.id || `toast-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+    setToasts(prev => [...prev, { ...props, id }]);
   }, []);
 
   return {

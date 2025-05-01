@@ -1,7 +1,7 @@
 
 import { useState, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { toast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 import { FormValues } from '../types/analyzer-types';
 
 export const useTomAssistant = () => {
@@ -200,10 +200,8 @@ ${data.entrada_valor ? `Entrada: $${data.entrada_valor}` : ''}${data.entrada_per
             if (saveError) {
               console.error('Error saving analysis to database:', saveError);
               // Continue despite save error
-              toast({
-                title: 'Aviso',
-                description: 'A análise foi concluída, mas não foi possível salvá-la. Você ainda pode exportá-la.',
-                variant: 'warning',
+              toast.warning('Aviso', {
+                description: 'A análise foi concluída, mas não foi possível salvá-la. Você ainda pode exportá-la.'
               });
             } else {
               console.log('Analysis saved successfully to database');
@@ -234,10 +232,8 @@ ${data.entrada_valor ? `Entrada: $${data.entrada_valor}` : ''}${data.entrada_per
     } catch (error) {
       console.error('Error in ROI analysis:', error);
       
-      toast({
-        title: 'Erro na análise',
-        description: error instanceof Error ? error.message : 'Ocorreu um erro ao processar sua análise',
-        variant: 'destructive',
+      toast.error('Erro na análise', {
+        description: error instanceof Error ? error.message : 'Ocorreu um erro ao processar sua análise'
       });
       
       setProgress({ stage: null, percentage: 0 });

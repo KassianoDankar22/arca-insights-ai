@@ -1,9 +1,8 @@
-
 import React, { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { supabase } from '@/integrations/supabase/client';
-import { toast } from '@/components/ui/use-toast';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { ArrowLeft, FileText, FileImage } from 'lucide-react';
@@ -57,10 +56,8 @@ const TomROIDetailPage: React.FC = () => {
       setAnalysis(data);
     } catch (error) {
       console.error('Error fetching ROI analysis:', error);
-      toast({
-        title: 'Erro',
-        description: 'Não foi possível carregar a análise de ROI.',
-        variant: 'destructive',
+      toast.error('Erro', {
+        description: 'Não foi possível carregar a análise de ROI.'
       });
       navigate('/meus-rois');
     } finally {
@@ -117,16 +114,13 @@ const TomROIDetailPage: React.FC = () => {
       
       pdf.save(`ROI_Analise_${analysis?.condominio.replace(/\s+/g, '_')}.pdf`);
       
-      toast({
-        title: 'PDF exportado',
-        description: 'Sua análise foi exportada com sucesso.',
+      toast.success('PDF exportado', {
+        description: 'Sua análise foi exportada com sucesso.'
       });
     } catch (error) {
       console.error('Error exporting to PDF:', error);
-      toast({
-        title: 'Erro ao exportar',
-        description: 'Não foi possível exportar a análise para PDF.',
-        variant: 'destructive',
+      toast.error('Erro ao exportar', {
+        description: 'Não foi possível exportar a análise para PDF.'
       });
     }
   };
@@ -148,16 +142,13 @@ const TomROIDetailPage: React.FC = () => {
       link.href = canvas.toDataURL('image/jpeg', 0.9);
       link.click();
       
-      toast({
-        title: 'Imagem exportada',
-        description: 'Sua análise foi exportada como imagem com sucesso.',
+      toast.success('Imagem exportada', {
+        description: 'Sua análise foi exportada como imagem com sucesso.'
       });
     } catch (error) {
       console.error('Error exporting to JPEG:', error);
-      toast({
-        title: 'Erro ao exportar',
-        description: 'Não foi possível exportar a análise como imagem.',
-        variant: 'destructive',
+      toast.error('Erro ao exportar', {
+        description: 'Não foi possível exportar a análise como imagem.'
       });
     }
   };
