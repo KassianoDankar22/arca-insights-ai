@@ -1,12 +1,8 @@
 
 import React from 'react';
-import { Auth } from '@supabase/auth-ui-react';
-import { ThemeSupa } from '@supabase/auth-ui-shared';
-import { useSession, useSupabaseClient } from '@supabase/auth-helpers-react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-
-// Import the Toaster from sonner
 import { Toaster } from 'sonner';
+import { AuthProvider } from './context/AuthContext';
 
 // Import pages
 import Dashboard from './pages/Dashboard';
@@ -16,6 +12,8 @@ import TomROIPage from './pages/TomROIPage';
 import TomROIHistoryPage from './pages/TomROIHistoryPage';
 import TomROIDetailPage from './pages/TomROIDetailPage';
 import RoiCalculator from './components/roi/RoiCalculator';
+import AuthPage from './pages/AuthPage';
+import ProtectedRoute from './components/ProtectedRoute';
 
 // This Navbar component is causing an issue, we need to check if it exists
 // If not, we can create a simple placeholder
@@ -35,44 +33,27 @@ const Navbar = () => (
 );
 
 function App() {
-  const session = useSession();
-  const supabase = useSupabaseClient();
-  
   return (
-    <>
+    <AuthProvider>
       <Toaster position="top-right" richColors closeButton />
       <Router>
         <div className="min-h-screen bg-gray-100">
           <Navbar />
           <main className="container mx-auto px-4 py-6">
             <Routes>
-              <Route path="/" element={session ? <Dashboard /> : <Navigate to="/login" />} />
+              <Route path="/login" element={<AuthPage />} />
+              <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
               <Route path="/pricing" element={<PricingPage />} />
-              <Route path="/analise/curto-prazo" element={<RoiShortTermPage />} />
-              <Route path="/analise/tom" element={<TomROIPage />} />
-              <Route path="/analise/tom/:id" element={<TomROIDetailPage />} />
-              <Route path="/meus-rois" element={<TomROIHistoryPage />} />
-              <Route path="/calculadora-roi" element={<RoiCalculator />} />
-              <Route
-                path="/login"
-                element={
-                  !session ? (
-                    <Auth
-                      supabaseClient={supabase}
-                      appearance={{ theme: ThemeSupa }}
-                      providers={['google', 'github']}
-                      redirectTo={`${window.location.origin}/`}
-                    />
-                  ) : (
-                    <Navigate to="/" />
-                  )
-                }
-              />
+              <Route path="/analise/curto-prazo" element={<ProtectedRoute><RoiShortTermPage /></ProtectedRoute>} />
+              <Route path="/analise/tom" element={<ProtectedRoute><TomROIPage /></ProtectedRoute>} />
+              <Route path="/analise/tom/:id" element={<ProtectedRoute><TomROIDetailPage /></ProtectedRoute>} />
+              <Route path="/meus-rois" element={<ProtectedRoute><TomROIHistoryPage /></ProtectedRoute>} />
+              <Route path="/calculadora-roi" element={<ProtectedRoute><RoiCalculator /></ProtectedRoute>} />
             </Routes>
           </main>
         </div>
       </Router>
-    </>
+    </AuthProvider>
   );
 }
 

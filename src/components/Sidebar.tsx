@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Logo from './Logo';
@@ -5,6 +6,7 @@ import { Home, Settings, LogOut, MessageSquare, BookOpen, Wrench, GraduationCap,
 import { cn } from '@/lib/utils';
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useAuth } from '@/context/AuthContext';
 
 interface SidebarProps {
   className?: string;
@@ -14,6 +16,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const isMobile = useIsMobile();
+  const { signOut, user } = useAuth();
   
   const navItems = [
     { icon: Home, label: 'Home', path: '/' },
@@ -25,13 +28,13 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
     { icon: Settings, label: 'Integrações', path: '/integracoes' },
   ];
 
-  const handleLogout = () => {
-    // In a real application with Supabase, you would call supabase.auth.signOut() here
-    // For this application, we'll just redirect to the login page
-    navigate('/');
-    // Setting isAuthenticated to false in App component
-    window.location.reload();
+  const handleLogout = async () => {
+    await signOut();
+    navigate('/login');
   };
+
+  const displayName = user?.email?.split('@')[0] || 'Usuário';
+  const initials = (user?.email?.charAt(0) || 'U').toUpperCase();
 
   const sidebarWidth = isMobile ? "w-[250px]" : "w-64";
 
@@ -43,11 +46,11 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
       
       <div className="flex items-center p-4 border-b border-gray-200 mb-4">
         <Avatar className="h-10 w-10 mr-3">
-          <AvatarImage src="/lovable-uploads/695ed016-2dd6-49b3-97f0-bdbdabc3e04d.png" alt="Juliana Lengler" />
-          <AvatarFallback>JL</AvatarFallback>
+          <AvatarImage src="/lovable-uploads/695ed016-2dd6-49b3-97f0-bdbdabc3e04d.png" alt={displayName} />
+          <AvatarFallback>{initials}</AvatarFallback>
         </Avatar>
         <div>
-          <p className="text-sm font-medium text-gray-900">Juliana Lengler</p>
+          <p className="text-sm font-medium text-gray-900">{displayName}</p>
           <p className="text-xs text-gray-500">Conta Gratuita</p>
         </div>
       </div>
