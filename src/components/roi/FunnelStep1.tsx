@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { UseFormReturn } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { FormField, FormItem, FormLabel, FormControl } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
@@ -9,11 +9,11 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import type { FormValues } from './types';
 
 interface FunnelStep1Props {
-  form: UseFormReturn<FormValues>;
   onSubmit: () => void;
 }
 
-const FunnelStep1: React.FC<FunnelStep1Props> = ({ form, onSubmit }) => {
+const FunnelStep1: React.FC<FunnelStep1Props> = ({ onSubmit }) => {
+  const { control } = useFormContext<FormValues>();
   const isMobile = useIsMobile();
   
   return (
@@ -27,10 +27,10 @@ const FunnelStep1: React.FC<FunnelStep1Props> = ({ form, onSubmit }) => {
         </p>
       </div>
 
-      <form onSubmit={onSubmit} className="space-y-5">
+      <form onSubmit={(e) => { e.preventDefault(); onSubmit(); }} className="space-y-5">
         <div className="space-y-4">
           <FormField
-            control={form.control}
+            control={control}
             name="name"
             render={({ field }) => (
               <FormItem>
@@ -43,7 +43,7 @@ const FunnelStep1: React.FC<FunnelStep1Props> = ({ form, onSubmit }) => {
           />
           
           <FormField
-            control={form.control}
+            control={control}
             name="email"
             render={({ field }) => (
               <FormItem>
@@ -56,7 +56,7 @@ const FunnelStep1: React.FC<FunnelStep1Props> = ({ form, onSubmit }) => {
           />
           
           <FormField
-            control={form.control}
+            control={control}
             name="phone"
             render={({ field }) => (
               <FormItem>

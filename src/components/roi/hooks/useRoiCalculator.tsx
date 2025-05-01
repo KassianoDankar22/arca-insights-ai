@@ -74,13 +74,14 @@ export const useRoiCalculator = (form: UseFormReturn<FormValues>) => {
     setCurrentStep(prev => Math.max(prev - 1, 1));
   };
 
-  const handleSubmit = form.handleSubmit((data) => {
+  const handleSubmit = () => {
     if (currentStep < 3) {
       nextStep();
     } else {
+      const data = form.getValues();
       calculateRoi(data);
     }
-  });
+  };
 
   const exportToPdf = async () => {
     if (reportRef.current && calculationResult) {

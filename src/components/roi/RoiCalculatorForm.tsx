@@ -50,7 +50,6 @@ const RoiCalculatorForm: React.FC<RoiCalculatorFormProps> = ({
                 transition={{ duration: 0.3 }}
               >
                 <FunnelStep1 
-                  form={form} 
                   onSubmit={handleSubmit}
                 />
               </motion.div>
@@ -65,7 +64,6 @@ const RoiCalculatorForm: React.FC<RoiCalculatorFormProps> = ({
                 transition={{ duration: 0.3 }}
               >
                 <FunnelStep2 
-                  form={form}
                   onSubmit={handleSubmit}
                   onBack={onPrevStep}
                 />
@@ -81,7 +79,6 @@ const RoiCalculatorForm: React.FC<RoiCalculatorFormProps> = ({
                 transition={{ duration: 0.3 }}
               >
                 <FunnelStep3 
-                  form={form}
                   logoPreview={logoPreview}
                   handleLogoChange={handleLogoChange}
                   handleRemoveLogo={handleRemoveLogo}

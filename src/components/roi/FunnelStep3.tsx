@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { UseFormReturn } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { FormField, FormItem, FormLabel, FormControl } from '@/components/ui/form';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -11,7 +11,6 @@ import LogoUploader from './LogoUploader';
 import type { FormValues } from './types';
 
 interface FunnelStep3Props {
-  form: UseFormReturn<FormValues>;
   logoPreview: string | null;
   handleLogoChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleRemoveLogo: () => void;
@@ -20,13 +19,13 @@ interface FunnelStep3Props {
 }
 
 const FunnelStep3: React.FC<FunnelStep3Props> = ({ 
-  form, 
   logoPreview,
   handleLogoChange,
   handleRemoveLogo,
   onSubmit, 
   onBack 
 }) => {
+  const { control, handleSubmit } = useFormContext<FormValues>();
   const isMobile = useIsMobile();
   
   return (
@@ -40,10 +39,10 @@ const FunnelStep3: React.FC<FunnelStep3Props> = ({
         </p>
       </div>
 
-      <form onSubmit={onSubmit} className="space-y-5">
+      <form onSubmit={handleSubmit(() => onSubmit())} className="space-y-5">
         <div className={`grid ${isMobile ? 'grid-cols-1 gap-3' : 'grid-cols-1 md:grid-cols-2 gap-4'}`}>
           <FormField
-            control={form.control}
+            control={control}
             name="bedrooms"
             render={({ field }) => (
               <FormItem>
@@ -71,7 +70,7 @@ const FunnelStep3: React.FC<FunnelStep3Props> = ({
           />
           
           <FormField
-            control={form.control}
+            control={control}
             name="hasPool"
             render={({ field }) => (
               <FormItem>
@@ -95,7 +94,7 @@ const FunnelStep3: React.FC<FunnelStep3Props> = ({
           />
           
           <FormField
-            control={form.control}
+            control={control}
             name="purchasePrice"
             render={({ field }) => (
               <FormItem>

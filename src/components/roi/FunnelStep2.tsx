@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { UseFormReturn } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -10,12 +10,12 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import type { FormValues } from './types';
 
 interface FunnelStep2Props {
-  form: UseFormReturn<FormValues>;
   onSubmit: () => void;
   onBack: () => void;
 }
 
-const FunnelStep2: React.FC<FunnelStep2Props> = ({ form, onSubmit, onBack }) => {
+const FunnelStep2: React.FC<FunnelStep2Props> = ({ onSubmit, onBack }) => {
+  const { control, handleSubmit } = useFormContext<FormValues>();
   const isMobile = useIsMobile();
   
   return (
@@ -29,10 +29,10 @@ const FunnelStep2: React.FC<FunnelStep2Props> = ({ form, onSubmit, onBack }) => 
         </p>
       </div>
 
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+      <form onSubmit={handleSubmit(() => onSubmit())} className="space-y-5">
         <div className="grid grid-cols-1 gap-4">
           <FormField
-            control={form.control}
+            control={control}
             name="investmentType"
             render={({ field }) => (
               <FormItem>
@@ -57,7 +57,7 @@ const FunnelStep2: React.FC<FunnelStep2Props> = ({ form, onSubmit, onBack }) => 
           />
           
           <FormField
-            control={form.control}
+            control={control}
             name="projectName"
             render={({ field }) => (
               <FormItem>
@@ -71,7 +71,7 @@ const FunnelStep2: React.FC<FunnelStep2Props> = ({ form, onSubmit, onBack }) => 
           />
           
           <FormField
-            control={form.control}
+            control={control}
             name="location"
             render={({ field }) => (
               <FormItem>
@@ -85,7 +85,7 @@ const FunnelStep2: React.FC<FunnelStep2Props> = ({ form, onSubmit, onBack }) => 
           />
 
           <FormField
-            control={form.control}
+            control={control}
             name="modelType"
             render={({ field }) => (
               <FormItem>

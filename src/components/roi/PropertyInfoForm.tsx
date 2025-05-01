@@ -1,28 +1,15 @@
 
 import React from 'react';
+import { useFormContext } from 'react-hook-form';
 import { FormField, FormItem, FormLabel, FormControl } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { UseFormReturn } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { Calculator } from 'lucide-react';
 import LogoUploader from './LogoUploader';
-
-export type FormValues = {
-  investmentType: string;
-  projectName: string;
-  location: string;
-  modelType: string;
-  bedrooms: string;
-  hasPool: string;
-  purchasePrice: string;
-  aluguelMensal: string; // Keeping in type but not showing in UI
-  despesasMensais: string; // Keeping in type but not showing in UI
-  logoImage: File | null;
-};
+import type { FormValues } from './types';
 
 interface PropertyInfoFormProps {
-  form: UseFormReturn<FormValues>;
   logoPreview: string | null;
   handleLogoChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleRemoveLogo: () => void;
@@ -30,12 +17,13 @@ interface PropertyInfoFormProps {
 }
 
 const PropertyInfoForm: React.FC<PropertyInfoFormProps> = ({ 
-  form, 
   logoPreview, 
   handleLogoChange, 
   handleRemoveLogo,
   onSubmit 
 }) => {
+  const { control } = useFormContext<FormValues>();
+  
   return (
     <div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
@@ -48,7 +36,7 @@ const PropertyInfoForm: React.FC<PropertyInfoFormProps> = ({
         <div className="md:col-span-2 space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <FormField
-              control={form.control}
+              control={control}
               name="investmentType"
               render={({ field }) => (
                 <FormItem>
@@ -72,7 +60,7 @@ const PropertyInfoForm: React.FC<PropertyInfoFormProps> = ({
             />
             
             <FormField
-              control={form.control}
+              control={control}
               name="projectName"
               render={({ field }) => (
                 <FormItem>
@@ -89,7 +77,7 @@ const PropertyInfoForm: React.FC<PropertyInfoFormProps> = ({
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <FormField
-          control={form.control}
+          control={control}
           name="location"
           render={({ field }) => (
             <FormItem>
@@ -102,7 +90,7 @@ const PropertyInfoForm: React.FC<PropertyInfoFormProps> = ({
         />
 
         <FormField
-          control={form.control}
+          control={control}
           name="modelType"
           render={({ field }) => (
             <FormItem>
@@ -115,7 +103,7 @@ const PropertyInfoForm: React.FC<PropertyInfoFormProps> = ({
         />
         
         <FormField
-          control={form.control}
+          control={control}
           name="bedrooms"
           render={({ field }) => (
             <FormItem>
@@ -143,7 +131,7 @@ const PropertyInfoForm: React.FC<PropertyInfoFormProps> = ({
         />
 
         <FormField
-          control={form.control}
+          control={control}
           name="hasPool"
           render={({ field }) => (
             <FormItem>
@@ -167,7 +155,7 @@ const PropertyInfoForm: React.FC<PropertyInfoFormProps> = ({
         />
 
         <FormField
-          control={form.control}
+          control={control}
           name="purchasePrice"
           render={({ field }) => (
             <FormItem>
@@ -185,7 +173,7 @@ const PropertyInfoForm: React.FC<PropertyInfoFormProps> = ({
       </div>
 
       <Button 
-        type="submit"
+        type="button"
         onClick={onSubmit}
         className="mt-6 bg-arca-purple hover:bg-arca-dark-purple mx-auto px-6 py-2 flex items-center justify-center"
       >

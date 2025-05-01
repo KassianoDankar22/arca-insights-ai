@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, FormProvider } from 'react-hook-form';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 import { useRoiCalculator } from './hooks/useRoiCalculator';
@@ -12,7 +12,7 @@ import type { FormValues } from './types';
 const RoiCalculator: React.FC = () => {
   const isMobile = useIsMobile();
   
-  const form = useForm<FormValues>({
+  const methods = useForm<FormValues>({
     defaultValues: {
       investmentType: '',
       projectName: '',
@@ -40,30 +40,32 @@ const RoiCalculator: React.FC = () => {
     handleSubmit,
     prevStep,
     exportToPdf
-  } = useRoiCalculator(form);
+  } = useRoiCalculator(methods);
 
   return (
     <div className={`p-4 max-w-3xl mx-auto min-h-[calc(100vh-80px)] flex flex-col ${isMobile ? 'pt-16 px-3' : ''}`}>
       <RoiCalculatorHeader />
       
-      {!calculationResult ? (
-        <RoiCalculatorForm
-          form={form}
-          currentStep={currentStep}
-          logoPreview={logoPreview}
-          handleLogoChange={handleLogoChange}
-          handleRemoveLogo={handleRemoveLogo}
-          handleSubmit={handleSubmit}
-          onPrevStep={prevStep}
-        />
-      ) : (
-        <CalculationResult 
-          calculationResult={calculationResult} 
-          logoPreview={logoPreview}
-          exportToPdf={exportToPdf}
-          reportRef={reportRef}
-        />
-      )}
+      <FormProvider {...methods}>
+        {!calculationResult ? (
+          <RoiCalculatorForm
+            form={methods}
+            currentStep={currentStep}
+            logoPreview={logoPreview}
+            handleLogoChange={handleLogoChange}
+            handleRemoveLogo={handleRemoveLogo}
+            handleSubmit={handleSubmit}
+            onPrevStep={prevStep}
+          />
+        ) : (
+          <CalculationResult 
+            calculationResult={calculationResult} 
+            logoPreview={logoPreview}
+            exportToPdf={exportToPdf}
+            reportRef={reportRef}
+          />
+        )}
+      </FormProvider>
     </div>
   );
 };
