@@ -4,9 +4,11 @@ import { useForm, FormProvider } from 'react-hook-form';
 import { useIsMobile } from '@/hooks/use-mobile';
 import TomROIForm from './TomROIForm';
 import TomROIResults from './TomROIResults';
+import AnalysisLoading from './results/AnalysisLoading';
 import { FormValues } from './types/analyzer-types';
-import { useROIAnalysis } from './hooks/useROIAnalysis';
+import { useTomAssistant } from './hooks/useTomAssistant';
 import { exportToPDF, exportToJPEG } from './utils/export-utils';
+import { useNavigate } from 'react-router-dom';
 
 interface TomROIAnalyzerProps {
   showBackButton?: boolean;
@@ -21,7 +23,8 @@ const TomROIAnalyzer: React.FC<TomROIAnalyzerProps> = ({
 }) => {
   const isMobile = useIsMobile();
   const resultRef = useRef<HTMLDivElement>(null);
-  const { isLoading, result, analyzeROI, resetAnalysis, viewHistory } = useROIAnalysis();
+  const navigate = useNavigate();
+  const { isLoading, result, progress, analyzeROI, resetAnalysis } = useTomAssistant();
   
   const methods = useForm<FormValues>({
     defaultValues: {
@@ -65,14 +68,24 @@ const TomROIAnalyzer: React.FC<TomROIAnalyzerProps> = ({
       await exportToJPEG(resultRef, fileName);
     }
   };
+  
+  // Function to view history
+  const handleViewHistory = () => {
+    navigate('/meus-rois');
+  };
 
   return (
     <div className={`p-4 max-w-6xl mx-auto min-h-[calc(100vh-80px)] ${isMobile ? 'pt-16 px-3' : 'py-8'}`}>
       <FormProvider {...methods}>
-        {!result ? (
+        {!result && !isLoading ? (
           <TomROIForm 
             onSubmit={handleSubmit} 
             isLoading={isLoading} 
+          />
+        ) : isLoading ? (
+          <AnalysisLoading 
+            stage={progress.stage} 
+            percentage={progress.percentage} 
           />
         ) : (
           <TomROIResults 
@@ -81,7 +94,7 @@ const TomROIAnalyzer: React.FC<TomROIAnalyzerProps> = ({
             onReset={handleReset}
             onExportPDF={handleExportPDF}
             onExportJPEG={handleExportJPEG}
-            onViewHistory={viewHistory}
+            onViewHistory={handleViewHistory}
             resultRef={resultRef}
             showBackButton={showBackButton}
             backPath={backPath}
