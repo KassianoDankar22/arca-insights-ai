@@ -1,6 +1,6 @@
 
 import React from 'react';
-import RoiCalculator from '@/components/RoiCalculator';
+import TomRoiAnalyzer from '@/components/tom-roi/TomRoiAnalyzer';
 import { motion } from 'framer-motion';
 
 const RoiShortTermPage = () => {
@@ -10,7 +10,7 @@ const RoiShortTermPage = () => {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
-      <RoiCalculator />
+      <TomRoiAnalyzer />
     </motion.div>
   );
 };
