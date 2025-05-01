@@ -5,6 +5,7 @@ import Logo from './Logo';
 import { Home, Settings, LogOut, MessageSquare, BookOpen, Wrench, GraduationCap, DollarSign } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface SidebarProps {
   className?: string;
@@ -13,6 +14,7 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ className }) => {
   const location = useLocation();
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
   
   const navItems = [
     { icon: Home, label: 'Home', path: '/' },
@@ -31,8 +33,10 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
     window.location.reload();
   };
 
+  const sidebarWidth = isMobile ? "w-[250px]" : "w-64";
+
   return (
-    <div className={cn("flex flex-col h-full bg-white border-r border-gray-200 w-64 py-6 px-3", className)}>
+    <div className={cn(`flex flex-col h-full bg-white border-r border-gray-200 ${sidebarWidth} py-6 px-3`, className)}>
       <div className="px-3 mb-8">
         <Logo />
       </div>

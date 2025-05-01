@@ -14,7 +14,7 @@ const StepProgress: React.FC<StepProgressProps> = ({ currentStep, totalSteps }) 
     <div className="w-full">
       <div className="flex justify-between items-center mb-2">
         {Array.from({ length: totalSteps }).map((_, index) => (
-          <div key={index} className="flex flex-col items-center">
+          <div key={index} className="flex flex-col items-center relative">
             <div className={`${isMobile ? 'w-6 h-6 text-xs' : 'w-8 h-8 text-sm'} rounded-full flex items-center justify-center font-medium ${
               index + 1 === currentStep
                 ? 'bg-arca-purple text-white'
