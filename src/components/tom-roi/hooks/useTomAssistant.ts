@@ -27,6 +27,8 @@ Possui piscina: ${data.piscina ? 'Sim' : 'Não'}
 Valor do imóvel: ${data.valor_imovel}
 ${data.entrada_valor ? `Entrada: $${data.entrada_valor}` : ''}${data.entrada_percentual ? ` ou ${data.entrada_percentual}%` : ''}`;
 
+      console.log("Starting analysis with data:", messageContent);
+
       // Step 1: Create a new thread
       setProgress({ stage: 'creating-thread', percentage: 20 });
       const { data: threadData, error: threadError } = await supabase.functions
@@ -34,15 +36,20 @@ ${data.entrada_valor ? `Entrada: $${data.entrada_valor}` : ''}${data.entrada_per
           body: { action: 'createThread' },
         });
       
-      if (threadError || !threadData.id) {
-        throw new Error(threadError?.message || 'Failed to create thread');
+      console.log("Thread creation response:", threadData, threadError);
+
+      if (threadError || !threadData?.id) {
+        const errorMessage = threadError?.message || 'Erro desconhecido ao criar thread';
+        console.error("Thread creation error:", errorMessage);
+        throw new Error(`Falha ao criar thread: ${errorMessage}`);
       }
       
       const threadId = threadData.id;
+      console.log("Thread created successfully with ID:", threadId);
       
       // Step 2: Send a message to the thread
       setProgress({ stage: 'sending-message', percentage: 40 });
-      const { error: messageError } = await supabase.functions
+      const { data: messageData, error: messageError } = await supabase.functions
         .invoke('tom-assistant', {
           body: { 
             action: 'sendMessage', 
@@ -53,8 +60,11 @@ ${data.entrada_valor ? `Entrada: $${data.entrada_valor}` : ''}${data.entrada_per
           },
         });
       
+      console.log("Message send response:", messageData, messageError);
+
       if (messageError) {
-        throw new Error(messageError.message || 'Failed to send message');
+        console.error("Message send error:", messageError);
+        throw new Error(`Falha ao enviar mensagem: ${messageError.message || 'Erro desconhecido'}`);
       }
       
       // Step 3: Run the assistant on the thread
@@ -67,8 +77,11 @@ ${data.entrada_valor ? `Entrada: $${data.entrada_valor}` : ''}${data.entrada_per
           },
         });
       
-      if (runError || !runData.id) {
-        throw new Error(runError?.message || 'Failed to run assistant');
+      console.log("Assistant run response:", runData, runError);
+
+      if (runError || !runData?.id) {
+        console.error("Run assistant error:", runError);
+        throw new Error(`Falha ao iniciar assistente: ${runError?.message || 'Erro desconhecido'}`);
       }
       
       const runId = runData.id;
@@ -93,17 +106,21 @@ ${data.entrada_valor ? `Entrada: $${data.entrada_valor}` : ''}${data.entrada_per
             },
           });
         
+        console.log(`Check run status attempt ${attempts}:`, statusData, statusError);
+
         if (statusError) {
-          throw new Error(statusError.message || 'Failed to check run status');
+          console.error("Check run status error:", statusError);
+          throw new Error(`Falha ao verificar status: ${statusError.message || 'Erro desconhecido'}`);
         }
         
-        runStatus = statusData.status;
+        runStatus = statusData?.status;
         setProgress({ stage: 'checking-status', percentage: 70 + Math.min((attempts / 10) * 10, 20) }); 
         
         if (runStatus === 'completed') {
           break;
         } else if (runStatus === 'failed' || runStatus === 'cancelled' || runStatus === 'expired') {
-          throw new Error(`Run ended with status: ${runStatus}`);
+          console.error("Run ended with error status:", runStatus);
+          throw new Error(`Análise falhou com status: ${runStatus}`);
         }
         
         // Wait before polling again
@@ -111,7 +128,8 @@ ${data.entrada_valor ? `Entrada: $${data.entrada_valor}` : ''}${data.entrada_per
       }
       
       if (runStatus !== 'completed') {
-        throw new Error('Run timed out or did not complete successfully');
+        console.error("Run timed out or did not complete successfully");
+        throw new Error('Tempo limite excedido ou análise não foi concluída com sucesso');
       }
       
       // Step 5: Get the messages from the thread
@@ -124,17 +142,21 @@ ${data.entrada_valor ? `Entrada: $${data.entrada_valor}` : ''}${data.entrada_per
           },
         });
       
+      console.log("Get messages response:", messagesData, messagesError);
+
       if (messagesError) {
-        throw new Error(messagesError.message || 'Failed to get messages');
+        console.error("Get messages error:", messagesError);
+        throw new Error(`Falha ao obter mensagens: ${messagesError.message || 'Erro desconhecido'}`);
       }
       
       // Find the assistant's response
-      const assistantMessages = messagesData.data
-        .filter((msg: any) => msg.role === 'assistant')
+      const assistantMessages = messagesData?.data
+        ?.filter((msg: any) => msg.role === 'assistant')
         .sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
       
-      if (assistantMessages.length === 0) {
-        throw new Error('No assistant response found');
+      if (!assistantMessages || assistantMessages.length === 0) {
+        console.error("No assistant response found");
+        throw new Error('Nenhuma resposta do assistente encontrada');
       }
       
       const latestMessage = assistantMessages[0];
@@ -208,7 +230,7 @@ ${data.entrada_valor ? `Entrada: $${data.entrada_valor}` : ''}${data.entrada_per
   
   // Extract text content from the message
   const getMessageContent = (message: any): string => {
-    if (!message.content || message.content.length === 0) {
+    if (!message?.content || message.content.length === 0) {
       return '';
     }
     
