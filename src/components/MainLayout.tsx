@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import { HoverButton } from './ui/hover-button';
@@ -19,12 +19,19 @@ const MainLayout = () => {
                           location.pathname !== '/roi-curto-prazo' &&
                           location.pathname !== '/roi-longo-prazo';
   
+  // Close sidebar when changing routes on mobile
+  useEffect(() => {
+    if (isMobile && sidebarOpen) {
+      setSidebarOpen(false);
+    }
+  }, [location.pathname, isMobile]);
+
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
 
   return (
-    <div className="flex h-screen bg-gray-50 relative overflow-hidden">
+    <div className="flex h-[100dvh] bg-gray-50 relative overflow-hidden">
       {isMobile && (
         <Button 
           variant="ghost" 
@@ -42,9 +49,9 @@ const MainLayout = () => {
         <Sidebar />
       </div>
 
-      <main className={`flex-1 overflow-auto ${isMobile ? 'pt-16' : ''}`}>
+      <main className={`flex-1 overflow-auto ${isMobile ? 'pt-16 pb-20' : ''}`}>
         {showChatButton && (
-          <div className={`${isMobile ? 'fixed bottom-8 right-8' : 'fixed top-8 right-12'} z-10`}>
+          <div className={`${isMobile ? 'fixed bottom-8 right-8 z-30' : 'fixed top-8 right-12'} z-10`}>
             <HoverButton 
               onClick={() => navigate('/chat')}
               className="flex items-center gap-2 shadow-md"
@@ -58,6 +65,7 @@ const MainLayout = () => {
           <div 
             className="fixed inset-0 bg-black bg-opacity-50 z-30"
             onClick={toggleSidebar}
+            aria-hidden="true"
           />
         )}
         <div className="h-full">

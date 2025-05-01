@@ -30,17 +30,19 @@ const App = () => {
     document.head.appendChild(meta);
     
     // Fix for content shifting on mobile keyboard opening
-    document.documentElement.style.setProperty('--app-height', `${window.innerHeight}px`);
-    window.addEventListener('resize', () => {
+    const setAppHeight = () => {
       document.documentElement.style.setProperty('--app-height', `${window.innerHeight}px`);
-    });
+    };
+    
+    window.addEventListener('resize', setAppHeight);
+    window.addEventListener('orientationchange', setAppHeight);
+    setAppHeight();
     
     setIsReady(true);
     
     return () => {
-      window.removeEventListener('resize', () => {
-        document.documentElement.style.setProperty('--app-height', `${window.innerHeight}px`);
-      });
+      window.removeEventListener('resize', setAppHeight);
+      window.removeEventListener('orientationchange', setAppHeight);
     };
   }, []);
 

@@ -21,8 +21,8 @@ const RoiCalculator: React.FC = () => {
       bedrooms: '',
       hasPool: 'Não',
       purchasePrice: '',
-      aluguelMensal: '3000', // Set default values
-      despesasMensais: '500', // Set default values
+      aluguelMensal: '3000',
+      despesasMensais: '500',
       logoImage: null,
       name: '',
       email: '',
@@ -43,7 +43,7 @@ const RoiCalculator: React.FC = () => {
   } = useRoiCalculator(form);
 
   return (
-    <div className={`p-4 max-w-3xl mx-auto min-h-[80vh] flex flex-col ${isMobile ? 'pt-16 px-3' : ''}`}>
+    <div className={`p-4 max-w-3xl mx-auto min-h-[calc(100vh-80px)] flex flex-col ${isMobile ? 'pt-16 px-3' : ''}`}>
       <RoiCalculatorHeader />
       
       {!calculationResult ? (

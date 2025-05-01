@@ -2,7 +2,7 @@
 import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
-import { FormField, FormItem, FormLabel, FormControl } from '@/components/ui/form';
+import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { ArrowRight, ArrowLeft } from 'lucide-react';
@@ -29,7 +29,7 @@ const FunnelStep2: React.FC<FunnelStep2Props> = ({ form, onSubmit, onBack }) => 
         </p>
       </div>
 
-      <form onSubmit={onSubmit} className="space-y-5">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
         <div className="grid grid-cols-1 gap-4">
           <FormField
             control={form.control}
@@ -51,6 +51,7 @@ const FunnelStep2: React.FC<FunnelStep2Props> = ({ form, onSubmit, onBack }) => 
                     <SelectItem value="residencial">Residencial</SelectItem>
                   </SelectContent>
                 </Select>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -64,6 +65,7 @@ const FunnelStep2: React.FC<FunnelStep2Props> = ({ form, onSubmit, onBack }) => 
                 <FormControl>
                   <Input {...field} placeholder="Ex: Windsor at Westside" className={isMobile ? 'h-10 text-sm' : 'h-12'} />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -77,6 +79,7 @@ const FunnelStep2: React.FC<FunnelStep2Props> = ({ form, onSubmit, onBack }) => 
                 <FormControl>
                   <Input {...field} placeholder="Ex: Kissimmee, Davenport" className={isMobile ? 'h-10 text-sm' : 'h-12'} />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -90,6 +93,7 @@ const FunnelStep2: React.FC<FunnelStep2Props> = ({ form, onSubmit, onBack }) => 
                 <FormControl>
                   <Input {...field} placeholder="Ex: Townhouse, Lakeshore" className={isMobile ? 'h-10 text-sm' : 'h-12'} />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -100,7 +104,7 @@ const FunnelStep2: React.FC<FunnelStep2Props> = ({ form, onSubmit, onBack }) => 
             type="button"
             variant="outline"
             onClick={onBack}
-            className={isMobile ? 'px-4 py-1.5 text-sm' : 'px-6 py-2'}
+            className={isMobile ? 'px-4 py-1.5 text-sm h-auto' : 'px-6 py-2'}
           >
             <ArrowLeft size={isMobile ? 16 : 18} className={isMobile ? 'mr-1.5' : 'mr-2'} />
             Voltar
