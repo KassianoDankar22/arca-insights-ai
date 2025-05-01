@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate, useLocation } from 'react-router-dom';
 import { Toaster } from 'sonner';
 import { AuthProvider } from './context/AuthContext';
 
@@ -15,8 +15,7 @@ import RoiCalculator from './components/roi/RoiCalculator';
 import AuthPage from './pages/AuthPage';
 import ProtectedRoute from './components/ProtectedRoute';
 
-// This Navbar component is causing an issue, we need to check if it exists
-// If not, we can create a simple placeholder
+// This Navbar component now will only be shown on authenticated routes
 const Navbar = () => (
   <header className="bg-white shadow-sm">
     <div className="container mx-auto px-4 py-3">
@@ -32,26 +31,36 @@ const Navbar = () => (
   </header>
 );
 
+// AppContent component to conditionally render Navbar
+const AppContent = () => {
+  const location = useLocation();
+  const isAuthPage = location.pathname === '/login';
+  
+  return (
+    <div className="min-h-screen bg-gray-100">
+      {!isAuthPage && <Navbar />}
+      <main className={`${isAuthPage ? '' : 'container mx-auto px-4 py-6'}`}>
+        <Routes>
+          <Route path="/login" element={<AuthPage />} />
+          <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          <Route path="/pricing" element={<PricingPage />} />
+          <Route path="/analise/curto-prazo" element={<ProtectedRoute><RoiShortTermPage /></ProtectedRoute>} />
+          <Route path="/analise/tom" element={<ProtectedRoute><TomROIPage /></ProtectedRoute>} />
+          <Route path="/analise/tom/:id" element={<ProtectedRoute><TomROIDetailPage /></ProtectedRoute>} />
+          <Route path="/meus-rois" element={<ProtectedRoute><TomROIHistoryPage /></ProtectedRoute>} />
+          <Route path="/calculadora-roi" element={<ProtectedRoute><RoiCalculator /></ProtectedRoute>} />
+        </Routes>
+      </main>
+    </div>
+  );
+};
+
 function App() {
   return (
     <AuthProvider>
       <Toaster position="top-right" richColors closeButton />
       <Router>
-        <div className="min-h-screen bg-gray-100">
-          <Navbar />
-          <main className="container mx-auto px-4 py-6">
-            <Routes>
-              <Route path="/login" element={<AuthPage />} />
-              <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-              <Route path="/pricing" element={<PricingPage />} />
-              <Route path="/analise/curto-prazo" element={<ProtectedRoute><RoiShortTermPage /></ProtectedRoute>} />
-              <Route path="/analise/tom" element={<ProtectedRoute><TomROIPage /></ProtectedRoute>} />
-              <Route path="/analise/tom/:id" element={<ProtectedRoute><TomROIDetailPage /></ProtectedRoute>} />
-              <Route path="/meus-rois" element={<ProtectedRoute><TomROIHistoryPage /></ProtectedRoute>} />
-              <Route path="/calculadora-roi" element={<ProtectedRoute><RoiCalculator /></ProtectedRoute>} />
-            </Routes>
-          </main>
-        </div>
+        <AppContent />
       </Router>
     </AuthProvider>
   );
