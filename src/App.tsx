@@ -15,6 +15,9 @@ import HomePage from "./pages/HomePage";
 import NotFound from "./pages/NotFound";
 import MainLayout from "./components/MainLayout";
 import ToolsPage from "./pages/ToolsPage";
+import TomROIPage from "./pages/TomROIPage";
+import TomROIHistoryPage from "./pages/TomROIHistoryPage";
+import TomROIDetailPage from "./pages/TomROIDetailPage";
 
 const queryClient = new QueryClient();
 
@@ -76,6 +79,10 @@ const App = () => {
                 <Route path="tendencias" element={<MarketTrendsPage />} />
                 <Route path="configuracoes" element={<SettingsPage />} />
                 <Route path="ajuda" element={<HomePage />} />
+                {/* New Tom ROI routes */}
+                <Route path="analise/tom" element={<TomROIPage />} />
+                <Route path="analise/tom/:id" element={<TomROIDetailPage />} />
+                <Route path="meus-rois" element={<TomROIHistoryPage />} />
               </Route>
               <Route path="*" element={<NotFound />} />
             </Routes>

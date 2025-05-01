@@ -6,11 +6,11 @@ import AIAgentCard, { AIAgentProps } from '@/components/tools/AIAgentCard';
 // These would eventually come from a backend API or admin panel
 const aiAgents: AIAgentProps[] = [
   {
-    id: 'roi-short-term',
+    id: 'tom-roi',
     name: 'Tom - Análise de ROI',
     description: 'Avalia rapidamente o retorno sobre investimento de propriedades destinadas a locações de curto prazo, considerando fatores como ocupação, sazonalidade e custos. Ajuda o corretor a identificar as melhores oportunidades sem precisar de cálculos complexos.',
     icon: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b',
-    route: '/roi-curto-prazo',
+    route: '/analise/tom',
     isNew: true
   },
   {

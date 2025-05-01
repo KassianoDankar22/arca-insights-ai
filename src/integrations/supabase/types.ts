@@ -9,7 +9,57 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      roi_analises: {
+        Row: {
+          condominio: string
+          criado_em: string
+          entrada_percentual: number | null
+          entrada_valor: number | null
+          expira_em: string
+          id: string
+          localizacao: string
+          modelo: string
+          piscina: boolean
+          quartos: number
+          resultado_texto: string | null
+          tipo_investimento: string
+          user_id: string
+          valor_imovel: number
+        }
+        Insert: {
+          condominio: string
+          criado_em?: string
+          entrada_percentual?: number | null
+          entrada_valor?: number | null
+          expira_em?: string
+          id?: string
+          localizacao: string
+          modelo: string
+          piscina?: boolean
+          quartos: number
+          resultado_texto?: string | null
+          tipo_investimento: string
+          user_id: string
+          valor_imovel: number
+        }
+        Update: {
+          condominio?: string
+          criado_em?: string
+          entrada_percentual?: number | null
+          entrada_valor?: number | null
+          expira_em?: string
+          id?: string
+          localizacao?: string
+          modelo?: string
+          piscina?: boolean
+          quartos?: number
+          resultado_texto?: string | null
+          tipo_investimento?: string
+          user_id?: string
+          valor_imovel?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
