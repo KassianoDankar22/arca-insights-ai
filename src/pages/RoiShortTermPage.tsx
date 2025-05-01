@@ -1,6 +1,6 @@
 
 import React from 'react';
-import TomRoiAnalyzer from '@/components/tom-roi/TomRoiAnalyzer';
+import TomROIAnalyzer from '@/components/tom-roi/TomROIAnalyzer';
 import { motion } from 'framer-motion';
 
 const RoiShortTermPage = () => {
@@ -10,7 +10,7 @@ const RoiShortTermPage = () => {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
-      <TomRoiAnalyzer />
+      <TomROIAnalyzer />
     </motion.div>
   );
 };
