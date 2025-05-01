@@ -8,7 +8,17 @@ import { FormValues } from './types/analyzer-types';
 import { useROIAnalysis } from './hooks/useROIAnalysis';
 import { exportToPDF, exportToJPEG } from './utils/export-utils';
 
-const TomROIAnalyzer: React.FC = () => {
+interface TomROIAnalyzerProps {
+  showBackButton?: boolean;
+  backPath?: string;
+  backText?: string;
+}
+
+const TomROIAnalyzer: React.FC<TomROIAnalyzerProps> = ({ 
+  showBackButton = false,
+  backPath,
+  backText
+}) => {
   const isMobile = useIsMobile();
   const resultRef = useRef<HTMLDivElement>(null);
   const { isLoading, result, analyzeROI, resetAnalysis, viewHistory } = useROIAnalysis();
@@ -73,6 +83,9 @@ const TomROIAnalyzer: React.FC = () => {
             onExportJPEG={handleExportJPEG}
             onViewHistory={viewHistory}
             resultRef={resultRef}
+            showBackButton={showBackButton}
+            backPath={backPath}
+            backText={backText}
           />
         )}
       </FormProvider>

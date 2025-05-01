@@ -27,6 +27,9 @@ interface TomROIResultsProps {
   onExportJPEG: () => void;
   onViewHistory: () => void;
   resultRef: React.RefObject<HTMLDivElement>;
+  showBackButton?: boolean;
+  backPath?: string;
+  backText?: string;
 }
 
 const TomROIResults: React.FC<TomROIResultsProps> = ({
@@ -37,12 +40,18 @@ const TomROIResults: React.FC<TomROIResultsProps> = ({
   onExportJPEG,
   onViewHistory,
   resultRef,
+  showBackButton = false,
+  backPath,
+  backText,
 }) => {
   return (
     <div className="space-y-6">
       <ResultHeader 
         condominioName={result.condominio} 
         location={result.localizacao}
+        showBackButton={showBackButton}
+        backPath={backPath}
+        backText={backText}
       />
 
       <PropertyDetailsCard
