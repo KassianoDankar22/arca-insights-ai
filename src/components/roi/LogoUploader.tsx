@@ -2,6 +2,7 @@
 import React from 'react';
 import { Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface LogoUploaderProps {
   logoPreview: string | null;
@@ -10,6 +11,8 @@ interface LogoUploaderProps {
 }
 
 const LogoUploader: React.FC<LogoUploaderProps> = ({ logoPreview, onLogoChange, onRemoveLogo }) => {
+  const isMobile = useIsMobile();
+  
   return (
     <div className="flex flex-col justify-center items-center p-3 border-2 border-dashed rounded-lg bg-gray-50 hover:bg-gray-100 transition cursor-pointer relative h-[85px]">
       {logoPreview ? (
@@ -31,12 +34,12 @@ const LogoUploader: React.FC<LogoUploaderProps> = ({ logoPreview, onLogoChange, 
         </div>
       ) : (
         <div className="flex flex-col items-center">
-          <Upload className="h-6 w-6 text-gray-400 mb-1" />
+          <Upload className={`${isMobile ? 'h-5 w-5' : 'h-6 w-6'} text-gray-400 mb-1`} />
           <label className="flex flex-col items-center cursor-pointer">
-            <span className="font-medium text-gray-600 text-sm">
+            <span className={`font-medium text-gray-600 ${isMobile ? 'text-xs' : 'text-sm'}`}>
               Adicionar Logo
             </span>
-            <span className="text-xs text-gray-400 mt-0.5">PNG, JPG (máx. 2MB)</span>
+            <span className={`${isMobile ? 'text-[10px]' : 'text-xs'} text-gray-400 mt-0.5`}>PNG, JPG (máx. 2MB)</span>
             <input
               type="file"
               className="hidden"

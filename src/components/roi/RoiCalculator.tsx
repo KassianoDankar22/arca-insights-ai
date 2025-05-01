@@ -6,6 +6,7 @@ import { Calculator } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 import StepProgress from './StepProgress';
 import CalculationResult from './CalculationResult';
@@ -19,6 +20,7 @@ const RoiCalculator: React.FC = () => {
   const [calculationResult, setCalculationResult] = useState<any>(null);
   const [currentStep, setCurrentStep] = useState<number>(1);
   const reportRef = useRef<HTMLDivElement>(null);
+  const isMobile = useIsMobile();
   
   // Default values for calculation since we removed the input fields
   const defaultAluguelMensal = 3000; // R$ 3,000 monthly rent
@@ -133,22 +135,22 @@ const RoiCalculator: React.FC = () => {
   };
 
   return (
-    <div className="p-4 max-w-3xl mx-auto min-h-[80vh] flex flex-col">
-      <h2 className="text-3xl font-bold mb-6 flex items-center justify-center text-center">
-        <Calculator className="mr-2" />
+    <div className={`p-4 max-w-3xl mx-auto min-h-[80vh] flex flex-col ${isMobile ? 'px-3' : ''}`}>
+      <h2 className={`${isMobile ? 'text-2xl mb-4' : 'text-3xl mb-6'} font-bold flex items-center justify-center text-center`}>
+        <Calculator className={`${isMobile ? 'mr-1.5' : 'mr-2'}`} />
         <span className="bg-gradient-to-r from-arca-dark-blue to-arca-light-blue bg-clip-text text-transparent">
           Calculadora de ROI
         </span>
       </h2>
       
       {!calculationResult ? (
-        <Card className="flex-grow flex flex-col overflow-hidden border-0 shadow-lg relative">
+        <Card className={`flex-grow flex flex-col overflow-hidden border-0 shadow-lg relative ${isMobile ? 'p-0' : ''}`}>
           <div className="bg-gradient-to-r from-arca-dark-blue to-arca-light-blue h-1.5 absolute top-0 left-0 right-0" />
           
-          <div className="p-6 pt-10 flex-grow">
+          <div className={`${isMobile ? 'p-4 pt-8' : 'p-6 pt-10'} flex-grow`}>
             <StepProgress currentStep={currentStep} totalSteps={3} />
             
-            <div className="mt-8 flex-grow">
+            <div className={`${isMobile ? 'mt-6' : 'mt-8'} flex-grow`}>
               <AnimatePresence mode="wait">
                 {currentStep === 1 && (
                   <motion.div

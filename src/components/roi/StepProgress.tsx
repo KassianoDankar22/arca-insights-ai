@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 type StepProgressProps = {
   currentStep: number;
@@ -7,12 +8,14 @@ type StepProgressProps = {
 };
 
 const StepProgress: React.FC<StepProgressProps> = ({ currentStep, totalSteps }) => {
+  const isMobile = useIsMobile();
+  
   return (
     <div className="w-full">
       <div className="flex justify-between items-center mb-2">
         {Array.from({ length: totalSteps }).map((_, index) => (
           <div key={index} className="flex flex-col items-center">
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+            <div className={`${isMobile ? 'w-6 h-6 text-xs' : 'w-8 h-8 text-sm'} rounded-full flex items-center justify-center font-medium ${
               index + 1 === currentStep
                 ? 'bg-arca-purple text-white'
                 : index + 1 < currentStep
@@ -21,6 +24,11 @@ const StepProgress: React.FC<StepProgressProps> = ({ currentStep, totalSteps }) 
             }`}>
               {index + 1}
             </div>
+            {!isMobile && (
+              <span className={`mt-1 text-xs ${index + 1 === currentStep ? 'text-arca-purple font-medium' : 'text-gray-500'}`}>
+                {index === 0 ? 'Dados' : index === 1 ? 'Imóvel' : 'Detalhes'}
+              </span>
+            )}
           </div>
         ))}
       </div>
