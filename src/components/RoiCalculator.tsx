@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
-import { Calculator, Upload, FileUp, Download } from 'lucide-react';
+import { Calculator, Upload, Download } from 'lucide-react';
 import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form';
 import { useForm } from 'react-hook-form';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
@@ -126,14 +126,14 @@ const RoiCalculator: React.FC = () => {
               <CardTitle className="text-xl text-arca-dark-blue">Informações do Imóvel</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <div className="flex flex-col justify-center items-center p-6 border-2 border-dashed rounded-lg bg-gray-50 hover:bg-gray-100 transition cursor-pointer relative">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                <div className="md:col-span-1 flex flex-col justify-center items-center p-4 border-2 border-dashed rounded-lg bg-gray-50 hover:bg-gray-100 transition cursor-pointer relative">
                   {logoPreview ? (
                     <div className="mb-2 relative">
                       <img 
                         src={logoPreview} 
                         alt="Logo Preview" 
-                        className="max-h-32 max-w-full object-contain" 
+                        className="max-h-24 max-w-full object-contain" 
                       />
                       <Button 
                         type="button"
@@ -149,12 +149,12 @@ const RoiCalculator: React.FC = () => {
                       </Button>
                     </div>
                   ) : (
-                    <Upload className="h-12 w-12 text-gray-400 mb-2" />
+                    <Upload className="h-10 w-10 text-gray-400 mb-2" />
                   )}
                   
                   <label className="flex flex-col items-center cursor-pointer">
-                    <span className="font-medium text-gray-600">
-                      {logoPreview ? 'Alterar logo' : 'Adicionar logo da imobiliária'}
+                    <span className="font-medium text-gray-600 text-sm">
+                      {logoPreview ? 'Alterar logo' : 'Adicionar sua Logo'}
                     </span>
                     <span className="text-xs text-gray-400 mt-1">PNG, JPG ou SVG (max. 2MB)</span>
                     <input
@@ -166,44 +166,46 @@ const RoiCalculator: React.FC = () => {
                   </label>
                 </div>
 
-                <div className="space-y-4">
-                  <FormField
-                    control={form.control}
-                    name="investmentType"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Tipo de Investimento</FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
+                <div className="md:col-span-2 space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="investmentType"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Tipo de Investimento</FormLabel>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Selecione o tipo" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="casa_ferias">Casa de Férias</SelectItem>
+                              <SelectItem value="residencial">Residencial</SelectItem>
+                              <SelectItem value="comercial">Comercial</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={form.control}
+                      name="projectName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Nome do Condomínio/Projeto</FormLabel>
                           <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Selecione o tipo" />
-                            </SelectTrigger>
+                            <Input {...field} placeholder="Ex: Windsor at Westside" />
                           </FormControl>
-                          <SelectContent>
-                            <SelectItem value="casa_ferias">Casa de Férias</SelectItem>
-                            <SelectItem value="residencial">Residencial</SelectItem>
-                            <SelectItem value="comercial">Comercial</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </FormItem>
-                    )}
-                  />
-                  
-                  <FormField
-                    control={form.control}
-                    name="projectName"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Nome do Condomínio/Projeto</FormLabel>
-                        <FormControl>
-                          <Input {...field} placeholder="Ex: Windsor at Westside" />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -341,7 +343,7 @@ const RoiCalculator: React.FC = () => {
                 type="submit"
                 className="w-full mt-6 bg-arca-purple hover:bg-arca-dark-purple"
               >
-                Calcular ROI
+                Analisar ROI
               </Button>
             </CardContent>
           </Card>
@@ -507,3 +509,4 @@ const RoiCalculator: React.FC = () => {
 };
 
 export default RoiCalculator;
+
