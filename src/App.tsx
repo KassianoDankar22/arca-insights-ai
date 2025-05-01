@@ -16,6 +16,7 @@ import RoiCalculator from './components/roi/RoiCalculator';
 import AuthPage from './pages/AuthPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import HomePage from './pages/HomePage';
+import ToolsPage from './pages/ToolsPage';
 
 // This Navbar component will only be shown on the login page
 const Navbar = () => (
@@ -53,6 +54,7 @@ const AppContent = () => {
       <Route path="/" element={<ProtectedRoute><MainLayout /></ProtectedRoute>}>
         <Route index element={<HomePage />} />
         <Route path="pricing" element={<PricingPage />} />
+        <Route path="ferramentas" element={<ToolsPage />} />
         <Route path="analise/curto-prazo" element={<RoiShortTermPage />} />
         <Route path="analise/tom" element={<TomROIPage />} />
         <Route path="analise/tom/:id" element={<TomROIDetailPage />} />
