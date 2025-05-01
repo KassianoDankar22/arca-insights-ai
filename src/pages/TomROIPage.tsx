@@ -39,7 +39,7 @@ const TomROIPage: React.FC = () => {
       </div>
       
       {/* Main Content */}
-      <TomROIAnalyzer />
+      <TomROIAnalyzer showBackButton={true} backPath="/" backText="Voltar para Dashboard" />
       
       {/* Footer note */}
       <div className="max-w-6xl mx-auto p-4 text-center text-sm text-gray-500 italic mt-6">
