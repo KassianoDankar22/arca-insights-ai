@@ -1,8 +1,7 @@
-
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Logo from './Logo';
-import { Home, Settings, LogOut, MessageSquare, BookOpen, Wrench, GraduationCap, DollarSign, BarChart2, History } from 'lucide-react';
+import { Home, Settings, LogOut, MessageSquare, BookOpen, Wrench, GraduationCap, DollarSign, History } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -20,7 +19,6 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
     { icon: Home, label: 'Home', path: '/' },
     { icon: Wrench, label: 'Ferramentas', path: '/ferramentas' },
     { icon: MessageSquare, label: 'Arca AI Chat', path: '/chat', isNew: true },
-    { icon: BarChart2, label: 'Tom - Análise de ROI', path: '/analise/tom', isNew: true },
     { icon: History, label: 'Meus ROIs', path: '/meus-rois' },
     { icon: GraduationCap, label: 'Academy', path: '/academy' },
     { icon: DollarSign, label: 'Financeiro', path: '/financeiro' },
