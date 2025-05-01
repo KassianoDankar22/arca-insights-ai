@@ -3,6 +3,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate, useLocation } from 'react-router-dom';
 import { Toaster } from 'sonner';
 import { AuthProvider } from './context/AuthContext';
+import MainLayout from './components/MainLayout';
 
 // Import pages
 import Dashboard from './pages/Dashboard';
@@ -14,8 +15,9 @@ import TomROIDetailPage from './pages/TomROIDetailPage';
 import RoiCalculator from './components/roi/RoiCalculator';
 import AuthPage from './pages/AuthPage';
 import ProtectedRoute from './components/ProtectedRoute';
+import HomePage from './pages/HomePage';
 
-// This Navbar component now will only be shown on authenticated routes
+// This Navbar component will only be shown on the login page
 const Navbar = () => (
   <header className="bg-white shadow-sm">
     <div className="container mx-auto px-4 py-3">
@@ -31,27 +33,33 @@ const Navbar = () => (
   </header>
 );
 
-// AppContent component to conditionally render Navbar
+// AppContent component to conditionally render Navbar or MainLayout
 const AppContent = () => {
   const location = useLocation();
   const isAuthPage = location.pathname === '/login';
   
-  return (
-    <div className="min-h-screen bg-gray-100">
-      {!isAuthPage && <Navbar />}
-      <main className={`${isAuthPage ? '' : 'container mx-auto px-4 py-6'}`}>
+  if (isAuthPage) {
+    return (
+      <div className="min-h-screen">
         <Routes>
           <Route path="/login" element={<AuthPage />} />
-          <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-          <Route path="/pricing" element={<PricingPage />} />
-          <Route path="/analise/curto-prazo" element={<ProtectedRoute><RoiShortTermPage /></ProtectedRoute>} />
-          <Route path="/analise/tom" element={<ProtectedRoute><TomROIPage /></ProtectedRoute>} />
-          <Route path="/analise/tom/:id" element={<ProtectedRoute><TomROIDetailPage /></ProtectedRoute>} />
-          <Route path="/meus-rois" element={<ProtectedRoute><TomROIHistoryPage /></ProtectedRoute>} />
-          <Route path="/calculadora-roi" element={<ProtectedRoute><RoiCalculator /></ProtectedRoute>} />
         </Routes>
-      </main>
-    </div>
+      </div>
+    );
+  }
+  
+  return (
+    <Routes>
+      <Route path="/" element={<ProtectedRoute><MainLayout /></ProtectedRoute>}>
+        <Route index element={<HomePage />} />
+        <Route path="pricing" element={<PricingPage />} />
+        <Route path="analise/curto-prazo" element={<RoiShortTermPage />} />
+        <Route path="analise/tom" element={<TomROIPage />} />
+        <Route path="analise/tom/:id" element={<TomROIDetailPage />} />
+        <Route path="meus-rois" element={<TomROIHistoryPage />} />
+        <Route path="calculadora-roi" element={<RoiCalculator />} />
+      </Route>
+    </Routes>
   );
 };
 
