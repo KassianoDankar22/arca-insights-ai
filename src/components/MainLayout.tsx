@@ -24,12 +24,12 @@ const MainLayout = () => {
   };
 
   return (
-    <div className="flex h-screen bg-gray-50 relative">
+    <div className="flex h-screen bg-gray-50 relative overflow-hidden">
       {isMobile && (
         <Button 
           variant="ghost" 
           size="icon" 
-          className="fixed top-4 left-4 z-50" 
+          className="fixed top-4 left-4 z-50 bg-white bg-opacity-80 shadow-sm" 
           onClick={toggleSidebar}
         >
           {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
@@ -42,12 +42,12 @@ const MainLayout = () => {
         <Sidebar />
       </div>
 
-      <main className={`flex-1 overflow-auto ${isMobile ? 'pt-14' : ''}`}>
+      <main className={`flex-1 overflow-auto ${isMobile ? 'pt-16' : ''}`}>
         {showChatButton && (
           <div className={`${isMobile ? 'fixed bottom-8 right-8' : 'fixed top-8 right-12'} z-10`}>
             <HoverButton 
               onClick={() => navigate('/chat')}
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 shadow-md"
             >
               {!isMobile && <span>Abrir Chat</span>}
               <MessageSquare size={isMobile ? 20 : 16} />
@@ -60,7 +60,7 @@ const MainLayout = () => {
             onClick={toggleSidebar}
           />
         )}
-        <div className={isMobile ? 'px-4' : ''}>
+        <div className="h-full">
           <Outlet />
         </div>
       </main>

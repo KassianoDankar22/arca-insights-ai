@@ -43,7 +43,7 @@ const RoiCalculator: React.FC = () => {
   } = useRoiCalculator(form);
 
   return (
-    <div className={`p-4 max-w-3xl mx-auto min-h-[80vh] flex flex-col ${isMobile ? 'px-3' : ''}`}>
+    <div className={`p-4 max-w-3xl mx-auto min-h-[80vh] flex flex-col ${isMobile ? 'pt-16 px-3' : ''}`}>
       <RoiCalculatorHeader />
       
       {!calculationResult ? (

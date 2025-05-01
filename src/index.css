@@ -122,6 +122,17 @@
       -webkit-overflow-scrolling: touch;
     }
   }
+  
+  /* Fix viewport height issues on mobile */
+  html, body {
+    height: 100%;
+    overflow: hidden;
+  }
+  
+  #root {
+    height: 100%;
+    overflow: auto;
+  }
 }
 
 @layer components {
@@ -157,6 +168,11 @@
   .text-responsive-2xl {
     @apply text-2xl md:text-3xl;
   }
+  
+  /* Fix for select menu on mobile */
+  .select-content-mobile {
+    @apply w-full max-w-[calc(100vw-2rem)] !important;
+  }
 }
 
 /* Additional responsive styles */
@@ -176,5 +192,30 @@
   .card-content-mobile-compact {
     @apply p-3 !important;
   }
+  
+  /* Fix for select dropdowns on mobile */
+  .select-trigger {
+    max-width: 100%;
+  }
+  
+  .select-content {
+    width: calc(100vw - 24px) !important;
+    max-width: calc(100vw - 24px) !important;
+  }
+  
+  /* Fix for touch targets */
+  .btn, button, a, [role="button"] {
+    @apply min-h-[44px];
+  }
 }
 
+/* Fix for mobile Safari */
+@supports (-webkit-touch-callout: none) {
+  .min-h-screen {
+    min-height: -webkit-fill-available;
+  }
+  
+  .h-screen {
+    height: -webkit-fill-available;
+  }
+}

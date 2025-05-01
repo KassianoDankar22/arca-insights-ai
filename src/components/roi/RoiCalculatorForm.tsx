@@ -33,13 +33,13 @@ const RoiCalculatorForm: React.FC<RoiCalculatorFormProps> = ({
   const isMobile = useIsMobile();
   
   return (
-    <Card className={`flex-grow flex flex-col overflow-hidden border-0 shadow-lg relative ${isMobile ? 'p-0' : ''}`}>
+    <Card className={`flex-grow flex flex-col overflow-hidden border-0 shadow-lg relative ${isMobile ? 'p-0 mx-0' : ''}`}>
       <div className="bg-gradient-to-r from-arca-dark-blue to-arca-light-blue h-1.5 absolute top-0 left-0 right-0" />
       
-      <div className={`${isMobile ? 'p-4 pt-8' : 'p-6 pt-10'} flex-grow`}>
+      <div className={`${isMobile ? 'p-4 pt-6 pb-8' : 'p-6 pt-10'} flex-grow`}>
         <StepProgress currentStep={currentStep} totalSteps={3} />
         
-        <div className={`${isMobile ? 'mt-6' : 'mt-8'} flex-grow`}>
+        <div className={`${isMobile ? 'mt-4' : 'mt-8'} flex-grow`}>
           <AnimatePresence mode="wait">
             {currentStep === 1 && (
               <motion.div

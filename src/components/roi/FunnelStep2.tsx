@@ -30,7 +30,7 @@ const FunnelStep2: React.FC<FunnelStep2Props> = ({ form, onSubmit, onBack }) => 
       </div>
 
       <form onSubmit={onSubmit} className="space-y-5">
-        <div className={`grid ${isMobile ? 'grid-cols-1 gap-3' : 'grid-cols-1 md:grid-cols-2 gap-4'}`}>
+        <div className="grid grid-cols-1 gap-4">
           <FormField
             control={form.control}
             name="investmentType"

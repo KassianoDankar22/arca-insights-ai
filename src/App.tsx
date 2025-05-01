@@ -26,10 +26,22 @@ const App = () => {
     // Add viewport meta tag for responsive design
     const meta = document.createElement('meta');
     meta.name = 'viewport';
-    meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
+    meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover';
     document.head.appendChild(meta);
     
+    // Fix for content shifting on mobile keyboard opening
+    document.documentElement.style.setProperty('--app-height', `${window.innerHeight}px`);
+    window.addEventListener('resize', () => {
+      document.documentElement.style.setProperty('--app-height', `${window.innerHeight}px`);
+    });
+    
     setIsReady(true);
+    
+    return () => {
+      window.removeEventListener('resize', () => {
+        document.documentElement.style.setProperty('--app-height', `${window.innerHeight}px`);
+      });
+    };
   }, []);
 
   const handleLogin = () => {
