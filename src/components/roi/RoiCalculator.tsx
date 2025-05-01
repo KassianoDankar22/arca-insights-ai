@@ -16,6 +16,10 @@ const RoiCalculator: React.FC = () => {
   const [calculationResult, setCalculationResult] = useState<any>(null);
   const reportRef = useRef<HTMLDivElement>(null);
   
+  // Default values for calculation since we removed the input fields
+  const defaultAluguelMensal = 3000; // R$ 3,000 monthly rent
+  const defaultDespesasMensais = 500; // R$ 500 monthly expenses
+  
   const form = useForm<FormValues>({
     defaultValues: {
       investmentType: '',
@@ -25,8 +29,8 @@ const RoiCalculator: React.FC = () => {
       bedrooms: '',
       hasPool: 'Não',
       purchasePrice: '',
-      aluguelMensal: '',
-      despesasMensais: '',
+      aluguelMensal: defaultAluguelMensal.toString(), // Set default values
+      despesasMensais: defaultDespesasMensais.toString(), // Set default values
       logoImage: null,
     }
   });
@@ -50,10 +54,11 @@ const RoiCalculator: React.FC = () => {
 
   const calculateRoi = (data: FormValues) => {
     const compra = parseFloat(data.purchasePrice);
-    const aluguel = parseFloat(data.aluguelMensal);
-    const despesas = parseFloat(data.despesasMensais);
+    // Use default values since we've removed the fields
+    const aluguel = defaultAluguelMensal;
+    const despesas = defaultDespesasMensais;
     
-    if (isNaN(compra) || isNaN(aluguel) || isNaN(despesas)) {
+    if (isNaN(compra)) {
       return;
     }
     
@@ -73,7 +78,11 @@ const RoiCalculator: React.FC = () => {
         { name: 'Despesas', value: despesaAnual },
         { name: 'Lucro', value: lucroAnual }
       ],
-      formData: { ...data }
+      formData: { 
+        ...data,
+        aluguelMensal: defaultAluguelMensal.toString(),
+        despesasMensais: defaultDespesasMensais.toString()
+      }
     });
   };
 

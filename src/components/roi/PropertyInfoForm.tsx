@@ -16,8 +16,8 @@ export type FormValues = {
   bedrooms: string;
   hasPool: string;
   purchasePrice: string;
-  aluguelMensal: string;
-  despesasMensais: string;
+  aluguelMensal: string; // Keeping in type but not showing in UI
+  despesasMensais: string; // Keeping in type but not showing in UI
   logoImage: File | null;
 };
 
@@ -182,46 +182,12 @@ const PropertyInfoForm: React.FC<PropertyInfoFormProps> = ({
             </FormItem>
           )}
         />
-
-        <FormField
-          control={form.control}
-          name="aluguelMensal"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Aluguel Mensal (R$)</FormLabel>
-              <FormControl>
-                <Input 
-                  {...field} 
-                  type="number"
-                  placeholder="Ex: 2500" 
-                />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="despesasMensais"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Despesas Mensais (R$)</FormLabel>
-              <FormControl>
-                <Input 
-                  {...field} 
-                  type="number"
-                  placeholder="Ex: 500" 
-                />
-              </FormControl>
-            </FormItem>
-          )}
-        />
       </div>
 
       <Button 
         type="submit"
         onClick={onSubmit}
-        className="w-full mt-6 bg-arca-purple hover:bg-arca-dark-purple"
+        className="mt-6 bg-arca-purple hover:bg-arca-dark-purple mx-auto px-6 py-2 flex items-center justify-center"
       >
         <Calculator className="mr-2" size={18} />
         Analisar ROI
