@@ -1,10 +1,9 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
 import { Button } from '@/components/ui/button';
 import { Download } from 'lucide-react';
-import { FormValues } from './PropertyInfoForm';
+import { FormValues } from './types';
 
 export interface CalculationResultProps {
   calculationResult: {
