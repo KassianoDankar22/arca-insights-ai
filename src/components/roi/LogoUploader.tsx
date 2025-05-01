@@ -11,13 +11,13 @@ interface LogoUploaderProps {
 
 const LogoUploader: React.FC<LogoUploaderProps> = ({ logoPreview, onLogoChange, onRemoveLogo }) => {
   return (
-    <div className="md:col-span-1 flex flex-col justify-center items-center p-3 border-2 border-dashed rounded-lg bg-gray-50 hover:bg-gray-100 transition cursor-pointer relative">
+    <div className="flex flex-col justify-center items-center p-3 border-2 border-dashed rounded-lg bg-gray-50 hover:bg-gray-100 transition cursor-pointer relative h-[85px]">
       {logoPreview ? (
-        <div className="mb-2 relative">
+        <div className="mb-0 relative">
           <img 
             src={logoPreview} 
             alt="Logo Preview" 
-            className="max-h-20 max-w-full object-contain" 
+            className="max-h-16 max-w-full object-contain" 
           />
           <Button 
             type="button"
@@ -30,21 +30,22 @@ const LogoUploader: React.FC<LogoUploaderProps> = ({ logoPreview, onLogoChange, 
           </Button>
         </div>
       ) : (
-        <Upload className="h-8 w-8 text-gray-400 mb-1" />
+        <div className="flex flex-col items-center">
+          <Upload className="h-6 w-6 text-gray-400 mb-1" />
+          <label className="flex flex-col items-center cursor-pointer">
+            <span className="font-medium text-gray-600 text-sm">
+              Adicionar Logo
+            </span>
+            <span className="text-xs text-gray-400 mt-0.5">PNG, JPG (máx. 2MB)</span>
+            <input
+              type="file"
+              className="hidden"
+              accept="image/*"
+              onChange={onLogoChange}
+            />
+          </label>
+        </div>
       )}
-      
-      <label className="flex flex-col items-center cursor-pointer">
-        <span className="font-medium text-gray-600 text-sm">
-          {logoPreview ? 'Alterar logo' : 'Adicionar sua Logo'}
-        </span>
-        <span className="text-xs text-gray-400 mt-1">PNG, JPG ou SVG (max. 2MB)</span>
-        <input
-          type="file"
-          className="hidden"
-          accept="image/*"
-          onChange={onLogoChange}
-        />
-      </label>
     </div>
   );
 };

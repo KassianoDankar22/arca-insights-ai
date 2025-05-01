@@ -1,19 +1,23 @@
 
 import React, { useState, useRef } from 'react';
 import { useForm } from 'react-hook-form';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Form } from '@/components/ui/form';
+import { Card } from '@/components/ui/card';
 import { Calculator } from 'lucide-react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import { motion, AnimatePresence } from 'framer-motion';
 
-import PropertyInfoForm, { FormValues } from './PropertyInfoForm';
+import StepProgress from './StepProgress';
 import CalculationResult from './CalculationResult';
+import FunnelStep1 from './FunnelStep1';
+import FunnelStep2 from './FunnelStep2';
+import FunnelStep3 from './FunnelStep3';
+import type { FormValues } from './types';
 
 const RoiCalculator: React.FC = () => {
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [calculationResult, setCalculationResult] = useState<any>(null);
+  const [currentStep, setCurrentStep] = useState<number>(1);
   const reportRef = useRef<HTMLDivElement>(null);
   
   // Default values for calculation since we removed the input fields
@@ -32,6 +36,9 @@ const RoiCalculator: React.FC = () => {
       aluguelMensal: defaultAluguelMensal.toString(), // Set default values
       despesasMensais: defaultDespesasMensais.toString(), // Set default values
       logoImage: null,
+      name: '',
+      email: '',
+      phone: '',
     }
   });
 
@@ -86,7 +93,21 @@ const RoiCalculator: React.FC = () => {
     });
   };
 
-  const handleCalculate = form.handleSubmit(calculateRoi);
+  const nextStep = () => {
+    setCurrentStep(prev => Math.min(prev + 1, 3));
+  };
+
+  const prevStep = () => {
+    setCurrentStep(prev => Math.max(prev - 1, 1));
+  };
+
+  const handleSubmit = form.handleSubmit((data) => {
+    if (currentStep < 3) {
+      nextStep();
+    } else {
+      calculateRoi(data);
+    }
+  });
 
   const exportToPdf = async () => {
     if (reportRef.current && calculationResult) {
@@ -112,7 +133,7 @@ const RoiCalculator: React.FC = () => {
   };
 
   return (
-    <div className="p-4 max-w-5xl mx-auto">
+    <div className="p-4 max-w-3xl mx-auto min-h-[80vh] flex flex-col">
       <h2 className="text-3xl font-bold mb-6 flex items-center justify-center text-center">
         <Calculator className="mr-2" />
         <span className="bg-gradient-to-r from-arca-dark-blue to-arca-light-blue bg-clip-text text-transparent">
@@ -120,47 +141,75 @@ const RoiCalculator: React.FC = () => {
         </span>
       </h2>
       
-      <Form {...form}>
-        <form onSubmit={handleCalculate} className="space-y-6">
-          <Card className="overflow-hidden border-0 shadow-lg">
-            <div className="bg-gradient-to-r from-arca-dark-blue to-arca-light-blue h-2" />
-            <CardHeader>
-              <CardTitle className="text-xl text-arca-dark-blue">Informações do Imóvel</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <PropertyInfoForm 
-                form={form} 
-                logoPreview={logoPreview} 
-                handleLogoChange={handleLogoChange} 
-                handleRemoveLogo={handleRemoveLogo}
-                onSubmit={handleCalculate}
-              />
-            </CardContent>
-          </Card>
-        </form>
-      </Form>
-      
-      {calculationResult && (
+      {!calculationResult ? (
+        <Card className="flex-grow flex flex-col overflow-hidden border-0 shadow-lg relative">
+          <div className="bg-gradient-to-r from-arca-dark-blue to-arca-light-blue h-1.5 absolute top-0 left-0 right-0" />
+          
+          <div className="p-6 pt-10 flex-grow">
+            <StepProgress currentStep={currentStep} totalSteps={3} />
+            
+            <div className="mt-8 flex-grow">
+              <AnimatePresence mode="wait">
+                {currentStep === 1 && (
+                  <motion.div
+                    key="step1"
+                    initial={{ opacity: 0, x: 50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -50 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <FunnelStep1 
+                      form={form} 
+                      onSubmit={handleSubmit}
+                    />
+                  </motion.div>
+                )}
+                
+                {currentStep === 2 && (
+                  <motion.div
+                    key="step2"
+                    initial={{ opacity: 0, x: 50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -50 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <FunnelStep2 
+                      form={form}
+                      onSubmit={handleSubmit}
+                      onBack={prevStep}
+                    />
+                  </motion.div>
+                )}
+                
+                {currentStep === 3 && (
+                  <motion.div
+                    key="step3"
+                    initial={{ opacity: 0, x: 50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -50 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <FunnelStep3 
+                      form={form}
+                      logoPreview={logoPreview}
+                      handleLogoChange={handleLogoChange}
+                      handleRemoveLogo={handleRemoveLogo}
+                      onSubmit={handleSubmit}
+                      onBack={prevStep}
+                    />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          </div>
+        </Card>
+      ) : (
         <CalculationResult 
           calculationResult={calculationResult} 
           logoPreview={logoPreview}
           exportToPdf={exportToPdf}
           reportRef={reportRef}
         />
-      )}
-      
-      {calculationResult && (
-        <Dialog>
-          <DialogTrigger className="hidden">Open Dialog</DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>PDF Exportado com Sucesso</DialogTitle>
-            </DialogHeader>
-            <p className="py-4">
-              O relatório de ROI para {calculationResult.formData.projectName || 'sua propriedade'} foi exportado com sucesso e está pronto para compartilhamento.
-            </p>
-          </DialogContent>
-        </Dialog>
       )}
     </div>
   );
