@@ -2,7 +2,7 @@
 import React, { useState, useRef } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import { toast } from '@/components/ui/use-toast';
+import { toast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useIsMobile } from '@/hooks/use-mobile';
 import TomROIForm from './TomROIForm';
@@ -102,10 +102,13 @@ const TomROIAnalyzer: React.FC = () => {
         resultado_texto: responseData.resultado,
       };
 
-      // Save to Supabase
+      // Save to Supabase - Fix: Add user_id and use a single object instead of array
       const { data: savedData, error } = await supabase
         .from('roi_analises')
-        .insert([analysis])
+        .insert([{
+          ...analysis, 
+          user_id: (await supabase.auth.getUser()).data.user?.id
+        }])
         .select()
         .single();
 
