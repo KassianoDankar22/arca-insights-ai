@@ -38,10 +38,14 @@ ${data.entrada_valor ? `Entrada: $${data.entrada_valor}` : ''}${data.entrada_per
       
       console.log("Thread creation response:", threadData, threadError);
 
-      if (threadError || !threadData?.id) {
-        const errorMessage = threadError?.message || 'Erro desconhecido ao criar thread';
-        console.error("Thread creation error:", errorMessage);
-        throw new Error(`Falha ao criar thread: ${errorMessage}`);
+      if (threadError) {
+        console.error("Thread creation error:", threadError);
+        throw new Error(`Falha ao criar thread: ${threadError.message || 'Erro desconhecido'}`);
+      }
+      
+      if (!threadData?.id) {
+        console.error("Thread creation failed: No thread ID returned");
+        throw new Error("Falha ao criar thread: Nenhum ID de thread retornado");
       }
       
       const threadId = threadData.id;
@@ -79,9 +83,14 @@ ${data.entrada_valor ? `Entrada: $${data.entrada_valor}` : ''}${data.entrada_per
       
       console.log("Assistant run response:", runData, runError);
 
-      if (runError || !runData?.id) {
+      if (runError) {
         console.error("Run assistant error:", runError);
-        throw new Error(`Falha ao iniciar assistente: ${runError?.message || 'Erro desconhecido'}`);
+        throw new Error(`Falha ao iniciar assistente: ${runError.message || 'Erro desconhecido'}`);
+      }
+      
+      if (!runData?.id) {
+        console.error("Run assistant failed: No run ID returned");
+        throw new Error("Falha ao iniciar assistente: Nenhum ID de execução retornado");
       }
       
       const runId = runData.id;
@@ -119,8 +128,8 @@ ${data.entrada_valor ? `Entrada: $${data.entrada_valor}` : ''}${data.entrada_per
         if (runStatus === 'completed') {
           break;
         } else if (runStatus === 'failed' || runStatus === 'cancelled' || runStatus === 'expired') {
-          console.error("Run ended with error status:", runStatus);
-          throw new Error(`Análise falhou com status: ${runStatus}`);
+          console.error("Run ended with error status:", runStatus, statusData?.last_error);
+          throw new Error(`Análise falhou com status: ${runStatus}. Motivo: ${statusData?.last_error?.message || 'Desconhecido'}`);
         }
         
         // Wait before polling again
@@ -190,9 +199,18 @@ ${data.entrada_valor ? `Entrada: $${data.entrada_valor}` : ''}${data.entrada_per
             
             if (saveError) {
               console.error('Error saving analysis to database:', saveError);
+              // Continue despite save error
+              toast({
+                title: 'Aviso',
+                description: 'A análise foi concluída, mas não foi possível salvá-la. Você ainda pode exportá-la.',
+                variant: 'warning',
+              });
+            } else {
+              console.log('Analysis saved successfully to database');
             }
           } catch (e) {
             console.error('Error processing save tool call:', e);
+            // Continue despite tool call error
           }
         }
       }

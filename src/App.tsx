@@ -1,96 +1,58 @@
+import React from 'react';
+import { Auth } from '@supabase/auth-ui-react';
+import { ThemeSupa } from '@supabase/auth-ui-shared';
+import { useSession, useSupabaseClient } from '@supabase/auth-helpers-react';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 
-import { useState, useEffect } from 'react';
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import Login from "./components/Login";
-import ChatPage from "./pages/ChatPage";
-import RoiShortTermPage from "./pages/RoiShortTermPage";
-import RoiLongTermPage from "./pages/RoiLongTermPage";
-import MarketTrendsPage from "./pages/MarketTrendsPage";
-import SettingsPage from "./pages/SettingsPage";
-import HomePage from "./pages/HomePage";
-import NotFound from "./pages/NotFound";
-import MainLayout from "./components/MainLayout";
-import ToolsPage from "./pages/ToolsPage";
-import TomROIPage from "./pages/TomROIPage";
-import TomROIHistoryPage from "./pages/TomROIHistoryPage";
-import TomROIDetailPage from "./pages/TomROIDetailPage";
+import Navbar from './components/Navbar';
+import Dashboard from './pages/Dashboard';
+import PricingPage from './pages/PricingPage';
+import RoiShortTermPage from './pages/RoiShortTermPage';
+import TomROIPage from './pages/TomROIPage';
+import TomROIHistoryPage from './pages/TomROIHistoryPage';
+import RoiCalculator from './components/roi/RoiCalculator';
+import { Toaster } from 'sonner';
 
-const queryClient = new QueryClient();
-
-const App = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isReady, setIsReady] = useState(false);
-
-  useEffect(() => {
-    // Add viewport meta tag for responsive design
-    const meta = document.createElement('meta');
-    meta.name = 'viewport';
-    meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover';
-    document.head.appendChild(meta);
-    
-    // Fix for content shifting on mobile keyboard opening
-    const setAppHeight = () => {
-      document.documentElement.style.setProperty('--app-height', `${window.innerHeight}px`);
-    };
-    
-    window.addEventListener('resize', setAppHeight);
-    window.addEventListener('orientationchange', setAppHeight);
-    setAppHeight();
-    
-    setIsReady(true);
-    
-    return () => {
-      window.removeEventListener('resize', setAppHeight);
-      window.removeEventListener('orientationchange', setAppHeight);
-    };
-  }, []);
-
-  const handleLogin = () => {
-    setIsAuthenticated(true);
-  };
-
-  if (!isReady) {
-    return null; // Or a loading spinner
-  }
-
+// Add the Toaster component to the App component
+function App() {
+  const session = useSession();
+  const supabase = useSupabaseClient();
+  
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          {!isAuthenticated ? (
-            <Login onLogin={handleLogin} />
-          ) : (
+    <>
+      <Toaster position="top-right" richColors closeButton />
+      <Router>
+        <div className="min-h-screen bg-gray-100">
+          <Navbar />
+          <main className="container mx-auto px-4 py-6">
             <Routes>
-              <Route path="/" element={<MainLayout />}>
-                <Route index element={<HomePage />} />
-                <Route path="chat" element={<ChatPage />} />
-                <Route path="ferramentas" element={<ToolsPage />} />
-                <Route path="academy" element={<HomePage />} />
-                <Route path="financeiro" element={<HomePage />} />
-                <Route path="integracoes" element={<SettingsPage />} />
-                <Route path="roi-curto-prazo" element={<RoiShortTermPage />} />
-                <Route path="roi-longo-prazo" element={<RoiLongTermPage />} />
-                <Route path="tendencias" element={<MarketTrendsPage />} />
-                <Route path="configuracoes" element={<SettingsPage />} />
-                <Route path="ajuda" element={<HomePage />} />
-                {/* New Tom ROI routes */}
-                <Route path="analise/tom" element={<TomROIPage />} />
-                <Route path="analise/tom/:id" element={<TomROIDetailPage />} />
-                <Route path="meus-rois" element={<TomROIHistoryPage />} />
-              </Route>
-              <Route path="*" element={<NotFound />} />
+              <Route path="/" element={session ? <Dashboard /> : <Navigate to="/login" />} />
+              <Route path="/pricing" element={<PricingPage />} />
+              <Route path="/analise/curto-prazo" element={<RoiShortTermPage />} />
+              <Route path="/analise/tom" element={<TomROIPage />} />
+              <Route path="/meus-rois" element={<TomROIHistoryPage />} />
+              <Route path="/calculadora-roi" element={<RoiCalculator />} />
+              <Route
+                path="/login"
+                element={
+                  !session ? (
+                    <Auth
+                      supabaseClient={supabase}
+                      appearance={{ theme: ThemeSupa }}
+                      providers={['google', 'github']}
+                      redirectTo={`${window.location.origin}/`}
+                    />
+                  ) : (
+                    <Navigate to="/" />
+                  )
+                }
+              />
             </Routes>
-          )}
-        </BrowserRouter>
-      </TooltipProvider>
-    </QueryClientProvider>
+          </main>
+        </div>
+      </Router>
+    </>
   );
-};
+}
 
 export default App;

@@ -101,31 +101,37 @@ async function sendMessage(data: any, corsHeaders: HeadersInit) {
   
   console.log(`Sending message to thread ${threadId}`);
   
-  const response = await fetch(`https://api.openai.com/v1/threads/${threadId}/messages`, {
-    method: "POST",
-    headers: {
-      "Authorization": `Bearer ${OPENAI_API_KEY}`,
-      "Content-Type": "application/json",
-      "OpenAI-Beta": "assistants=v1"
-    },
-    body: JSON.stringify({
-      role: "user",
-      content: content
-    })
-  });
+  try {
+    const response = await fetch(`https://api.openai.com/v1/threads/${threadId}/messages`, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${OPENAI_API_KEY}`,
+        "Content-Type": "application/json",
+        "OpenAI-Beta": "assistants=v1"
+      },
+      body: JSON.stringify({
+        role: "user",
+        content: content
+      })
+    });
 
-  if (!response.ok) {
-    const errorData = await response.json();
-    console.error("OpenAI API error:", errorData);
-    throw new Error(`OpenAI API error: ${errorData.error?.message || response.statusText}`);
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error("OpenAI API error sending message:", errorData);
+      throw new Error(`OpenAI API error: ${errorData.error?.message || response.statusText}`);
+    }
+
+    const responseData = await response.json();
+    console.log("Message sent successfully:", responseData.id);
+    
+    return new Response(
+      JSON.stringify(responseData),
+      { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
+  } catch (error) {
+    console.error("Error sending message:", error);
+    throw error;
   }
-
-  const responseData = await response.json();
-  
-  return new Response(
-    JSON.stringify(responseData),
-    { headers: { ...corsHeaders, "Content-Type": "application/json" } }
-  );
 }
 
 // Run an assistant on a thread
@@ -138,30 +144,36 @@ async function runAssistant(data: any, corsHeaders: HeadersInit) {
   
   console.log(`Running assistant ${ASSISTANT_ID} on thread ${threadId}`);
   
-  const response = await fetch(`https://api.openai.com/v1/threads/${threadId}/runs`, {
-    method: "POST",
-    headers: {
-      "Authorization": `Bearer ${OPENAI_API_KEY}`,
-      "Content-Type": "application/json",
-      "OpenAI-Beta": "assistants=v1"
-    },
-    body: JSON.stringify({
-      assistant_id: ASSISTANT_ID
-    })
-  });
+  try {
+    const response = await fetch(`https://api.openai.com/v1/threads/${threadId}/runs`, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${OPENAI_API_KEY}`,
+        "Content-Type": "application/json",
+        "OpenAI-Beta": "assistants=v1"
+      },
+      body: JSON.stringify({
+        assistant_id: ASSISTANT_ID
+      })
+    });
 
-  if (!response.ok) {
-    const errorData = await response.json();
-    console.error("OpenAI API error:", errorData);
-    throw new Error(`OpenAI API error: ${errorData.error?.message || response.statusText}`);
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error("OpenAI API error running assistant:", errorData);
+      throw new Error(`OpenAI API error: ${errorData.error?.message || response.statusText}`);
+    }
+
+    const responseData = await response.json();
+    console.log("Run created successfully with ID:", responseData.id);
+    
+    return new Response(
+      JSON.stringify(responseData),
+      { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
+  } catch (error) {
+    console.error("Error running assistant:", error);
+    throw error;
   }
-
-  const responseData = await response.json();
-  
-  return new Response(
-    JSON.stringify(responseData),
-    { headers: { ...corsHeaders, "Content-Type": "application/json" } }
-  );
 }
 
 // Check the status of a run
@@ -174,27 +186,33 @@ async function checkRunStatus(data: any, corsHeaders: HeadersInit) {
   
   console.log(`Checking status of run ${runId} on thread ${threadId}`);
   
-  const response = await fetch(`https://api.openai.com/v1/threads/${threadId}/runs/${runId}`, {
-    method: "GET",
-    headers: {
-      "Authorization": `Bearer ${OPENAI_API_KEY}`,
-      "Content-Type": "application/json",
-      "OpenAI-Beta": "assistants=v1"
+  try {
+    const response = await fetch(`https://api.openai.com/v1/threads/${threadId}/runs/${runId}`, {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${OPENAI_API_KEY}`,
+        "Content-Type": "application/json",
+        "OpenAI-Beta": "assistants=v1"
+      }
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error("OpenAI API error checking run status:", errorData);
+      throw new Error(`OpenAI API error: ${errorData.error?.message || response.statusText}`);
     }
-  });
 
-  if (!response.ok) {
-    const errorData = await response.json();
-    console.error("OpenAI API error:", errorData);
-    throw new Error(`OpenAI API error: ${errorData.error?.message || response.statusText}`);
+    const responseData = await response.json();
+    console.log(`Run ${runId} status:`, responseData.status);
+    
+    return new Response(
+      JSON.stringify(responseData),
+      { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
+  } catch (error) {
+    console.error("Error checking run status:", error);
+    throw error;
   }
-
-  const responseData = await response.json();
-  
-  return new Response(
-    JSON.stringify(responseData),
-    { headers: { ...corsHeaders, "Content-Type": "application/json" } }
-  );
 }
 
 // Get messages from a thread
@@ -207,25 +225,31 @@ async function getMessages(data: any, corsHeaders: HeadersInit) {
   
   console.log(`Getting messages from thread ${threadId}`);
   
-  const response = await fetch(`https://api.openai.com/v1/threads/${threadId}/messages`, {
-    method: "GET",
-    headers: {
-      "Authorization": `Bearer ${OPENAI_API_KEY}`,
-      "Content-Type": "application/json",
-      "OpenAI-Beta": "assistants=v1"
+  try {
+    const response = await fetch(`https://api.openai.com/v1/threads/${threadId}/messages`, {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${OPENAI_API_KEY}`,
+        "Content-Type": "application/json",
+        "OpenAI-Beta": "assistants=v1"
+      }
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error("OpenAI API error getting messages:", errorData);
+      throw new Error(`OpenAI API error: ${errorData.error?.message || response.statusText}`);
     }
-  });
 
-  if (!response.ok) {
-    const errorData = await response.json();
-    console.error("OpenAI API error:", errorData);
-    throw new Error(`OpenAI API error: ${errorData.error?.message || response.statusText}`);
+    const responseData = await response.json();
+    console.log(`Retrieved ${responseData.data?.length || 0} messages from thread ${threadId}`);
+    
+    return new Response(
+      JSON.stringify(responseData),
+      { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
+  } catch (error) {
+    console.error("Error getting messages:", error);
+    throw error;
   }
-
-  const responseData = await response.json();
-  
-  return new Response(
-    JSON.stringify(responseData),
-    { headers: { ...corsHeaders, "Content-Type": "application/json" } }
-  );
 }

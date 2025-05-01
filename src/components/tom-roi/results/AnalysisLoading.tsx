@@ -31,6 +31,25 @@ const AnalysisLoading: React.FC<AnalysisLoadingProps> = ({ stage, percentage }) 
         return 'Preparando análise...';
     }
   };
+
+  const getDetailedMessage = () => {
+    switch (stage) {
+      case 'creating-thread':
+        return 'Estabelecendo conexão com o assistente de análise de ROI';
+      case 'sending-message':
+        return 'Transmitindo os detalhes do imóvel para análise';
+      case 'running-assistant':
+        return 'O assistente está processando os dados e calculando retornos';
+      case 'checking-status':
+        return 'Verificando o progresso da análise (isso pode demorar alguns segundos)';
+      case 'getting-results':
+        return 'Análise concluída, preparando a exibição dos resultados';
+      case 'complete':
+        return 'Pronto! Exibindo os resultados da análise';
+      default:
+        return 'Inicializando o sistema de análise';
+    }
+  };
   
   return (
     <Card className="bg-white/80 backdrop-blur-lg border border-gray-200 shadow-lg">
@@ -52,6 +71,9 @@ const AnalysisLoading: React.FC<AnalysisLoadingProps> = ({ stage, percentage }) 
             </p>
             <p className="text-gray-500 text-sm font-medium">
               {getStageMessage()}
+            </p>
+            <p className="text-gray-400 text-xs">
+              {getDetailedMessage()}
             </p>
           </div>
           
