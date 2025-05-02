@@ -2,6 +2,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 
+// Acesso explícito à variável de ambiente com fallback para evitar erros
 const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY") || "";
 const ASSISTANT_ID = "asst_nPUpDeVkDUmc1PUrBr7NsmrR";
 
@@ -17,13 +18,18 @@ serve(async (req) => {
   }
 
   try {
+    // Log da requisição recebida
+    console.log("Request received:", req.method, req.url);
+    
     const { action, data } = await req.json();
     
     console.log(`Processing action: ${action} with data:`, JSON.stringify(data || {}));
     console.log("API key available:", OPENAI_API_KEY ? "Yes" : "No");
+    console.log("API key length:", OPENAI_API_KEY?.length || 0);
     
-    if (!OPENAI_API_KEY) {
-      throw new Error("OPENAI_API_KEY environment variable not configured");
+    if (!OPENAI_API_KEY || OPENAI_API_KEY.trim() === "") {
+      console.error("OpenAI API Key não configurada ou vazia");
+      throw new Error("OPENAI_API_KEY environment variable not configured or empty");
     }
 
     switch (action) {
@@ -44,15 +50,20 @@ serve(async (req) => {
       
       default:
         return new Response(
-          JSON.stringify({ error: "Invalid action" }),
+          JSON.stringify({ error: "Invalid action", success: false }),
           { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
     }
   } catch (error) {
     console.error("Error in tom-assistant function:", error);
     
+    // Retorna mensagem de erro detalhada
     return new Response(
-      JSON.stringify({ error: error.message || "An unexpected error occurred" }),
+      JSON.stringify({ 
+        error: error.message || "An unexpected error occurred", 
+        success: false,
+        timestamp: new Date().toISOString()
+      }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
@@ -62,6 +73,7 @@ serve(async (req) => {
 async function createThread(corsHeaders: HeadersInit) {
   console.log("Creating thread with OpenAI...");
   console.log("API key available for createThread:", OPENAI_API_KEY ? "Yes" : "No");
+  console.log("API key length:", OPENAI_API_KEY?.length || 0);
   
   try {
     const response = await fetch("https://api.openai.com/v1/threads", {
@@ -77,6 +89,7 @@ async function createThread(corsHeaders: HeadersInit) {
     if (!response.ok) {
       const errorData = await response.json();
       console.error("OpenAI API error:", errorData);
+      console.error("Status:", response.status, response.statusText);
       throw new Error(`OpenAI API error: ${errorData.error?.message || response.statusText}`);
     }
 
@@ -84,7 +97,7 @@ async function createThread(corsHeaders: HeadersInit) {
     console.log("Thread created successfully with ID:", data.id);
     
     return new Response(
-      JSON.stringify(data),
+      JSON.stringify({ ...data, success: true }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error) {
@@ -120,6 +133,7 @@ async function sendMessage(data: any, corsHeaders: HeadersInit) {
     if (!response.ok) {
       const errorData = await response.json();
       console.error("OpenAI API error sending message:", errorData);
+      console.error("Status:", response.status, response.statusText);
       throw new Error(`OpenAI API error: ${errorData.error?.message || response.statusText}`);
     }
 
@@ -127,7 +141,7 @@ async function sendMessage(data: any, corsHeaders: HeadersInit) {
     console.log("Message sent successfully:", responseData.id);
     
     return new Response(
-      JSON.stringify(responseData),
+      JSON.stringify({ ...responseData, success: true }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error) {
@@ -162,6 +176,7 @@ async function runAssistant(data: any, corsHeaders: HeadersInit) {
     if (!response.ok) {
       const errorData = await response.json();
       console.error("OpenAI API error running assistant:", errorData);
+      console.error("Status:", response.status, response.statusText);
       throw new Error(`OpenAI API error: ${errorData.error?.message || response.statusText}`);
     }
 
@@ -169,7 +184,7 @@ async function runAssistant(data: any, corsHeaders: HeadersInit) {
     console.log("Run created successfully with ID:", responseData.id);
     
     return new Response(
-      JSON.stringify(responseData),
+      JSON.stringify({ ...responseData, success: true }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error) {
@@ -201,6 +216,7 @@ async function checkRunStatus(data: any, corsHeaders: HeadersInit) {
     if (!response.ok) {
       const errorData = await response.json();
       console.error("OpenAI API error checking run status:", errorData);
+      console.error("Status:", response.status, response.statusText);
       throw new Error(`OpenAI API error: ${errorData.error?.message || response.statusText}`);
     }
 
@@ -208,7 +224,7 @@ async function checkRunStatus(data: any, corsHeaders: HeadersInit) {
     console.log(`Run ${runId} status:`, responseData.status);
     
     return new Response(
-      JSON.stringify(responseData),
+      JSON.stringify({ ...responseData, success: true }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error) {
@@ -240,6 +256,7 @@ async function getMessages(data: any, corsHeaders: HeadersInit) {
     if (!response.ok) {
       const errorData = await response.json();
       console.error("OpenAI API error getting messages:", errorData);
+      console.error("Status:", response.status, response.statusText);
       throw new Error(`OpenAI API error: ${errorData.error?.message || response.statusText}`);
     }
 
@@ -247,7 +264,7 @@ async function getMessages(data: any, corsHeaders: HeadersInit) {
     console.log(`Retrieved ${responseData.data?.length || 0} messages from thread ${threadId}`);
     
     return new Response(
-      JSON.stringify(responseData),
+      JSON.stringify({ ...responseData, success: true }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error) {
