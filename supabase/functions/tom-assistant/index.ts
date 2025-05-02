@@ -22,12 +22,19 @@ serve(async (req) => {
     console.log("[DEBUG] Request received:", req.method, req.url);
     
     // Log API key status (without revealing the actual key)
-    console.log("[DEBUG] API key status:", OPENAI_API_KEY ? `Available (${OPENAI_API_KEY.length} chars)` : "Not available");
-    console.log("[DEBUG] API key starts with:", OPENAI_API_KEY.slice(0, 5) + "...");
+    const apiKeyStatus = OPENAI_API_KEY ? "Available" : "Not available";
+    console.log("[DEBUG] API key status:", apiKeyStatus);
     
-    if (!OPENAI_API_KEY) {
+    if (!OPENAI_API_KEY || OPENAI_API_KEY.trim() === "") {
       console.error("[ERROR] Missing OpenAI API key");
-      throw new Error("OpenAI API key is not configured. Please check your environment variables.");
+      return new Response(
+        JSON.stringify({ 
+          error: "OpenAI API key is not configured. Please check your environment variables.", 
+          success: false,
+          code: "API_KEY_MISSING"
+        }),
+        { status: 500, headers: { ...CorsHeaders, "Content-Type": "application/json" } }
+      );
     }
     
     const { action, data } = await req.json();

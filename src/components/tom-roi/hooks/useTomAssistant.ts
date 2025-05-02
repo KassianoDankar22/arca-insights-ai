@@ -40,6 +40,9 @@ ${data.entrada_valor ? `Entrada: $${data.entrada_valor}` : ''}${data.entrada_per
 
       if (threadError) {
         console.error("Thread creation error:", threadError);
+        if (threadError.message && threadError.message.includes("API_KEY_MISSING")) {
+          throw new Error("A chave da API OpenAI não está configurada. Entre em contato com o administrador do sistema.");
+        }
         throw new Error(`Falha ao criar thread: ${threadError.message || 'Erro desconhecido'}`);
       }
       
