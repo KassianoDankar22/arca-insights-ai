@@ -2,7 +2,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 
-// Acesso explícito à variável de ambiente com fallback para evitar erros
+// Retrieve OpenAI API key directly from environment variables
 const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY") || "";
 const ASSISTANT_ID = "asst_nPUpDeVkDUmc1PUrBr7NsmrR";
 
@@ -18,18 +18,27 @@ serve(async (req) => {
   }
 
   try {
-    // Log da requisição recebida
+    // Debug logging for request info
     console.log("Request received:", req.method, req.url);
     
     const { action, data } = await req.json();
     
     console.log(`Processing action: ${action} with data:`, JSON.stringify(data || {}));
+    
+    // Verbose logging for API key presence (without revealing the actual key)
     console.log("API key available:", OPENAI_API_KEY ? "Yes" : "No");
     console.log("API key length:", OPENAI_API_KEY?.length || 0);
     
     if (!OPENAI_API_KEY || OPENAI_API_KEY.trim() === "") {
       console.error("OpenAI API Key não configurada ou vazia");
       throw new Error("OPENAI_API_KEY environment variable not configured or empty");
+    }
+
+    // Direct API key check - avoid printing the actual key
+    if (OPENAI_API_KEY.startsWith("sk-")) {
+      console.log("API key format appears valid (starts with 'sk-')");
+    } else {
+      console.error("API key format appears invalid (doesn't start with 'sk-')");
     }
 
     switch (action) {
@@ -57,7 +66,7 @@ serve(async (req) => {
   } catch (error) {
     console.error("Error in tom-assistant function:", error);
     
-    // Retorna mensagem de erro detalhada
+    // Return detailed error message
     return new Response(
       JSON.stringify({ 
         error: error.message || "An unexpected error occurred", 
@@ -76,6 +85,9 @@ async function createThread(corsHeaders: HeadersInit) {
   console.log("API key length:", OPENAI_API_KEY?.length || 0);
   
   try {
+    // Add more detailed logging for fetch operation
+    console.log("Attempting to create thread via OpenAI API...");
+    
     const response = await fetch("https://api.openai.com/v1/threads", {
       method: "POST",
       headers: {
@@ -86,10 +98,21 @@ async function createThread(corsHeaders: HeadersInit) {
       body: JSON.stringify({})
     });
 
+    // Log response status
+    console.log("OpenAI API response status:", response.status, response.statusText);
+
     if (!response.ok) {
-      const errorData = await response.json();
+      const errorText = await response.text();
+      console.error("OpenAI API error response body:", errorText);
+      
+      let errorData;
+      try {
+        errorData = JSON.parse(errorText);
+      } catch (e) {
+        errorData = { error: { message: "Failed to parse error response" } };
+      }
+      
       console.error("OpenAI API error:", errorData);
-      console.error("Status:", response.status, response.statusText);
       throw new Error(`OpenAI API error: ${errorData.error?.message || response.statusText}`);
     }
 

@@ -16,8 +16,8 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({ isLoading }) => {
       <Button 
         type="submit" 
         disabled={isLoading}
-        className={`w-full ${isMobile ? 'h-12' : 'h-14'} bg-arca-blue hover:bg-blue-600 text-white transition-colors rounded-lg disabled:opacity-70 disabled:cursor-not-allowed`}
-        aria-label="Iniciar análise"
+        className={`w-full ${isMobile ? 'h-12' : 'h-14'} bg-arca-blue hover:bg-blue-600 text-white transition-colors rounded-lg disabled:opacity-70 disabled:cursor-not-allowed relative`}
+        aria-label={isLoading ? "Analisando dados" : "Iniciar análise"}
       >
         {isLoading ? (
           <div className="flex items-center justify-center gap-2">
