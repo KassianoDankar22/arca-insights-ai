@@ -22,8 +22,11 @@ serve(async (req) => {
     console.log("[DEBUG] Request received:", req.method, req.url);
     
     // Log API key status (without revealing the actual key)
-    const apiKeyStatus = OPENAI_API_KEY ? "Available" : "Not available";
-    console.log("[DEBUG] API key status:", apiKeyStatus);
+    const apiKeyLength = OPENAI_API_KEY ? OPENAI_API_KEY.length : 0;
+    console.log("[DEBUG] API key status: " + (apiKeyLength > 0 ? `Available (${apiKeyLength} chars)` : "Not available"));
+    if (apiKeyLength > 0) {
+      console.log("[DEBUG] API key starts with:", OPENAI_API_KEY.substring(0, 3) + "...");
+    }
     
     if (!OPENAI_API_KEY || OPENAI_API_KEY.trim() === "") {
       console.error("[ERROR] Missing OpenAI API key");
