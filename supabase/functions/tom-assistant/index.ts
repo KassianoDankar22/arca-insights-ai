@@ -20,6 +20,7 @@ serve(async (req) => {
     const { action, data } = await req.json();
     
     console.log(`Processing action: ${action} with data:`, JSON.stringify(data || {}));
+    console.log("API key available:", OPENAI_API_KEY ? "Yes" : "No");
     
     if (!OPENAI_API_KEY) {
       throw new Error("OPENAI_API_KEY environment variable not configured");
@@ -60,6 +61,7 @@ serve(async (req) => {
 // Create a new thread
 async function createThread(corsHeaders: HeadersInit) {
   console.log("Creating thread with OpenAI...");
+  console.log("API key available for createThread:", OPENAI_API_KEY ? "Yes" : "No");
   
   try {
     const response = await fetch("https://api.openai.com/v1/threads", {
