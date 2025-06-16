@@ -30,6 +30,7 @@ interface CourseCardProps {
   rating?: number;
   students?: number;
   thumbnail?: string;
+  imageUrl?: string; // Add imageUrl as optional prop
   category?: string;
   onClick?: () => void;
 }
@@ -43,15 +44,18 @@ const CourseCard: React.FC<CourseCardProps> = ({
   rating = 0,
   students = 0,
   thumbnail,
+  imageUrl, // Use imageUrl or thumbnail
   category,
   onClick
 }) => {
+  const displayImage = imageUrl || thumbnail;
+  
   return (
     <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={onClick}>
-      {thumbnail && (
+      {displayImage && (
         <div className="w-full h-48 overflow-hidden rounded-t-lg">
           <img 
-            src={thumbnail} 
+            src={displayImage} 
             alt={title}
             className="w-full h-full object-cover"
           />

@@ -93,7 +93,10 @@ export interface PropertyData {
   monthlyRent: number;
   annualRent: number;
   grossIncome: number;
-  netIncome: number;
+  netIncome: {
+    monthly: number;
+    annual: number;
+  };
   roi: number;
   capRate: number;
   cashOnCash: number;
@@ -114,6 +117,10 @@ export interface PropertyData {
   };
   roiPercentOnDownPayment: number;
 
+  // Propriedades adicionais necessárias
+  decoracao_total?: number;
+  closing_costs_total?: number;
+
   // Metadados opcionais
   texto_analise_ia?: string | null;
   prompt_utilizado_ia?: string | null;
@@ -127,7 +134,7 @@ export interface ROIAnalysisResult {
   projectName: string;
   location: string;
   modelType: string;
-  modelo: string;
+  modelo?: string;
   bedrooms: number;
   hasPool: boolean;
   purchasePrice: number;
@@ -138,6 +145,7 @@ export interface ROIAnalysisResult {
   brokerLogoUrl: string | null | undefined;
   resultado_texto: string;
   propertyData: PropertyData;
+  analysisDate?: string;
 }
 
 /**
@@ -188,6 +196,13 @@ export const tomPropertyAnalysisSchema = z.object({
     .min(50, 'Taxa de ocupação deve ser no mínimo 50%')
     .max(100, 'Taxa de ocupação não pode exceder 100%'),
   brokerLogoUrl: z.string().url("URL do logo inválida").nullable().optional(),
+  // Add missing financial properties
+  annualInterestRate: z.number().optional(),
+  loanTermYears: z.number().optional(),
+  estimatedDailyRate: z.number().optional(),
+  condoFeeMonthly: z.number().optional(),
+  propertyManagementFeePercent: z.number().optional(),
+  annualAppreciationRate: z.number().optional(),
 });
 
 export type TomPropertyAnalysisInput = z.infer<typeof tomPropertyAnalysisSchema>;

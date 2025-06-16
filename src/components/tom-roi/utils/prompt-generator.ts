@@ -1,3 +1,4 @@
+
 /**
  * ========================================
  * ARCA AI - ROI ANALYSIS PLATFORM
@@ -14,25 +15,7 @@
  * ========================================
  */
 
-/**
- * ========================================
- * ARCA AI - ROI ANALYSIS PLATFORM
- * ========================================
- * 
- * Copyright (c) 2024 JimmyDev
- * All rights reserved.
- * 
- * PROPRIETARY AND CONFIDENTIAL
- * This file contains proprietary code developed by JimmyDev.
- * Unauthorized copying, distribution, or use is strictly prohibited.
- * 
- * Developed by: JimmyDev
- * ========================================
- */
-
 import { TomPropertyAnalysisInput } from "../types/analyzer-types";
-import { calcularSeguroMensalPorQuartos, calcularAguaMensalPorQuartos } from "./financial-utils";
-// ROIAnalysisResult não é mais necessário como parâmetro direto para informações básicas do imóvel
 
 /**
  * Gera o prompt para o Claude Sonnet 3.7 com valores pré-calculados
@@ -40,8 +23,6 @@ import { calcularSeguroMensalPorQuartos, calcularAguaMensalPorQuartos } from "./
  */
 export function gerarPromptRoiAnalise(
   analysisInput: TomPropertyAnalysisInput 
-  // O segundo parâmetro infoImovel: ROIAnalysisResult foi removido
-  // O terceiro parâmetro formatCurrency foi removido
 ): string {
   if (!analysisInput) {
     console.error("[ERRO] gerarPromptRoiAnalise recebeu analysisInput inválido.");
@@ -55,7 +36,7 @@ export function gerarPromptRoiAnalise(
     const entradaPercent = (analysisInput.downPaymentPercent || 0).toFixed(1);
     const taxaJuros = (analysisInput.annualInterestRate || 7.00).toFixed(2);
     const prazoAnos = analysisInput.loanTermYears || 30;
-    const diariaMedia = analysisInput.estimatedDailyRate;
+    const diariaMedia = analysisInput.estimatedDailyRate || 200;
     const ocupacao = (analysisInput.annualOccupancyRate || 80).toFixed(1);
     const valorizacaoPercent = (analysisInput.annualAppreciationRate || 3.0).toFixed(1);
     

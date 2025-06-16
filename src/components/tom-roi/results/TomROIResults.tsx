@@ -131,6 +131,16 @@ const TomROIResults: React.FC<TomROIResultsProps> = ({
               <p className="text-gray-500 mt-1">
                 {result.location}
               </p>
+              {propertyData.decoracao_total && (
+                <p className="text-sm text-gray-500">
+                  Decoração: {formatCurrency(propertyData.decoracao_total)}
+                </p>
+              )}
+              {propertyData.closing_costs_total && (
+                <p className="text-sm text-gray-500">
+                  Custos de Fechamento: {formatCurrency(propertyData.closing_costs_total)}
+                </p>
+              )}
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -218,6 +228,23 @@ const TomROIResults: React.FC<TomROIResultsProps> = ({
                 </div>
               </div>
             </div>
+
+            {/* Analysis Text Section */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-gray-900">
+                Análise Detalhada
+              </h3>
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <pre className="whitespace-pre-wrap text-sm text-gray-700">
+                  {result.resultado_texto}
+                </pre>
+              </div>
+              {result.analysisDate && (
+                <p className="text-xs text-gray-500">
+                  Análise realizada em: {result.analysisDate}
+                </p>
+              )}
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -225,4 +252,4 @@ const TomROIResults: React.FC<TomROIResultsProps> = ({
   );
 };
 
-export default TomROIResults; 
+export default TomROIResults;

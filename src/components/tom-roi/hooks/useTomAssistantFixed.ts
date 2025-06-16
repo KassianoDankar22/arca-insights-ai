@@ -253,7 +253,10 @@ const parseAnalysisTextToResult = (analysisText: string, formData: FormValues): 
       annualRent: 0,
       occupancyRate: 0,
       grossIncome: 0,
-      netIncome: 0,
+      netIncome: {
+        monthly: 0,
+        annual: 0
+      },
       roi: 0,
       capRate: 0,
       cashOnCash: 0,
@@ -262,7 +265,7 @@ const parseAnalysisTextToResult = (analysisText: string, formData: FormValues): 
       modelo_imovel: '',
       quartos_imovel: '',
       piscina_imovel: false,
-      tipo_investimento: 'financing',
+      tipo_investimento: 'financing', // Use 'financing' instead of 'local_financing'
       valor_imovel: 0,
       valor_entrada: 0,
       percentual_entrada: 0,
@@ -295,7 +298,24 @@ const parseAnalysisTextToResult = (analysisText: string, formData: FormValues): 
       valorizacao_valor_anual_estimado: 0,
       texto_analise_ia: null,
       prompt_utilizado_ia: null,
-      logo_broker_url: null
+      logo_broker_url: null,
+      // Propriedades para compatibilidade
+      rentalIncome: {
+        monthly: 0,
+        annual: 0
+      },
+      expenses: {
+        monthly: {
+          total: 0
+        },
+        annual: 0
+      },
+      appreciation: {
+        amount: 0
+      },
+      roiPercentOnDownPayment: 0,
+      decoracao_total: 0,
+      closing_costs_total: 0
     } as PropertyData
   };
 
@@ -385,7 +405,10 @@ const parseAnalysisTextToResult = (analysisText: string, formData: FormValues): 
     annualRent: aluguelAnual,
     occupancyRate: ocupacaoMedia,
     grossIncome: aluguelAnual,
-    netIncome: rendimentoAposDespesasA,
+    netIncome: {
+      monthly: rendimentoAposDespesasM,
+      annual: rendimentoAposDespesasA
+    },
     roi: roiSobreEntrada,
     capRate: (rendimentoAposDespesasA / parsedData.purchasePrice) * 100,
     cashOnCash: roiSobreEntrada,
@@ -496,26 +519,20 @@ export function useTomAssistant() {
       await new Promise(resolve => setTimeout(resolve, 800));
       
       // Preparar dados para o prompt
-      const infoImovelForPrompt: AnalyzerPropertyData = {
-        nome_condominio: formData.condominio,
-        localizacao_imovel: formData.localizacao,
-        modelo_imovel: formData.modelo,
-        quartos_imovel: formData.quartos || '0',
-        piscina_imovel: formData.piscina,
-        tipo_investimento: 'financing',
-        valor_imovel: parseFloat(formData.valor_imovel || '0') || 0,
-        valor_entrada: parseFloat(formData.entrada_valor || '0') || 0,
-        percentual_entrada: parseFloat(formData.entrada_percentual || '0') || 0,
-        monthlyRent: 0, annualRent: 0, occupancyRate: 0, grossIncome: 0, netIncome: 0, roi: 0, capRate: 0, cashOnCash: 0,
-        valor_financiado: 0, parcela_mensal: 0, receita_aluguel_mensal: 0, despesas_totais_mensais: 0,
-        valor_condominio_mensal: 0, valor_iptu_mensal: 0, valor_seguro_mensal: 0, valor_energia_mensal: 0, valor_agua_mensal: 0, valor_piscina_mensal: 0,
-        custo_transacao_diluido_mensal: 0, percentual_taxa_administracao_mensal: 0, valor_taxa_administracao_mensal: 0,
-        percentual_reserva_manutencao_mensal: 0, valor_reserva_manutencao_mensal: 0, custo_decoracao_diluido_mensal: 0,
-        percentual_decoracao: 0, percentual_closing_costs: 0, fluxo_caixa_mensal_antes_ir: 0, custo_total_aquisicao: 0,
-        cap_rate_liquido_sobre_custo_total_aquisicao: 0, cash_on_cash_return_liquido_antes_ir: 0, percentual_vacancia_anual: 0,
-        valorizacao_percentual_anual_estimada: 0, valorizacao_valor_anual_estimado: 0,
-      } as PropertyData;
-      
+      const infoImovelForPrompt = {
+        projectName: formData.condominio,
+        location: formData.localizacao,
+        modelType: formData.modelo,
+        bedrooms: parseInt(formData.quartos) || 0,
+        hasPool: formData.piscina,
+        purchasePrice: parseFloat(formData.valor_imovel || '0') || 0,
+        downPaymentValue: parseFloat(formData.entrada_valor || '0') || 0,
+        downPaymentPercent: parseFloat(formData.entrada_percentual || '0') || 0,
+        investmentType: 'local_financing' as const,
+        annualOccupancyRate: 80,
+        brokerLogoUrl: formData.logoUrl
+      };
+
       // Criar prompt para a análise de ROI
       const dataForPrompt = propertyData || infoImovelForPrompt;
 
@@ -631,11 +648,10 @@ export function useTomAssistant() {
         projectName: cleanProjectName(formData.condominio),
         location: formData.localizacao,
         modelType: formData.modelo,
-        modelo: formData.modelo,
         bedrooms: parseInt(formData.quartos || '0') || 0,
         hasPool: formData.piscina,
         purchasePrice: parseFloat(formData.valor_imovel || '0') || 0,
-        investmentType: (formData.tipo_investimento as ROIAnalysisResult["investmentType"]) || 'local_financing',
+        investmentType: 'local_financing' as const,
         downPaymentValue: parseFloat(formData.entrada_valor || '0') || 0,
         downPaymentPercent: parseFloat(formData.entrada_percentual || '0') || 0,
         annualOccupancyRate: parsedData.propertyData?.occupancyRate || 85,
