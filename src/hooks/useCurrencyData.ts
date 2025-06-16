@@ -30,7 +30,6 @@
  * ========================================
  */
 
-
 import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { CurrencyResponse } from '@/types/currency';
@@ -44,6 +43,11 @@ export interface CurrencyState {
   weeklyLow: number | null;
   isLoading: boolean;
   lastUpdate: string;
+  dayHistory: Array<{
+    time: string;
+    rate: number;
+    change: number;
+  }>;
 }
 
 export const useCurrencyData = () => {
@@ -56,6 +60,7 @@ export const useCurrencyData = () => {
     weeklyLow: null,
     isLoading: true,
     lastUpdate: '',
+    dayHistory: [],
   });
 
   const fetchDollarRate = useCallback(async () => {
@@ -67,14 +72,33 @@ export const useCurrencyData = () => {
       if (response.data && response.data.USDBRL) {
         const data = response.data.USDBRL;
         const newRate = parseFloat(data.bid);
+        const currentTime = new Date().toLocaleTimeString('pt-BR', { 
+          hour: '2-digit', 
+          minute: '2-digit' 
+        });
         
         setState(prevState => {
-          // Save previous rate and calculate changes
+          // Calculate percentage change from previous rate
+          let changePercent = 0;
+          if (prevState.dollarRate !== null) {
+            changePercent = ((newRate - prevState.dollarRate) / prevState.dollarRate) * 100;
+          }
+
+          // Update day history (keep last 10 entries)
+          const newHistoryEntry = {
+            time: currentTime,
+            rate: newRate,
+            change: changePercent
+          };
+
+          const updatedHistory = [newHistoryEntry, ...prevState.dayHistory].slice(0, 10);
+
           const updatedState: CurrencyState = { 
             ...prevState,
             dollarRate: newRate,
             isLoading: false,
-            lastUpdate: new Date(data.create_date).toLocaleTimeString()
+            lastUpdate: currentTime,
+            dayHistory: updatedHistory
           };
           
           // Process previous rate if it exists
