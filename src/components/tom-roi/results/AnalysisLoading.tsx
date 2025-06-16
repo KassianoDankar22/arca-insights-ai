@@ -36,6 +36,7 @@ import { ProgressState } from '../types/analyzer-types';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Button } from '@/components/ui/button';
 import { RefreshCw } from 'lucide-react';
+import LoaderOne from '@/components/ui/loader-one';
 
 interface AnalysisLoadingProps {
   stage?: string;
@@ -138,7 +139,9 @@ const AnalysisLoading: React.FC<AnalysisLoadingProps> = ({
     <div className="flex flex-col items-center justify-center p-8 text-center">
       <div className="w-full max-w-md space-y-8">
         <div className="flex flex-col items-center">
-          <div className="w-12 h-12 border-4 border-arca-main border-t-transparent rounded-full animate-spin mb-6"></div>
+          <div className="mb-6">
+            <LoaderOne />
+          </div>
         <h2 className="text-2xl font-bold">{getStageText(stage)}</h2>
         </div>
         <div>
