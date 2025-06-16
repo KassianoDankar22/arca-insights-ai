@@ -272,7 +272,10 @@ export function calcularROIUnificado(dadosBase: ROIInputData): PropertyData {
     monthlyRent: aluguelMensal,
     annualRent: aluguelAnual,
     grossIncome: aluguelAnual,
-    netIncome: fluxoCaixaAnual,
+    netIncome: {
+      monthly: fluxoCaixaMensal,
+      annual: fluxoCaixaAnual
+    },
     roi: roiSobreEntrada,
     capRate: valorImovel > 0 ? ((aluguelAnual - despesasAnuaisTotal) / valorImovel) * 100 : 0,
     cashOnCash: roiSobreEntrada,
@@ -362,7 +365,10 @@ export const calculateROIMetrics = (propertyData: any) => {
     monthlyRent: propertyData.rentalIncome.monthly,
     annualRent: propertyData.rentalIncome.annual,
     grossIncome: propertyData.grossIncome,
-    netIncome: rendimentoLiquidoAnual,
+    netIncome: {
+      monthly: rendimentoLiquidoMensal,
+      annual: rendimentoLiquidoAnual
+    },
     roi: propertyData.roi,
     capRate: propertyData.capRate,
     cashOnCash: propertyData.cashOnCash,

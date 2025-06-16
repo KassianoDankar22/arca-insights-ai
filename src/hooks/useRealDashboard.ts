@@ -32,7 +32,7 @@
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/lib/auth';
+import { useAuth } from './use-auth';
 
 // Interface para análises ROI do Supabase
 interface ROIAnalysis {
@@ -87,15 +87,15 @@ interface DashboardStats {
 
 interface Lead {
   id: string;
-  user_id: string;
   nome: string;
   email: string;
   telefone: string;
   fonte: string;
-  status: "Novo" | "Contatado" | "Qualificado" | "Proposta Enviada" | "Negociação" | "Fechado" | "Perdido";
+  status: 'Novo' | 'Contatado' | 'Qualificado' | 'Proposta Enviada' | 'Negociação' | 'Fechado' | 'Perdido';
   data_criacao: string;
   updated_at: string;
-  valor_negociado?: number;
+  user_id: string;
+  // Note: valor_negociado is not part of the database schema
 }
 
 export const useRealDashboard = () => {
@@ -103,6 +103,45 @@ export const useRealDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { user } = useAuth();
+
+  const generateLeads = () => {
+    const leadNames = [
+      'João Silva', 'Maria Santos', 'Carlos Oliveira', 'Ana Costa', 'Pedro Almeida',
+      'Lucia Ferreira', 'Roberto Lima', 'Fernanda Rocha', 'Eduardo Souza', 'Patricia Dias'
+    ];
+    
+    const sources = ['Website', 'Facebook', 'Google Ads', 'Indicação', 'WhatsApp'];
+    const statuses: Lead['status'][] = ['Novo', 'Contatado', 'Qualificado', 'Proposta Enviada', 'Negociação', 'Fechado', 'Perdido'];
+    
+    return Array.from({ length: 10 }, (_, i) => ({
+      id: `lead-${i + 1}`,
+      nome: leadNames[i],
+      email: `${leadNames[i].toLowerCase().replace(' ', '.')}@email.com`,
+      telefone: `(11) 9${Math.floor(Math.random() * 10000)}-${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}`,
+      fonte: sources[Math.floor(Math.random() * sources.length)],
+      status: statuses[Math.floor(Math.random() * statuses.length)],
+      data_criacao: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
+      updated_at: new Date().toISOString(),
+      user_id: 'demo-user'
+      // Removed valor_negociado as it's not in the database schema
+    }));
+  };
+
+  const calculateMetrics = (leads: Lead[]) => {
+    const totalLeads = leads.length;
+    const convertedLeads = leads.filter(lead => lead.status === 'Fechado').length;
+    const conversionRate = totalLeads > 0 ? (convertedLeads / totalLeads) * 100 : 0;
+    
+    // Calculate total value without valor_negociado field
+    const totalValue = convertedLeads * 15000; // Average commission value
+    
+    return {
+      totalLeads,
+      convertedLeads,
+      conversionRate,
+      totalValue
+    };
+  };
 
   const fetchDashboardStats = async () => {
     if (!user) {
@@ -393,4 +432,4 @@ export const useRealDashboard = () => {
     error,
     refetch: fetchDashboardStats
   };
-}; 
+};

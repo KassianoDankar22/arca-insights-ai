@@ -14,281 +14,152 @@
  * ========================================
  */
 
-/**
- * ========================================
- * ARCA AI - ROI ANALYSIS PLATFORM
- * ========================================
- * 
- * Copyright (c) 2024 JimmyDev
- * All rights reserved.
- * 
- * PROPRIETARY AND CONFIDENTIAL
- * This file contains proprietary code developed by JimmyDev.
- * Unauthorized copying, distribution, or use is strictly prohibited.
- * 
- * Developed by: JimmyDev
- * ========================================
- */
-
 import { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/integrations/supabase/client';
 
-interface MarketTrend {
+export interface MarketTrend {
   id: string;
   title: string;
   description: string;
-  category: 'growth' | 'decline' | 'stable';
-  impact: 'high' | 'medium' | 'low';
   percentage: number;
   timeframe: string;
+  category: 'growth' | 'decline' | 'stable';
+  impact: string;
   updated_at: string;
 }
 
-interface MarketInsight {
+export interface MarketInsight {
   id: string;
   title: string;
   description: string;
   type: 'opportunity' | 'risk' | 'trend';
-  priority: 'high' | 'medium' | 'low';
+  priority: string;
   data_source: string;
   created_at: string;
   updated_at: string;
 }
 
-interface InvestorTip {
+export interface InvestorTip {
   id: string;
   title: string;
   description: string;
-  category: 'financing' | 'location' | 'timing' | 'strategy';
-  difficulty: 'beginner' | 'intermediate' | 'advanced';
-  estimated_savings: number;
+  category: 'location' | 'financing' | 'timing' | 'strategy';
+  difficulty: string;
   time_to_implement: string;
+  estimated_savings: number;
   created_at: string;
 }
 
-interface MarketStats {
-  avgRoiImprovement: number;
-  propertiesAnalyzed: number;
-  marketStability: number;
-  investmentOpportunities: number;
+export interface PropertyMarketData {
+  id: string;
+  location: string;
+  average_price: number;
+  price_change_percent: number;
+  average_rent: number;
+  rent_change_percent: number;
+  occupancy_rate: number;
+  cap_rate: number;
+  roi: number;
+  updated_at: string;
+}
+
+export interface MarketReport {
+  id: string;
+  title: string;
+  summary: string;
+  full_text: string;
+  author: string;
+  publication_date: string;
+  source: string;
+  url: string;
+  category: string;
+  tags: string[];
 }
 
 export const useMarketData = () => {
-  const [marketTrends, setMarketTrends] = useState<MarketTrend[]>([]);
-  const [marketInsights, setMarketInsights] = useState<MarketInsight[]>([]);
-  const [investorTips, setInvestorTips] = useState<InvestorTip[]>([]);
-  const [marketStats, setMarketStats] = useState<MarketStats | null>(null);
+  const [trends, setTrends] = useState<MarketTrend[]>([]);
+  const [insights, setInsights] = useState<MarketInsight[]>([]);
+  const [tips, setTips] = useState<InvestorTip[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const generateRealisticMarketData = () => {
-    // Tendências de mercado baseadas em dados reais da região
-    const trends: MarketTrend[] = [
-      {
-        id: 'trend-1',
-        title: 'Crescimento no Setor de Airbnb',
-        description: 'Propriedades para locação por temporada têm mostrado retornos 15-25% superiores em Orlando',
-        category: 'growth',
-        impact: 'high',
-        percentage: 18.5,
-        timeframe: 'Últimos 6 meses',
-        updated_at: new Date().toISOString()
-      },
-      {
-        id: 'trend-2',
-        title: 'Valorização em Lake Nona',
-        description: 'Região tem valorizado 12% ao ano com novos desenvolvimentos tecnológicos',
-        category: 'growth',
-        impact: 'high',
-        percentage: 12.3,
-        timeframe: 'Últimos 12 meses',
-        updated_at: new Date().toISOString()
-      },
-      {
-        id: 'trend-3',
-        title: 'Mercado Estável',
-        description: 'Taxas de juros mantêm estabilidade, favorecendo novos investimentos',
-        category: 'stable',
-        impact: 'medium',
-        percentage: 2.1,
-        timeframe: 'Trimestre atual',
-        updated_at: new Date().toISOString()
-      }
-    ];
+  useEffect(() => {
+    loadMarketData();
+  }, []);
 
-    // Insights de mercado
-    const insights: MarketInsight[] = [
-      {
-        id: 'insight-1',
-        title: 'Oportunidade em Propriedades Multifamiliares',
-        description: 'Duplex e triplex têm mostrado 40% menos vacância que apartamentos tradicionais',
-        type: 'opportunity',
-        priority: 'high',
-        data_source: 'Análise de dados locais',
-        created_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-        updated_at: new Date().toISOString()
-      },
-      {
-        id: 'insight-2',
-        title: 'Risco de Supersaturação em Downtown',
-        description: 'Alto número de novos desenvolvimentos pode impactar preços de aluguel',
-        type: 'risk',
-        priority: 'medium',
-        data_source: 'Dados de licenças de construção',
-        created_at: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-        updated_at: new Date().toISOString()
-      },
-      {
-        id: 'insight-3',
-        title: 'Crescimento do Mercado Hispânico',
-        description: 'Propriedades em áreas com comunidades hispânicas cresceram 8% em demanda',
-        type: 'trend',
-        priority: 'medium',
-        data_source: 'Análise demográfica',
-        created_at: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-        updated_at: new Date().toISOString()
-      }
-    ];
-
-    // Dicas para investidores
-    const tips: InvestorTip[] = [
-      {
-        id: 'tip-1',
-        title: 'Negocie Taxas de Financiamento',
-        description: 'Com score acima de 740, você pode negociar taxas até 0.5% menores',
-        category: 'financing',
-        difficulty: 'beginner',
-        estimated_savings: 15000,
-        time_to_implement: '1-2 semanas',
-        created_at: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString()
-      },
-      {
-        id: 'tip-2',
-        title: 'Invista Próximo a Universidades',
-        description: 'Propriedades a menos de 5km da UCF têm 20% menos vacância',
-        category: 'location',
-        difficulty: 'intermediate',
-        estimated_savings: 25000,
-        time_to_implement: '2-3 meses',
-        created_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString()
-      },
-      {
-        id: 'tip-3',
-        title: 'Compre no Final do Ano',
-        description: 'Preços tendem a ser 3-5% menores entre nov-dez devido a menor demanda',
-        category: 'timing',
-        difficulty: 'beginner',
-        estimated_savings: 12000,
-        time_to_implement: '3-6 meses',
-        created_at: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString()
-      },
-      {
-        id: 'tip-4',
-        title: 'Portfolio Diversificado',
-        description: 'Combine 70% residencial + 30% comercial para reduzir riscos',
-        category: 'strategy',
-        difficulty: 'advanced',
-        estimated_savings: 50000,
-        time_to_implement: '6-12 meses',
-        created_at: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString()
-      }
-    ];
-
-    return { trends, insights, tips };
-  };
-
-  const fetchMarketData = async () => {
+  const loadMarketData = async () => {
     try {
       setLoading(true);
-      setError(null);
-
-      // Tentar buscar dados reais do Supabase
+      
+      // Load market trends, insights, and tips in parallel
       const [trendsResult, insightsResult, tipsResult] = await Promise.all([
-        supabase.from('market_trends').select('*').order('updated_at', { ascending: false }),
-        supabase.from('market_insights').select('*').order('updated_at', { ascending: false }),
-        supabase.from('investor_tips').select('*').order('created_at', { ascending: false })
+        supabase.from('market_trends').select('*'),
+        supabase.from('market_insights').select('*'),
+        supabase.from('investor_tips').select('*')
       ]);
 
-      // Se não houver dados ou erro, usar dados realísticos
-      const { trends, insights, tips } = generateRealisticMarketData();
+      if (trendsResult.error) throw trendsResult.error;
+      if (insightsResult.error) throw insightsResult.error;
+      if (tipsResult.error) throw tipsResult.error;
 
-      setMarketTrends(trendsResult.data && trendsResult.data.length > 0 ? trendsResult.data : trends);
-      setMarketInsights(insightsResult.data && insightsResult.data.length > 0 ? insightsResult.data : insights);
-      setInvestorTips(tipsResult.data && tipsResult.data.length > 0 ? tipsResult.data : tips);
+      // Map the data with proper type checking
+      const mappedTrends: MarketTrend[] = (trendsResult.data || []).map(item => ({
+        id: item.id,
+        title: item.title,
+        description: item.description || '',
+        percentage: item.percentage || 0,
+        timeframe: item.timeframe || '',
+        category: ['growth', 'decline', 'stable'].includes(item.category) 
+          ? item.category as 'growth' | 'decline' | 'stable' 
+          : 'stable',
+        impact: item.impact || '',
+        updated_at: item.updated_at
+      }));
 
-      // Calcular estatísticas baseadas nos dados de análises ROI
-      const { data: analysesData } = await supabase
-        .from('roi_analyses')
-        .select('valor_imovel')
-        .gte('criado_em', new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString());
+      const mappedInsights: MarketInsight[] = (insightsResult.data || []).map(item => ({
+        id: item.id,
+        title: item.title,
+        description: item.description || '',
+        type: ['opportunity', 'risk', 'trend'].includes(item.type) 
+          ? item.type as 'opportunity' | 'risk' | 'trend' 
+          : 'trend',
+        priority: item.priority || '',
+        data_source: item.data_source || '',
+        created_at: item.created_at,
+        updated_at: item.updated_at
+      }));
 
-      const propertiesAnalyzed = analysesData?.length || 0;
-      const avgRoiImprovement = 8.5 + (Math.random() * 2.5); // Variação realística
-      const marketStability = 85 + (Math.random() * 10); // 85-95% estabilidade
-      const investmentOpportunities = Math.floor(20 + Math.random() * 15); // 20-35 oportunidades
+      const mappedTips: InvestorTip[] = (tipsResult.data || []).map(item => ({
+        id: item.id,
+        title: item.title,
+        description: item.description || '',
+        category: ['location', 'financing', 'timing', 'strategy'].includes(item.category) 
+          ? item.category as 'location' | 'financing' | 'timing' | 'strategy' 
+          : 'strategy',
+        difficulty: item.difficulty || '',
+        time_to_implement: item.time_to_implement || '',
+        estimated_savings: item.estimated_savings || 0,
+        created_at: item.created_at
+      }));
 
-      setMarketStats({
-        avgRoiImprovement: Math.round(avgRoiImprovement * 10) / 10,
-        propertiesAnalyzed,
-        marketStability: Math.round(marketStability),
-        investmentOpportunities
-      });
+      setTrends(mappedTrends);
+      setInsights(mappedInsights);
+      setTips(mappedTips);
 
-      console.log('✅ Dados de mercado carregados com sucesso');
-
-    } catch (err: any) {
-      console.error('Erro ao carregar dados de mercado:', err);
-      setError(err.message);
-      
-      // Em caso de erro, ainda usar dados realísticos
-      const { trends, insights, tips } = generateRealisticMarketData();
-      setMarketTrends(trends);
-      setMarketInsights(insights);
-      setInvestorTips(tips);
-      setMarketStats({
-        avgRoiImprovement: 8.7,
-        propertiesAnalyzed: 45,
-        marketStability: 89,
-        investmentOpportunities: 28
-      });
+    } catch (err) {
+      setError('Erro ao carregar dados do mercado');
+      console.error('Error loading market data:', err);
     } finally {
       setLoading(false);
     }
   };
 
-  const getTrendsByCategory = (category: 'growth' | 'decline' | 'stable') => {
-    return marketTrends.filter(trend => trend.category === category);
-  };
-
-  const getInsightsByType = (type: 'opportunity' | 'risk' | 'trend') => {
-    return marketInsights.filter(insight => insight.type === type);
-  };
-
-  const getTipsByCategory = (category: 'financing' | 'location' | 'timing' | 'strategy') => {
-    return investorTips.filter(tip => tip.category === category);
-  };
-
-  const getTopTips = (limit: number = 3) => {
-    return investorTips
-      .sort((a, b) => b.estimated_savings - a.estimated_savings)
-      .slice(0, limit);
-  };
-
-  useEffect(() => {
-    fetchMarketData();
-  }, []);
-
   return {
-    marketTrends,
-    marketInsights,
-    investorTips,
-    marketStats,
+    trends,
+    insights,
+    tips,
     loading,
     error,
-    getTrendsByCategory,
-    getInsightsByType,
-    getTipsByCategory,
-    getTopTips,
-    refetch: fetchMarketData
+    refresh: loadMarketData
   };
-}; 
+};
