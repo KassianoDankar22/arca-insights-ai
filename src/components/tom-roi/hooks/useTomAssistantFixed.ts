@@ -242,7 +242,7 @@ const parseAnalysisTextToResult = (analysisText: string, formData: FormValues): 
     bedrooms: 0,
     hasPool: false,
     purchasePrice: 0,
-    investmentType: 'local_financing',
+    investmentType: 'financing',
     downPaymentValue: 0,
     downPaymentPercent: 0,
     annualOccupancyRate: 85,
@@ -528,9 +528,15 @@ export function useTomAssistant() {
         purchasePrice: parseFloat(formData.valor_imovel || '0') || 0,
         downPaymentValue: parseFloat(formData.entrada_valor || '0') || 0,
         downPaymentPercent: parseFloat(formData.entrada_percentual || '0') || 0,
-        investmentType: 'local_financing' as const,
+        investmentType: 'financing' as const,
         annualOccupancyRate: 80,
-        brokerLogoUrl: formData.logoUrl
+        brokerLogoUrl: formData.logoUrl,
+        annualInterestRate: 7.0,
+        loanTermYears: 30,
+        estimatedDailyRate: 200,
+        condoFeeMonthly: 350,
+        propertyManagementFeePercent: 10,
+        annualAppreciationRate: 3.0
       };
 
       // Criar prompt para a análise de ROI
@@ -651,13 +657,14 @@ export function useTomAssistant() {
         bedrooms: parseInt(formData.quartos || '0') || 0,
         hasPool: formData.piscina,
         purchasePrice: parseFloat(formData.valor_imovel || '0') || 0,
-        investmentType: 'local_financing' as const,
+        investmentType: 'financing' as const,
         downPaymentValue: parseFloat(formData.entrada_valor || '0') || 0,
         downPaymentPercent: parseFloat(formData.entrada_percentual || '0') || 0,
         annualOccupancyRate: parsedData.propertyData?.occupancyRate || 85,
         brokerLogoUrl: formData.logoUrl || null,
         resultado_texto: analysisText,
         propertyData: parsedData.propertyData || {} as PropertyData,
+        analysisDate: new Date().toISOString()
       };
       
       // Análise completa

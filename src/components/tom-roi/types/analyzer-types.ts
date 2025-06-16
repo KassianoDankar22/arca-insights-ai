@@ -37,7 +37,7 @@ export interface FormValues {
   closing_costs_percentual?: string;
   taxa_juros_anual_financiamento?: string;
   prazo_financiamento_anos?: string;
-  tipo_investimento?: 'cash' | 'local_financing' | 'foreign_financing';
+  tipo_investimento?: 'cash' | 'financing';
 }
 
 /**
@@ -138,7 +138,7 @@ export interface ROIAnalysisResult {
   bedrooms: number;
   hasPool: boolean;
   purchasePrice: number;
-  investmentType: 'cash' | 'local_financing' | 'foreign_financing';
+  investmentType: 'cash' | 'financing';
   downPaymentValue: number;
   downPaymentPercent: number;
   annualOccupancyRate: number;
@@ -177,7 +177,7 @@ export const tomPropertyAnalysisSchema = z.object({
   purchasePrice: z.number()
     .min(100000, 'Valor mínimo do imóvel deve ser $100,000')
     .max(10000000, 'Valor máximo do imóvel deve ser $10,000,000'),
-  investmentType: z.enum(['cash', 'local_financing', 'foreign_financing']),
+  investmentType: z.enum(['cash', 'financing']),
   downPaymentPercent: z.number()
     .min(0, 'Percentual deve ser positivo')
     .max(100, 'Percentual não pode exceder 100%')
@@ -196,7 +196,6 @@ export const tomPropertyAnalysisSchema = z.object({
     .min(50, 'Taxa de ocupação deve ser no mínimo 50%')
     .max(100, 'Taxa de ocupação não pode exceder 100%'),
   brokerLogoUrl: z.string().url("URL do logo inválida").nullable().optional(),
-  // Add missing financial properties
   annualInterestRate: z.number().optional(),
   loanTermYears: z.number().optional(),
   estimatedDailyRate: z.number().optional(),

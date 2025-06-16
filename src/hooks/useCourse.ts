@@ -38,13 +38,22 @@ export interface Course {
   title: string;
   description: string;
   thumbnail: string;
-  duration: number;
+  duration: string; // Changed from number to string to match database
   students_count: number;
   rating: number;
   price: number;
   instructor: string;
   created_at: string;
   status: 'draft' | 'published' | 'archived';
+  // Optional fields to handle database mismatch
+  category?: string;
+  level?: string;
+  instructor_name?: string;
+  duration_minutes?: number;
+  thumbnail_url?: string;
+  video_url?: string;
+  content?: any;
+  tags?: string[];
 }
 
 export const useCourse = (courseId?: string) => {
@@ -62,7 +71,31 @@ export const useCourse = (courseId?: string) => {
         .order('created_at', { ascending: false });
 
       if (err) throw err;
-      setCourses(data || []);
+      
+      // Map database response to Course interface
+      const mappedCourses: Course[] = (data || []).map(item => ({
+        id: item.id,
+        title: item.title,
+        description: item.description || '',
+        thumbnail: item.thumbnail_url || '',
+        duration: item.duration || '30 min',
+        students_count: 0, // Default value since not in database
+        rating: 4.5, // Default value since not in database
+        price: 0, // Default value since not in database
+        instructor: item.instructor || item.instructor_name || 'Instrutor',
+        created_at: item.created_at,
+        status: 'published' as const,
+        category: item.category,
+        level: item.level,
+        instructor_name: item.instructor_name,
+        duration_minutes: item.duration_minutes,
+        thumbnail_url: item.thumbnail_url,
+        video_url: item.video_url,
+        content: item.content,
+        tags: item.tags
+      }));
+      
+      setCourses(mappedCourses);
     } catch (err) {
       setError('Erro ao carregar cursos');
       console.error(err);
@@ -81,7 +114,31 @@ export const useCourse = (courseId?: string) => {
         .single();
 
       if (err) throw err;
-      setCourse(data);
+      
+      // Map single database response to Course interface
+      const mappedCourse: Course = {
+        id: data.id,
+        title: data.title,
+        description: data.description || '',
+        thumbnail: data.thumbnail_url || '',
+        duration: data.duration || '30 min',
+        students_count: 0,
+        rating: 4.5,
+        price: 0,
+        instructor: data.instructor || data.instructor_name || 'Instrutor',
+        created_at: data.created_at,
+        status: 'published' as const,
+        category: data.category,
+        level: data.level,
+        instructor_name: data.instructor_name,
+        duration_minutes: data.duration_minutes,
+        thumbnail_url: data.thumbnail_url,
+        video_url: data.video_url,
+        content: data.content,
+        tags: data.tags
+      };
+      
+      setCourse(mappedCourse);
     } catch (err) {
       setError('Erro ao carregar curso');
       console.error(err);
@@ -93,15 +150,55 @@ export const useCourse = (courseId?: string) => {
   const createCourse = async (courseData: Partial<Course>) => {
     try {
       setLoading(true);
+      
+      // Map Course interface to database schema
+      const dbData = {
+        title: courseData.title!,
+        description: courseData.description,
+        instructor: courseData.instructor,
+        instructor_name: courseData.instructor_name,
+        duration: courseData.duration,
+        duration_minutes: courseData.duration_minutes,
+        thumbnail_url: courseData.thumbnail_url,
+        video_url: courseData.video_url,
+        category: courseData.category,
+        level: courseData.level,
+        content: courseData.content,
+        tags: courseData.tags
+      };
+      
       const { data, error: err } = await supabase
         .from('courses')
-        .insert([courseData])
+        .insert([dbData])
         .select()
         .single();
 
       if (err) throw err;
-      setCourses(prev => [data, ...prev]);
-      return data;
+      
+      const mappedCourse: Course = {
+        id: data.id,
+        title: data.title,
+        description: data.description || '',
+        thumbnail: data.thumbnail_url || '',
+        duration: data.duration || '30 min',
+        students_count: 0,
+        rating: 4.5,
+        price: 0,
+        instructor: data.instructor || data.instructor_name || 'Instrutor',
+        created_at: data.created_at,
+        status: 'published' as const,
+        category: data.category,
+        level: data.level,
+        instructor_name: data.instructor_name,
+        duration_minutes: data.duration_minutes,
+        thumbnail_url: data.thumbnail_url,
+        video_url: data.video_url,
+        content: data.content,
+        tags: data.tags
+      };
+      
+      setCourses(prev => [mappedCourse, ...prev]);
+      return mappedCourse;
     } catch (err) {
       setError('Erro ao criar curso');
       console.error(err);
@@ -114,17 +211,57 @@ export const useCourse = (courseId?: string) => {
   const updateCourse = async (id: string, courseData: Partial<Course>) => {
     try {
       setLoading(true);
+      
+      // Map Course interface to database schema
+      const dbData = {
+        title: courseData.title,
+        description: courseData.description,
+        instructor: courseData.instructor,
+        instructor_name: courseData.instructor_name,
+        duration: courseData.duration,
+        duration_minutes: courseData.duration_minutes,
+        thumbnail_url: courseData.thumbnail_url,
+        video_url: courseData.video_url,
+        category: courseData.category,
+        level: courseData.level,
+        content: courseData.content,
+        tags: courseData.tags
+      };
+      
       const { data, error: err } = await supabase
         .from('courses')
-        .update(courseData)
+        .update(dbData)
         .eq('id', id)
         .select()
         .single();
 
       if (err) throw err;
-      setCourses(prev => prev.map(c => c.id === id ? data : c));
-      if (course?.id === id) setCourse(data);
-      return data;
+      
+      const mappedCourse: Course = {
+        id: data.id,
+        title: data.title,
+        description: data.description || '',
+        thumbnail: data.thumbnail_url || '',
+        duration: data.duration || '30 min',
+        students_count: 0,
+        rating: 4.5,
+        price: 0,
+        instructor: data.instructor || data.instructor_name || 'Instrutor',
+        created_at: data.created_at,
+        status: 'published' as const,
+        category: data.category,
+        level: data.level,
+        instructor_name: data.instructor_name,
+        duration_minutes: data.duration_minutes,
+        thumbnail_url: data.thumbnail_url,
+        video_url: data.video_url,
+        content: data.content,
+        tags: data.tags
+      };
+      
+      setCourses(prev => prev.map(c => c.id === id ? mappedCourse : c));
+      if (course?.id === id) setCourse(mappedCourse);
+      return mappedCourse;
     } catch (err) {
       setError('Erro ao atualizar curso');
       console.error(err);
@@ -151,4 +288,4 @@ export const useCourse = (courseId?: string) => {
     updateCourse,
     refetchCourses: fetchCourses
   };
-}; 
+};

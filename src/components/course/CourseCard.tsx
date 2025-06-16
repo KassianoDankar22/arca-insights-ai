@@ -21,16 +21,16 @@ import { Badge } from '@/components/ui/badge';
 import { Clock, Users, Star } from 'lucide-react';
 
 interface CourseCardProps {
-  id: string;
+  id?: string;
   title: string;
   description: string;
-  instructor: string;
-  duration: string;
-  level: string;
+  instructor?: string;
+  duration?: string;
+  level?: string;
   rating?: number;
   students?: number;
   thumbnail?: string;
-  imageUrl?: string; // Add imageUrl as optional prop
+  imageUrl?: string;
   category?: string;
   onClick?: () => void;
 }
@@ -38,13 +38,13 @@ interface CourseCardProps {
 const CourseCard: React.FC<CourseCardProps> = ({
   title,
   description,
-  instructor,
-  duration,
-  level,
+  instructor = 'Instrutor não definido',
+  duration = '30 min',
+  level = 'Iniciante',
   rating = 0,
   students = 0,
   thumbnail,
-  imageUrl, // Use imageUrl or thumbnail
+  imageUrl,
   category,
   onClick
 }) => {

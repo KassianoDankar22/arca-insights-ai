@@ -48,10 +48,10 @@ export interface ChatConversation {
 
 export interface ChatMessage {
   id: string;
-  conversation_id: string;
-  role: 'user' | 'assistant' | 'system';
   content: string;
+  role: 'user' | 'assistant' | 'system';
   created_at: string;
+  conversation_id: string;
   metadata?: any;
 }
 
@@ -129,8 +129,6 @@ export const useChatHistory = () => {
   };
 
   const loadMessages = async (conversationId: string) => {
-    if (!user) return;
-
     try {
       const { data, error } = await supabase
         .from('chat_messages')
@@ -140,11 +138,21 @@ export const useChatHistory = () => {
 
       if (error) throw error;
 
-      setMessages(data || []);
-      setError(null);
-    } catch (err) {
-      console.error('Erro ao carregar mensagens:', err);
-      setError('Erro ao carregar mensagens');
+      // Map database response to ChatMessage interface with proper role typing
+      const mappedMessages: ChatMessage[] = (data || []).map(msg => ({
+        id: msg.id,
+        content: msg.content,
+        role: (msg.role === 'user' || msg.role === 'assistant' || msg.role === 'system') 
+          ? msg.role as 'user' | 'assistant' | 'system'
+          : 'user', // Default fallback
+        created_at: msg.created_at,
+        conversation_id: msg.conversation_id,
+        metadata: msg.metadata
+      }));
+
+      setMessages(mappedMessages);
+    } catch (error) {
+      console.error('Error loading messages:', error);
     }
   };
 
@@ -184,46 +192,39 @@ export const useChatHistory = () => {
     }
   };
 
-  const addMessage = async (
-    conversationId: string,
-    role: 'user' | 'assistant' | 'system',
-    content: string,
-    metadata?: any
-  ): Promise<ChatMessage | null> => {
+  const addMessage = async (conversationId: string, content: string, role: 'user' | 'assistant' | 'system') => {
     if (!user) return null;
 
     try {
       const { data, error } = await supabase
         .from('chat_messages')
-        .insert([
-          {
-            conversation_id: conversationId,
-            role,
-            content,
-            metadata,
-          },
-        ])
+        .insert({
+          conversation_id: conversationId,
+          content,
+          role,
+          metadata: {}
+        })
         .select()
         .single();
 
       if (error) throw error;
 
-      setMessages(prev => [...prev, data]);
+      const newMessage: ChatMessage = {
+        id: data.id,
+        content: data.content,
+        role: (data.role === 'user' || data.role === 'assistant' || data.role === 'system') 
+          ? data.role as 'user' | 'assistant' | 'system'
+          : 'user',
+        created_at: data.created_at,
+        conversation_id: data.conversation_id,
+        metadata: data.metadata
+      };
 
-      // Atualizar timestamp da conversa
-      await supabase
-        .from('chat_conversations')
-        .update({ updated_at: new Date().toISOString() })
-        .eq('id', conversationId);
-
-      // Recarregar conversas para atualizar a ordem
-      await loadConversations();
-
-      return data;
-    } catch (err) {
-      console.error('Erro ao adicionar mensagem:', err);
-      setError('Erro ao salvar mensagem');
-      return null;
+      setMessages(prev => [...prev, newMessage]);
+      return newMessage;
+    } catch (error) {
+      console.error('Error adding message:', error);
+      throw error;
     }
   };
 
@@ -319,4 +320,4 @@ export const useChatHistory = () => {
     generateTitle,
     refresh: loadConversations,
   };
-}; 
+};

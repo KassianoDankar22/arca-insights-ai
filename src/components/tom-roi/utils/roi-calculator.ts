@@ -299,3 +299,95 @@ export function calcularROIUnificado(dadosBase: ROIInputData): PropertyData {
     logo_broker_url: undefined,
   };
 }
+
+export const calculateROIMetrics = (propertyData: any) => {
+  // Calcula o rendimento líquido mensal
+  const rendimentoLiquidoMensal = propertyData.rentalIncome.monthly - propertyData.expenses.monthly.total;
+  
+  // Calcula o rendimento líquido anual
+  const rendimentoLiquidoAnual = rendimentoLiquidoMensal * 12;
+  
+  // Retornar o objeto completo no formato PropertyData
+  const propertyDataResult: PropertyData = {
+    // --- Identificação do Imóvel ---
+    nome_condominio: '',
+    localizacao_imovel: '',
+    modelo_imovel: '',
+    quartos_imovel: String(propertyData.quartos || 0),
+    piscina_imovel: propertyData.temPiscina || false,
+    tipo_investimento: propertyData.valorFinanciado > 0 ? 'financing' : 'cash',
+
+    // --- Detalhes do Financiamento ---
+    valor_imovel: propertyData.valorImovel,
+    valor_entrada: propertyData.valor_entrada,
+    percentual_entrada: propertyData.percentual_entrada,
+    valor_financiado: propertyData.valorFinanciado,
+    taxa_juros_anual_financiamento: propertyData.taxa_juros_anual_financiamento,
+    prazo_financiamento_anos: propertyData.prazo_financiamento_anos,
+    parcela_mensal: propertyData.parcela_mensal,
+
+    // --- Detalhes da Receita ---
+    receita_aluguel_mensal: propertyData.rentalIncome.monthly,
+    occupancyRate: propertyData.occupancyRate,
+    percentual_vacancia_anual: propertyData.percentual_vacancia_anual,
+
+    // --- Detalhes das Despesas Mensais ---
+    valor_condominio_mensal: propertyData.despesasMensais.hoa || 0,
+    valor_iptu_mensal: propertyData.despesasMensais.iptu || 0,
+    valor_seguro_mensal: propertyData.despesasMensais.seguro || 0,
+    valor_energia_mensal: propertyData.despesasMensais.energia || 0,
+    valor_agua_mensal: propertyData.despesasMensais.agua || 0,
+    percentual_taxa_administracao_mensal: 20,
+    valor_taxa_administracao_mensal: propertyData.despesasMensais.admin || 0,
+    valor_piscina_mensal: propertyData.despesasMensais.piscina || 0,
+    despesas_totais_mensais: propertyData.despesasMensais.total,
+
+    // --- Totais e Fluxo de Caixa ---
+    custo_transacao_diluido_mensal: 0,
+    percentual_reserva_manutencao_mensal: 0,
+    valor_reserva_manutencao_mensal: 0,
+    custo_decoracao_diluido_mensal: 0,
+    percentual_decoracao: 0,
+    percentual_closing_costs: 0,
+    fluxo_caixa_mensal_antes_ir: propertyData.fluxo_caixa_mensal_antes_ir,
+    custo_total_aquisicao: propertyData.custo_total_aquisicao,
+    cap_rate_liquido_sobre_custo_total_aquisicao: propertyData.cap_rate_liquido_sobre_custo_total_aquisicao,
+    cash_on_cash_return_liquido_antes_ir: propertyData.cash_on_cash_return_liquido_antes_ir,
+
+    // --- Valorização ---
+    valorizacao_percentual_anual_estimada: propertyData.valorizacao_percentual_anual_estimada,
+    valorizacao_valor_anual_estimado: propertyData.valorizacao_valor_anual_estimado,
+
+    // --- Campos para compatibilidade com IA e estrutura antiga ---
+    monthlyRent: propertyData.rentalIncome.monthly,
+    annualRent: propertyData.rentalIncome.annual,
+    grossIncome: propertyData.grossIncome,
+    netIncome: rendimentoLiquidoAnual,
+    roi: propertyData.roi,
+    capRate: propertyData.capRate,
+    cashOnCash: propertyData.cashOnCash,
+
+    // --- Propriedades para compatibilidade com TomROIResults ---
+    rentalIncome: {
+      monthly: propertyData.rentalIncome.monthly,
+      annual: propertyData.rentalIncome.annual
+    },
+    expenses: {
+      monthly: {
+        total: propertyData.expenses.monthly.total
+      },
+      annual: propertyData.expenses.annual
+    },
+    appreciation: {
+      amount: propertyData.appreciation.amount
+    },
+    roiPercentOnDownPayment: propertyData.roiPercentOnDownPayment,
+
+    // --- IA e Logo ---
+    texto_analise_ia: null,
+    prompt_utilizado_ia: null,
+    logo_broker_url: undefined,
+  };
+
+  return propertyDataResult;
+};
