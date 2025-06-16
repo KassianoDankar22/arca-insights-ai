@@ -1,3 +1,4 @@
+
 /**
  * ========================================
  * ARCA AI - ROI ANALYSIS PLATFORM
@@ -14,24 +15,7 @@
  * ========================================
  */
 
-/**
- * ========================================
- * ARCA AI - ROI ANALYSIS PLATFORM
- * ========================================
- * 
- * Copyright (c) 2024 JimmyDev
- * All rights reserved.
- * 
- * PROPRIETARY AND CONFIDENTIAL
- * This file contains proprietary code developed by JimmyDev.
- * Unauthorized copying, distribution, or use is strictly prohibited.
- * 
- * Developed by: JimmyDev
- * ========================================
- */
-
 import { z } from 'zod';
-// import { Property } from "@/app/core/types"; // REMOVED
 
 /**
  * Valores de entrada do formulário de análise ROI
@@ -53,12 +37,14 @@ export interface FormValues {
   closing_costs_percentual?: string;
   taxa_juros_anual_financiamento?: string;
   prazo_financiamento_anos?: string;
+  tipo_investimento?: 'cash' | 'local_financing' | 'foreign_financing';
 }
 
 /**
  * Dados da propriedade para análise
  */
 export interface PropertyData {
+  // Dados básicos da propriedade
   nome_condominio: string;
   localizacao_imovel: string;
   modelo_imovel: string;
@@ -74,13 +60,8 @@ export interface PropertyData {
   taxa_juros_anual_financiamento: number;
   prazo_financiamento_anos: number;
   parcela_mensal: number;
-  closing_costs_total: number;
-  decoracao_total: number;
-  percentual_closing_costs_aplicado: number;
-  percentual_decoracao_aplicado: number;
 
   // Detalhes da Receita
-  diaria_media_estimada: number;
   receita_aluguel_mensal: number;
   occupancyRate: number;
   percentual_vacancia_anual: number;
@@ -94,9 +75,49 @@ export interface PropertyData {
   percentual_taxa_administracao_mensal: number;
   valor_taxa_administracao_mensal: number;
   valor_piscina_mensal: number;
-  valor_manutencao_mensal?: number; // Opcional, se não for sempre calculado
-  valor_reserva_manutencao_mensal?: number; // Opcional
-  valor_taxa_marketing_mensal?: number; // Opcional
+  despesas_totais_mensais: number;
+  custo_transacao_diluido_mensal: number;
+  percentual_reserva_manutencao_mensal: number;
+  valor_reserva_manutencao_mensal: number;
+  custo_decoracao_diluido_mensal: number;
+  percentual_decoracao: number;
+  percentual_closing_costs: number;
+  fluxo_caixa_mensal_antes_ir: number;
+  custo_total_aquisicao: number;
+  cap_rate_liquido_sobre_custo_total_aquisicao: number;
+  cash_on_cash_return_liquido_antes_ir: number;
+  valorizacao_percentual_anual_estimada: number;
+  valorizacao_valor_anual_estimado: number;
+
+  // Propriedades compatíveis com interfaces antigas
+  monthlyRent: number;
+  annualRent: number;
+  grossIncome: number;
+  netIncome: number;
+  roi: number;
+  capRate: number;
+  cashOnCash: number;
+
+  // Propriedades para compatibilidade com TomROIResults
+  rentalIncome: {
+    monthly: number;
+    annual: number;
+  };
+  expenses: {
+    monthly: {
+      total: number;
+    };
+    annual: number;
+  };
+  appreciation: {
+    amount: number;
+  };
+  roiPercentOnDownPayment: number;
+
+  // Metadados opcionais
+  texto_analise_ia?: string | null;
+  prompt_utilizado_ia?: string | null;
+  logo_broker_url?: string | null;
 }
 
 /**
@@ -104,24 +125,19 @@ export interface PropertyData {
  */
 export interface ROIAnalysisResult {
   projectName: string;
-  analysisDate: string;
   location: string;
   modelType: string;
+  modelo: string;
   bedrooms: number;
   hasPool: boolean;
   purchasePrice: number;
+  investmentType: 'cash' | 'local_financing' | 'foreign_financing';
   downPaymentValue: number;
   downPaymentPercent: number;
   annualOccupancyRate: number;
   brokerLogoUrl: string | null | undefined;
   resultado_texto: string;
   propertyData: PropertyData;
-  financialMetrics: any;
-  recommendations: string[];
-  warnings: string[];
-  threadId: string;
-  runId: string;
-  statusApi: string;
 }
 
 /**
@@ -153,6 +169,7 @@ export const tomPropertyAnalysisSchema = z.object({
   purchasePrice: z.number()
     .min(100000, 'Valor mínimo do imóvel deve ser $100,000')
     .max(10000000, 'Valor máximo do imóvel deve ser $10,000,000'),
+  investmentType: z.enum(['cash', 'local_financing', 'foreign_financing']),
   downPaymentPercent: z.number()
     .min(0, 'Percentual deve ser positivo')
     .max(100, 'Percentual não pode exceder 100%')
@@ -163,54 +180,14 @@ export const tomPropertyAnalysisSchema = z.object({
   closingCostsValue: z.number()
     .min(0, 'Custos de fechamento devem ser positivos')
     .optional(),
-  decorationCostType: z.enum(['percentage', 'fixed_amount'], {
-    errorMap: () => ({ message: 'Tipo de custo de decoração inválido' })
-  }).optional(),
+  decorationCostType: z.enum(['percentage', 'fixed_amount']).optional(),
   decorationCostValue: z.number()
     .min(0, 'Valor da decoração deve ser positivo')
     .optional(),
-  estimatedDailyRate: z.number({
-    invalid_type_error: "Diária estimada deve ser um número.",
-  }).min(0, "Diária estimada não pode ser negativa.").optional(),
   annualOccupancyRate: z.number()
     .min(50, 'Taxa de ocupação deve ser no mínimo 50%')
     .max(100, 'Taxa de ocupação não pode exceder 100%'),
   brokerLogoUrl: z.string().url("URL do logo inválida").nullable().optional(),
-  annualInterestRate: z.number({
-    invalid_type_error: "Taxa de juros anual deve ser um número.",
-  }).min(0, "Taxa de juros não pode ser negativa.").max(30, "Taxa de juros não pode exceder 30%").optional(),
-  loanTermYears: z.number({
-    invalid_type_error: "Prazo do financiamento deve ser um número.",
-  }).min(1, "Prazo do financiamento deve ser ao menos 1 ano.").max(30, "Prazo máximo de 30 anos.").int("Prazo do financiamento deve ser um número inteiro de anos.").optional(),
-  propertyTaxAnnual: z.number({
-    invalid_type_error: "IPTU anual deve ser um número.",
-  }).min(0, "IPTU anual não pode ser negativo.").optional(),
-  condoFeeMonthly: z.number({
-    invalid_type_error: "Taxa de condomínio mensal deve ser um número.",
-  }).min(0, "Taxa de condomínio não pode ser negativa.").max(5000, "Taxa de condomínio não pode exceder $5,000").optional(),
-  insuranceAnnual: z.number({
-    invalid_type_error: "Seguro anual deve ser um número.",
-  }).min(0, "Seguro anual não pode ser negativo.").max(10000, "Seguro anual não pode exceder $10,000").optional(),
-  estimatedMonthlyRentForCalc: z.number({
-    invalid_type_error: "Aluguel mensal estimado deve ser um número.",
-  }).min(0, "Aluguel mensal estimado não pode ser negativo.").optional(),
-  propertyManagementFeePercent: z.number({
-    invalid_type_error: "Percentual da taxa de administração deve ser um número.",
-  }).min(15, "Percentual da taxa de administração deve ser no mínimo 15%").max(25, "Percentual da taxa de administração não pode ser maior que 25%").optional(),
-  maintenanceReservePercent: z.number({
-    invalid_type_error: "Percentual da reserva de manutenção deve ser um número.",
-  }).min(0, "Percentual da reserva de manutenção não pode ser negativo.").max(100, "Percentual da reserva de manutenção não pode ser maior que 100.").optional(),
-  annualAppreciationRate: z.number({
-    invalid_type_error: "Taxa de valorização anual deve ser um número.",
-  }).min(0, "Taxa de valorização não pode ser negativa.").max(15, "Taxa de valorização não pode exceder 15% ao ano.").optional(),
-}).refine((data) => {
-  if (data.downPaymentValue && data.purchasePrice) {
-    return data.downPaymentValue <= data.purchasePrice;
-  }
-  return true;
-}, {
-  message: "Valor da entrada não pode exceder o valor do imóvel",
-  path: ["downPaymentValue"]
 });
 
 export type TomPropertyAnalysisInput = z.infer<typeof tomPropertyAnalysisSchema>;
@@ -223,6 +200,7 @@ export interface AnalysisLoadingProps {
 
 export interface TomROIResultsProps {
   result: ROIAnalysisResult;
+  propertyData: PropertyData;
   onBack: () => void;
   onSave: () => void;
   isSaving: boolean;

@@ -262,7 +262,7 @@ const parseAnalysisTextToResult = (analysisText: string, formData: FormValues): 
       modelo_imovel: '',
       quartos_imovel: '',
       piscina_imovel: false,
-      tipo_investimento: '',
+      tipo_investimento: 'financing',
       valor_imovel: 0,
       valor_entrada: 0,
       percentual_entrada: 0,
@@ -296,7 +296,7 @@ const parseAnalysisTextToResult = (analysisText: string, formData: FormValues): 
       texto_analise_ia: null,
       prompt_utilizado_ia: null,
       logo_broker_url: null
-    }
+    } as PropertyData
   };
 
   // Usar valores do formulário como base e tentar extrair da análise
@@ -502,7 +502,7 @@ export function useTomAssistant() {
         modelo_imovel: formData.modelo,
         quartos_imovel: formData.quartos || '0',
         piscina_imovel: formData.piscina,
-        tipo_investimento: formData.tipo_investimento,
+        tipo_investimento: 'financing',
         valor_imovel: parseFloat(formData.valor_imovel || '0') || 0,
         valor_entrada: parseFloat(formData.entrada_valor || '0') || 0,
         percentual_entrada: parseFloat(formData.entrada_percentual || '0') || 0,
@@ -514,7 +514,7 @@ export function useTomAssistant() {
         percentual_decoracao: 0, percentual_closing_costs: 0, fluxo_caixa_mensal_antes_ir: 0, custo_total_aquisicao: 0,
         cap_rate_liquido_sobre_custo_total_aquisicao: 0, cash_on_cash_return_liquido_antes_ir: 0, percentual_vacancia_anual: 0,
         valorizacao_percentual_anual_estimada: 0, valorizacao_valor_anual_estimado: 0,
-      };
+      } as PropertyData;
       
       // Criar prompt para a análise de ROI
       const dataForPrompt = propertyData || infoImovelForPrompt;
@@ -635,7 +635,7 @@ export function useTomAssistant() {
         bedrooms: parseInt(formData.quartos || '0') || 0,
         hasPool: formData.piscina,
         purchasePrice: parseFloat(formData.valor_imovel || '0') || 0,
-        investmentType: formData.tipo_investimento as ROIAnalysisResult["investmentType"],
+        investmentType: (formData.tipo_investimento as ROIAnalysisResult["investmentType"]) || 'local_financing',
         downPaymentValue: parseFloat(formData.entrada_valor || '0') || 0,
         downPaymentPercent: parseFloat(formData.entrada_percentual || '0') || 0,
         annualOccupancyRate: parsedData.propertyData?.occupancyRate || 85,
@@ -678,4 +678,4 @@ export function useTomAssistant() {
   };
 }
 
-export default useTomAssistant; 
+export default useTomAssistant;

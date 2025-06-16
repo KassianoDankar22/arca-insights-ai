@@ -1,3 +1,4 @@
+
 /**
  * ========================================
  * ARCA AI - ROI ANALYSIS PLATFORM
@@ -14,33 +15,16 @@
  * ========================================
  */
 
-/**
- * ========================================
- * ARCA AI - ROI ANALYSIS PLATFORM
- * ========================================
- * 
- * Copyright (c) 2024 JimmyDev
- * All rights reserved.
- * 
- * PROPRIETARY AND CONFIDENTIAL
- * This file contains proprietary code developed by JimmyDev.
- * Unauthorized copying, distribution, or use is strictly prohibited.
- * 
- * Developed by: JimmyDev
- * ========================================
- */
-
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/lib/auth';
 
 const DashboardHeader: React.FC = () => {
-  // Get user and profile information from context
-  const { user, userProfile } = useAuth();
+  // Get user information from context
+  const { user } = useAuth();
   
-  // Determine display name and gender (optional)
-  const displayName = userProfile?.nome_completo || user?.email?.split('@')[0] || 'Usuário';
-  // const userGender = userProfile?.gender || "neutral"; 
+  // Determine display name
+  const displayName = user?.email?.split('@')[0] || 'Usuário';
 
   return (
     <motion.div 

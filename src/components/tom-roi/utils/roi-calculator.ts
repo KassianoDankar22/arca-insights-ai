@@ -235,13 +235,8 @@ export function calcularROIUnificado(dadosBase: ROIInputData): PropertyData {
     taxa_juros_anual_financiamento: dadosBase.taxaJuros * 100,
     prazo_financiamento_anos: dadosBase.prazoAnos,
     parcela_mensal: parcelaMensal,
-    closing_costs_total: valorImovel * 0.05,
-    decoracao_total: valorImovel * 0.15,
-    percentual_closing_costs_aplicado: 5,
-    percentual_decoracao_aplicado: 15,
 
     // --- Detalhes da Receita ---
-    diaria_media_estimada: diariaMedia,
     receita_aluguel_mensal: aluguelMensal,
     occupancyRate: ocupacao * 100,
     percentual_vacancia_anual: (1 - ocupacao) * 100,
@@ -255,17 +250,18 @@ export function calcularROIUnificado(dadosBase: ROIInputData): PropertyData {
     percentual_taxa_administracao_mensal: 20,
     valor_taxa_administracao_mensal: dadosBase.despesasMensais.admin || 0,
     valor_piscina_mensal: dadosBase.despesasMensais.piscina || 0,
-    despesas_operacionais_mensais: despesasMensaisTotal,
+    despesas_totais_mensais: despesasMensaisTotal,
 
     // --- Totais e Fluxo de Caixa ---
-    despesas_totais_mensais: despesasMensaisTotal + parcelaMensal,
+    custo_transacao_diluido_mensal: 0,
+    percentual_reserva_manutencao_mensal: 0,
+    valor_reserva_manutencao_mensal: 0,
+    custo_decoracao_diluido_mensal: 0,
+    percentual_decoracao: 0,
+    percentual_closing_costs: 0,
     fluxo_caixa_mensal_antes_ir: fluxoCaixaMensal,
-    fluxo_caixa_anual_antes_ir: fluxoCaixaAnual,
-
-    // --- Custos Iniciais e Retorno sobre Investimento ---
-    custo_total_investimento_inicial: entradaValor + (valorImovel * 0.05) + (valorImovel * 0.15),
     custo_total_aquisicao: valorImovel + (valorImovel * 0.05) + (valorImovel * 0.15),
-    cap_rate_liquido_sobre_valor_imovel: valorImovel > 0 ? ((aluguelAnual - despesasAnuaisTotal) / valorImovel) * 100 : 0,
+    cap_rate_liquido_sobre_custo_total_aquisicao: valorImovel > 0 ? ((aluguelAnual - despesasAnuaisTotal) / valorImovel) * 100 : 0,
     cash_on_cash_return_liquido_antes_ir: roiSobreEntrada,
 
     // --- Valorização ---
@@ -281,21 +277,25 @@ export function calcularROIUnificado(dadosBase: ROIInputData): PropertyData {
     capRate: valorImovel > 0 ? ((aluguelAnual - despesasAnuaisTotal) / valorImovel) * 100 : 0,
     cashOnCash: roiSobreEntrada,
 
+    // --- Propriedades para compatibilidade com TomROIResults ---
+    rentalIncome: {
+      monthly: aluguelMensal,
+      annual: aluguelAnual
+    },
+    expenses: {
+      monthly: {
+        total: despesasMensaisTotal
+      },
+      annual: despesasAnuaisTotal
+    },
+    appreciation: {
+      amount: valorizacaoAnualValor
+    },
+    roiPercentOnDownPayment: roiSobreEntrada,
+
     // --- IA e Logo ---
     texto_analise_ia: null,
     prompt_utilizado_ia: null,
     logo_broker_url: undefined,
-
-    // --- Detalhamento de despesas para exibição/prompt ---
-    despesas_detalhadas_mensais: {
-      condominio: dadosBase.despesasMensais.hoa || 0,
-      iptu: dadosBase.despesasMensais.iptu || 0,
-      seguro: dadosBase.despesasMensais.seguro || 0,
-      taxa_administracao: dadosBase.despesasMensais.admin || 0,
-      agua: dadosBase.despesasMensais.agua || 0,
-      energia: dadosBase.despesasMensais.energia || 0,
-      piscina: dadosBase.despesasMensais.piscina || 0,
-      parcela_financiamento: parcelaMensal,
-    },
   };
-} 
+}
