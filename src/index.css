@@ -1,0 +1,373 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    --primary: 207 94% 44%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 207 94% 44%;
+
+    --radius: 0.5rem;
+
+    /* Cores da Arca */
+    --arca-main: 207 85% 44%; /* #2D72D2 */
+    --arca-dark: 207 100% 22%; /* #0C4A6E */
+    --arca-light: 207 85% 94%; /* #D9E9F8 */
+    --arca-base: 207 100% 97%; /* #F0F7FF */
+
+    /* Rainbow button colors */
+    --color-1: 224 62% 50%;
+    --color-2: 196 62% 50%;
+    --color-3: 213 62% 50%;
+    --color-4: 227 62% 50%;
+    --color-5: 240 62% 50%;
+
+    /* Aurora background variables */
+    --white: white;
+    --black: black;
+    --transparent: transparent;
+    --blue-300: #93c5fd;
+    --blue-400: #60a5fa;
+    --blue-500: #3b82f6;
+    --indigo-300: #a5b4fc;
+    --violet-200: #ddd6fe;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 207 94% 44%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 207 94% 44%;
+
+    /* Cores da Arca */
+    --arca-main: 207 85% 44%; /* #2D72D2 */
+    --arca-dark: 207 100% 22%; /* #0C4A6E */
+    --arca-light: 207 85% 94%; /* #D9E9F8 */
+    --arca-base: 207 100% 97%; /* #F0F7FF */
+
+    /* Rainbow button colors */
+    --color-1: 224 62% 50%;
+    --color-2: 196 62% 50%;
+    --color-3: 213 62% 50%;
+    --color-4: 227 62% 50%;
+    --color-5: 240 62% 50%;
+
+    /* Aurora background variables */
+    --white: white;
+    --black: black;
+    --transparent: transparent;
+    --blue-300: #93c5fd;
+    --blue-400: #60a5fa;
+    --blue-500: #3b82f6;
+    --indigo-300: #a5b4fc;
+    --violet-200: #ddd6fe;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans;
+    -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
+  }
+
+  /* Improve touch targets on mobile */
+  @media (max-width: 768px) {
+    button, a, input, select, textarea {
+      min-height: 44px; /* Apple's recommendation */
+    }
+    
+    /* Better scrolling experience on mobile */
+    * {
+      -webkit-overflow-scrolling: touch;
+    }
+  }
+  
+  /* Fix viewport height issues on mobile */
+  html, body {
+    height: 100%;
+  }
+  
+  #root {
+    height: 100%;
+    overflow: auto;
+  }
+}
+
+@layer components {
+  .arca-gradient {
+    @apply bg-gradient-to-r from-arca-purple to-arca-blue;
+  }
+  
+  .glass-card {
+    @apply bg-white/70 backdrop-blur-lg border border-white/20 shadow-lg;
+  }
+
+  /* Animação de rotação para o avatar do Tom */
+  .tom-avatar-spin {
+    animation: tom-spin 5s linear infinite;
+  }
+
+  @keyframes tom-spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* Responsive text helpers */
+  .text-responsive-xs {
+    @apply text-xs md:text-sm;
+  }
+  
+  .text-responsive-sm {
+    @apply text-sm md:text-base;
+  }
+  
+  .text-responsive-base {
+    @apply text-base md:text-lg;
+  }
+  
+  .text-responsive-lg {
+    @apply text-lg md:text-xl;
+  }
+  
+  .text-responsive-xl {
+    @apply text-xl md:text-2xl;
+  }
+  
+  .text-responsive-2xl {
+    @apply text-2xl md:text-3xl;
+  }
+  
+  /* Fix for select menu on mobile */
+  .select-content-mobile {
+    @apply w-full max-w-[calc(100vw-2rem)] !important;
+  }
+}
+
+/* Additional responsive styles */
+@media (max-width: 768px) {
+  .popover-content {
+    @apply w-full max-w-[calc(100vw-2rem)] !important;
+  }
+  
+  .card-mobile-compact {
+    @apply p-3 !important;
+  }
+  
+  .card-header-mobile-compact {
+    @apply px-3 py-2 !important;
+  }
+  
+  .card-content-mobile-compact {
+    @apply p-3 !important;
+  }
+  
+  /* Fix for select dropdowns on mobile */
+  .select-trigger {
+    max-width: 100%;
+  }
+  
+  .select-content {
+    width: calc(100vw - 24px) !important;
+    max-width: calc(100vw - 24px) !important;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  /* Fix for touch targets */
+  .btn, button, a, [role="button"] {
+    @apply min-h-[44px];
+  }
+  
+  /* Fix for fixed elements position */
+  .fixed-bottom-mobile {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 40;
+  }
+  
+  /* Fix for safe-area insets on notched phones */
+  .safe-area-inset-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* Fix for mobile Safari */
+@supports (-webkit-touch-callout: none) {
+  .min-h-screen {
+    min-height: -webkit-fill-available;
+  }
+  
+  .h-screen {
+    height: -webkit-fill-available;
+  }
+  
+  /* Use dvh/svh for modern mobile browsers */
+  .h-screen {
+    height: 100dvh;
+  }
+  
+  .min-h-screen {
+    min-height: 100dvh;
+  }
+  
+  .max-h-screen {
+    max-height: 100dvh;
+  }
+}
+
+.has-dot-pattern-background {
+  /* Pontos sutis usando gradiente radial */
+  /* Cor do ponto: rgba(0, 0, 0, 0.07) - um cinza muito claro */
+  /* Tamanho do ponto: 0.5px */
+  /* Espaçamento entre os centros dos pontos: 10px */
+  background-image: radial-gradient(rgba(0, 0, 0, 0.08) 0.5px, transparent 0.5px);
+  background-size: 12px 12px; /* Aumentei um pouco o espaçamento para pontos menos densos */
+  /* Opcional: background-position para ajustar o início do padrão */
+  /* background-position: -6px -6px; */ 
+}
+
+/* Se você tiver um modo escuro, pode querer um padrão de pontos diferente para ele */
+/* 
+.dark .has-dot-pattern-background {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.06) 0.5px, transparent 0.5px);
+  background-size: 12px 12px;
+}
+*/
+
+@layer utilities {
+  /* Custom scrollbar styles */
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: #d1d5db #f3f4f6;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: #f3f4f6;
+    border-radius: 3px;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius: 3px;
+    transition: background-color 0.2s ease;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: #9ca3af;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-corner {
+    background: #f3f4f6;
+  }
+  
+  /* Scrollbar thumb colors */
+  .scrollbar-thumb-gray-300::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+  }
+  
+  .scrollbar-track-gray-100::-webkit-scrollbar-track {
+    background: #f3f4f6;
+  }
+  
+  .hover\:scrollbar-thumb-gray-400:hover::-webkit-scrollbar-thumb {
+    background: #9ca3af;
+  }
+  
+  /* Enhanced scrollbar for sidebar */
+  .sidebar-scrollbar::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .sidebar-scrollbar::-webkit-scrollbar-track {
+    background: rgba(243, 244, 246, 0.3);
+    border-radius: 4px;
+    margin: 8px 0;
+  }
+  
+  .sidebar-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(156, 163, 175, 0.5);
+    border-radius: 4px;
+    transition: all 0.2s ease;
+  }
+  
+  .sidebar-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(107, 114, 128, 0.7);
+  }
+  
+  .sidebar-scrollbar::-webkit-scrollbar-thumb:active {
+    background: rgba(75, 85, 99, 0.8);
+  }
+  
+  /* Hide scrollbar for touch devices while keeping functionality */
+  @media (hover: none) and (pointer: coarse) {
+    .sidebar-scrollbar::-webkit-scrollbar {
+      width: 0px;
+      background: transparent;
+    }
+  }
+}
+
+/* Dot pattern background */

@@ -1,0 +1,541 @@
+import React, { useRef, useState, useEffect } from "react";
+import { useForm, FormProvider } from "react-hook-form";
+import { useIsMobile } from "@/hooks/use-mobile";
+import TomROIForm from "./TomROIForm";
+import TomROIResults from "./TomROIResults";
+import AnalysisLoading from "./results/AnalysisLoading";
+import { FormValues, ROIAnalysisResult } from "./types/analyzer-types";
+import { useTomAssistant } from "./hooks/useTomAssistant";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+import { useAuth } from "@/context/AuthContext";
+import { exportToPDF, exportToJPEG } from "@/components/tom-roi/utils/export-utils";
+import ErrorBoundary from "@/components/ErrorBoundary";
+import { Button } from "@/components/ui/button";
+import { AlertTriangle, RefreshCw, ArrowLeft } from "lucide-react";
+
+// Definição das propriedades do componente
+interface TomROIAnalyzerProps {
+  showBackButton?: boolean;
+  backPath?: string;
+  backText?: string;
+}
+
+// Componente para exibir erros de API de forma amigável
+const ApiErrorDisplay = ({ 
+  error, 
+  onRetry, 
+  onBack 
+}: { 
+  error: Error | null; 
+  onRetry: () => void; 
+  onBack: () => void; 
+}) => {
+  // Determinar tipo de erro para melhor feedback
+  const isTimeout = error?.message?.includes('Timeout') || error?.message?.includes('tempo limite');
+  const isDataError = error?.message?.includes('dados insuficientes') || error?.message?.includes('valor do imóvel');
+  const isApiError = error?.message?.includes('API') || error?.message?.includes('OpenAI');
+  
+  return (
+    <div className="flex flex-col items-center justify-center p-8 text-center">
+      <div className="mb-6 rounded-full p-4 bg-amber-50 text-amber-500">
+        <AlertTriangle size={48} />
+      </div>
+      
+      <h2 className="text-2xl font-bold mb-3">
+        {isTimeout ? 'Tempo limite excedido' : 
+         isDataError ? 'Dados insuficientes para análise' : 
+         isApiError ? 'Problema de comunicação com a API' : 
+         'Não foi possível completar a análise'}
+      </h2>
+      
+      <div className="max-w-md mb-6">
+        <p className="text-gray-600 mb-4">
+          {isTimeout ? 
+            'A API está demorando muito para responder. Isso geralmente acontece quando há muitas solicitações simultâneas.' :
+           isDataError ? 
+            'A OpenAI não conseguiu calcular o ROI porque alguns dados importantes estão faltando.' :
+           isApiError ?
+            'Ocorreu um problema na comunicação com a OpenAI. Este é um problema temporário.' :
+            'Ocorreu um erro inesperado durante a análise do seu investimento.'}
+        </p>
+        
+        <p className="text-gray-600 font-medium">
+          {isTimeout ? 
+            'Tente novamente mais tarde quando o tráfego estiver menor.' :
+           isDataError ? 
+            'Verifique se preencheu todos os campos do formulário com valores realistas.' :
+           isApiError ?
+            'Aguarde alguns minutos e tente novamente.' :
+            'Tente novamente ou contate o suporte se o problema persistir.'}
+        </p>
+      </div>
+      
+      <div className="flex flex-wrap gap-3 justify-center">
+        <Button 
+          onClick={onBack} 
+          variant="outline" 
+          className="flex items-center gap-2"
+        >
+          <ArrowLeft size={16} /> 
+          Voltar ao formulário
+        </Button>
+        
+        <Button 
+          onClick={onRetry} 
+          variant="default" 
+          className="flex items-center gap-2"
+        >
+          <RefreshCw size={16} /> 
+          Tentar novamente
+        </Button>
+      </div>
+    </div>
+  );
+};
+
+// Função para extrair números do texto da análise
+const extractNumbersFromAnalysis = (analysisTextFromIA: string): any => {
+  try {
+    // Extracting values - simplified version
+    const matchNumber = (pattern: RegExp, defaultValue: number = 0): number => {
+      const match = analysisTextFromIA.match(pattern);
+      return match ? parseFloat(match[1].replace(/,/g, '')) : defaultValue;
+    };
+
+    // Basic property data
+    const propertyValue = matchNumber(/Valor da Propriedade:?\s*\$?([\d,.]+)/i);
+    const entradaPercentual = matchNumber(/Entrada\s*\(([^)]+)%\)/i, 20);
+    const entradaValor = matchNumber(/Entrada[^:]*:\s*\$?([\d,.]+)/i, propertyValue * 0.2);
+    
+    // Return structured data
+    return {
+      propertyValue,
+      financing: {
+        downPayment: { 
+          amount: entradaValor, 
+          percentage: entradaPercentual 
+        },
+        monthlyPayment: matchNumber(/Parcela\s+Mensal\s+do\s+Financiamento:?\s*\$?([\d,.]+)/i),
+        annualPayment: matchNumber(/Parcela\s+Anual\s+do\s+Financiamento:?\s*\$?([\d,.]+)/i),
+        interestRate: matchNumber(/Taxa de Juros:?\s*(\d+[.,]?\d*)%/i, 7),
+        prazoAnos: matchNumber(/Prazo:?\s*(\d+)\s*anos/i, 30),
+      },
+      rentalIncome: {
+        monthly: matchNumber(/Rendimento\s+Mensal\s+Bruto:?\s*\$?([\d,.]+)/i),
+        annual: matchNumber(/Rendimento\s+Anual\s+Bruto:?\s*\$?([\d,.]+)/i),
+        dailyRate: matchNumber(/Diária\s+Média:?\s*\$?([\d,.]+)/i),
+        occupancyRate: matchNumber(/Ocupação\s+Média:?\s*(\d+[.,]?\d*)%/i, 80),
+      },
+      expenses: {
+        monthly: {
+          total: matchNumber(/Despesas\s+Totais\s+Mensais:?\s*\$?([\d,.]+)/i),
+          breakdown: [], // Will be populated separately
+        },
+        annual: matchNumber(/Despesas\s+Totais\s+Anuais:?\s*\$?([\d,.]+)/i),
+      },
+      netIncome: {
+        monthly: matchNumber(/Rendimento\s+Mensal\s+\(após\s+despesas\s+e\s+financiamento\):?\s*\$?([\d,.]+)/i),
+        annual: matchNumber(/Rendimento\s+Anual\s+\(após\s+despesas\s+e\s+financiamento\):?\s*\$?([\d,.]+)/i),
+        liquidoPreFinanciamento: matchNumber(/Rendimento\s+Mensal\s+\(após\s+despesas\):?\s*\$?([\d,.]+)/i),
+      },
+      appreciation: {
+        percentage: matchNumber(/Valorização\s+Anual\s*(\d+[.,]?\d*)%/i, 6),
+        amount: matchNumber(/Valorização\s+Anual\s+em\s+Valor:?\s*\$?([\d,.]+)/i),
+      },
+      totalAnnualReturn: matchNumber(/Retorno\s+Total\s+Anual:?\s*\$?([\d,.]+)/i),
+      roiPercentSobreEntrada: matchNumber(/ROI\s+sobre\s+Investimento:?\s*(\d+[.,]?\d*)%/i),
+    };
+  } catch (error) {
+    console.error("[extractNumbersFromAnalysis] Erro ao extrair dados:", error);
+    return {};
+  }
+};
+
+// Componente principal
+const TomROIAnalyzer: React.FC<TomROIAnalyzerProps> = ({ 
+  showBackButton = false,
+  backPath = '/meus-rois',
+  backText = 'Voltar para Meus ROIs'
+}) => {
+  const isMobile = useIsMobile();
+  const resultRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const { 
+    isLoading: isAnalysisLoading, 
+    progress, 
+    analyzeROI, 
+    apiStatus,
+    checkApiStatus 
+  } = useTomAssistant();
+  
+  const [result, setResult] = useState<ROIAnalysisResult | null>(null);
+  const [uploadedLogoFile, setUploadedLogoFile] = useState<File | null>(null);
+  const [logoPreviewUrl, setLogoPreviewUrl] = useState<string | null>(null);
+  const [uploadedLogoStorageUrl, setUploadedLogoStorageUrl] = useState<string | null>(null);
+  
+  const [isUploadingLogo, setIsUploadingLogo] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [analysisSaved, setAnalysisSaved] = useState(false);
+  const [apiError, setApiError] = useState<Error | null>(null);
+  const [showLoadingScreen, setShowLoadingScreen] = useState(false);
+  
+  const methods = useForm<FormValues>({
+    defaultValues: {
+      condominio: '',
+      tipo_investimento: '',
+      localizacao: '',
+      modelo: '',
+      quartos: '',
+      piscina: false,
+      valor_imovel: '',
+      entrada_valor: '',
+      entrada_percentual: '',
+      logoUrl: null,
+    }
+  });
+
+  // Função para verificar e criar buckets no Supabase
+  const ensureStorageBuckets = async () => {
+    try {
+      // Verificar se os buckets existem
+      const { data: buckets, error } = await supabase.storage.listBuckets();
+      
+      if (error) {
+        console.error("Erro ao listar buckets:", error);
+        return;
+      }
+      
+      const logosBucketExists = buckets?.some(bucket => bucket.name === 'logos');
+      
+      // Apenas logar se o bucket existe, não tenta criar
+      if (logosBucketExists) {
+        console.log("Bucket 'logos' encontrado e será utilizado.");
+      } else {
+        console.log("Bucket 'logos' não encontrado. Usando armazenamento local temporário.");
+        // Não tentar criar o bucket para evitar erros de RLS
+      }
+    } catch (error) {
+      console.error("Erro ao verificar buckets:", error);
+    }
+  };
+  
+  // Executar verificação de buckets na inicialização do componente
+  useEffect(() => {
+    if (user) {
+      ensureStorageBuckets();
+    }
+  }, [user]);
+
+  // Função para tratar upload e alteração da logo
+  const handleLogoChange = async (file: File | null, dataUrl: string | null) => {
+    // Sempre reset estes estados primeiro para evitar confusão
+    setIsUploadingLogo(false);
+    
+    // Atualizar estados locais imediatamente
+    setLogoPreviewUrl(dataUrl);
+    setUploadedLogoFile(file);
+    
+    // Se não temos arquivo, limpar tudo e retornar
+    if (!file || !dataUrl) {
+      setUploadedLogoStorageUrl(null);
+      return;
+    }
+    
+    // SOLUÇÃO TEMPORÁRIA: Usar a URL local em vez de fazer upload para Supabase
+    setUploadedLogoStorageUrl(dataUrl);
+    methods.setValue('logoUrl', dataUrl);
+    toast.success("Logo processada com sucesso", { 
+      description: "A logo será usada apenas nesta sessão." 
+    });
+  };
+
+  // Função para salvar análise
+  const saveAnalysis = async () => {
+    if (!result || !user || analysisSaved) {
+      return;
+    }
+    
+    setIsSaving(true);
+    
+    const formData = methods.getValues();
+
+    try {
+      const quartosValue = parseInt(formData.quartos || '');
+      const valorImovelValue = parseFloat(formData.valor_imovel || '');
+      const entradaValorValue = formData.entrada_valor ? parseFloat(formData.entrada_valor) : null;
+      const entradaPercentualValue = formData.entrada_percentual ? parseFloat(formData.entrada_percentual) : null;
+
+      const { data: insertData, error: insertError } = await supabase
+        .from('roi_analises')
+        .insert([{
+          condominio: formData.condominio,
+          tipo_investimento: formData.tipo_investimento,
+          localizacao: formData.localizacao,
+          modelo: formData.modelo,
+          quartos: isNaN(quartosValue) ? null : quartosValue,
+          piscina: formData.piscina,
+          valor_imovel: isNaN(valorImovelValue) ? null : valorImovelValue,
+          entrada_valor: entradaValorValue,
+          entrada_percentual: entradaPercentualValue,
+          resultado_texto: result.resultado_texto,
+          logo_storage_url: uploadedLogoStorageUrl,
+          user_id: user.id
+        }])
+        .select();
+
+      if (insertError) {
+        throw insertError;
+      }
+
+      setAnalysisSaved(true);
+      toast.success("Análise salva com sucesso no banco!");
+
+    } catch (error: any) {
+      console.error("Error saving analysis from frontend:", error);
+      toast.error("Erro ao salvar análise", { description: `Não foi possível salvar no banco: ${error.message}` });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  // Efeito para salvar análise automaticamente quando estiver completa
+  useEffect(() => {
+    if (result && !isAnalysisLoading && !isSaving && user && !analysisSaved) {
+      saveAnalysis();
+    }
+  }, [result, isAnalysisLoading, isSaving, user, analysisSaved]);
+
+  // Reset analysis state function
+  const resetAnalysis = () => {
+    setResult(null);
+    setApiError(null);
+  };
+
+  // Função para processar o formulário e obter análise
+  const handleSubmit = async (formData: FormValues) => {
+    setApiError(null);
+    setShowLoadingScreen(true); // Mostrar tela de loading imediatamente
+    
+    try {
+      // Criar objeto propertyData com base nos valores do formulário
+      const valorImovel = parseFloat(formData.valor_imovel || '0');
+      const entradaPercentual = parseFloat(formData.entrada_percentual || '20');
+      const entradaValor = parseFloat(formData.entrada_valor || '0') || (valorImovel * entradaPercentual / 100);
+      
+      // Exemplos com valores mais realistas para simular o imóvel da terceira imagem (Solara Resort)
+      const propertyData = {
+        condominioNome: formData.condominio,
+        modeloImovel: formData.modelo,
+        quartosImovel: parseInt(formData.quartos || '0'),
+        piscina: formData.piscina,
+        propertyValue: valorImovel,
+        financing: {
+          downPayment: { 
+            amount: entradaValor, 
+            percentage: entradaPercentual 
+          },
+          monthlyPayment: valorImovel * 0.007, // taxa mais próxima à realidade
+          annualPayment: valorImovel * 0.007 * 12,
+          interestRate: 7,
+          prazoAnos: 30,
+          financedAmount: valorImovel - entradaValor
+        },
+        rentalIncome: {
+          monthly: valorImovel * 0.015, // taxa mais realista para aluguel de temporada
+          annual: valorImovel * 0.015 * 12,
+          dailyRate: valorImovel * 0.00055, // diária mais realista
+          occupancyRate: 80
+        },
+        expenses: {
+          monthly: {
+            total: valorImovel * 0.005, // despesas fixas mais realistas 
+            breakdown: []
+          },
+          annual: valorImovel * 0.005 * 12,
+          adminPercentage: 20,
+          poolCleaningMonthly: 125,
+          energyMonthly: 300,
+          waterMonthly: 125,
+          hoaMonthly: 400,
+          propertyTaxMonthly: 525,
+          insuranceMonthly: 185
+        },
+        netIncome: {
+          monthly: (valorImovel * 0.015) - (valorImovel * 0.005) - (valorImovel * 0.007),
+          annual: ((valorImovel * 0.015) - (valorImovel * 0.005) - (valorImovel * 0.007)) * 12
+        },
+        appreciation: {
+          percentage: 6,
+          amount: valorImovel * 0.06
+        },
+        totalAnnualReturn: ((valorImovel * 0.015) - (valorImovel * 0.005) - (valorImovel * 0.007)) * 12 + (valorImovel * 0.06),
+        roiPercentSobreEntrada: (((valorImovel * 0.015) - (valorImovel * 0.005) - (valorImovel * 0.007)) * 12 + (valorImovel * 0.06)) / entradaValor * 100,
+        extracted: {
+          valorFinanciado: valorImovel - entradaValor,
+          taxaJuros: 7,
+          prazoAnos: 30,
+          parcelaMensal: valorImovel * 0.007,
+          parcelaAnual: valorImovel * 0.007 * 12,
+          diariaMedia: valorImovel * 0.00055,
+          ocupacaoMedia: 80,
+          aluguelMensalBruto: valorImovel * 0.015,
+          aluguelAnualBruto: valorImovel * 0.015 * 12,
+          despesasOperacionaisMensais: valorImovel * 0.005,
+          despesasOperacionaisAnuais: valorImovel * 0.005 * 12,
+          rendimentoMensalAposDespesasEFinanciamento: (valorImovel * 0.015) - (valorImovel * 0.005) - (valorImovel * 0.007),
+          rendimentoAnualAposDespesasEFinanciamento: ((valorImovel * 0.015) - (valorImovel * 0.005) - (valorImovel * 0.007)) * 12,
+          valorizacaoPercentAnual: 6,
+          valorizacaoAnualValor: valorImovel * 0.06,
+          retornoAnualTotalAposValorizacao: ((valorImovel * 0.015) - (valorImovel * 0.005) - (valorImovel * 0.007)) * 12 + (valorImovel * 0.06),
+          roiSobreEntradaPercent: (((valorImovel * 0.015) - (valorImovel * 0.005) - (valorImovel * 0.007)) * 12 + (valorImovel * 0.06)) / entradaValor * 100,
+          despesasDetalhadasMensais: {
+            administracao: valorImovel * 0.001,
+            piscina: formData.piscina ? 125 : 0,
+            energia: 300,
+            agua: 125,
+            hoa: 400,
+            iptu: 525,
+            seguro: 185
+          }
+        }
+      };
+
+      // Simular um atraso para demonstrar a tela de loading
+      await new Promise(resolve => setTimeout(resolve, 3000));
+
+      // Agora chama analyzeROI passando o propertyData calculado
+      const analysisResult = await analyzeROI(formData, propertyData);
+      
+      setResult({
+        ...analysisResult,
+        // Garantir que os dados do formulário sejam preservados no resultado
+        condominio: formData.condominio,
+        localizacao: formData.localizacao,
+        modelo: formData.modelo,
+        quartos: formData.quartos,
+        piscina: formData.piscina,
+        valor_imovel: valorImovel
+      });
+      
+      setShowLoadingScreen(false); // Esconder tela de loading quando completar
+    } catch (error) {
+      console.error('Erro ao analisar ROI:', error);
+      setApiError(error instanceof Error ? error : new Error('Erro desconhecido'));
+      setShowLoadingScreen(false); // Esconder tela de loading em caso de erro
+    }
+  };
+
+  // Função para resetar o formulário e análise
+  const handleReset = () => {  
+    setUploadedLogoFile(null);
+    setLogoPreviewUrl(null);
+    setUploadedLogoStorageUrl(null);
+    setAnalysisSaved(false);
+    setIsUploadingLogo(false);
+    setIsSaving(false);
+    
+    methods.reset({
+        condominio: '',
+        tipo_investimento: '',
+        localizacao: '',
+        modelo: '',
+        quartos: '',
+        piscina: false,
+        valor_imovel: '',
+        entrada_valor: '',
+        entrada_percentual: '',
+        logoUrl: null,
+    });
+    resetAnalysis();
+  };
+
+  return (
+    <ErrorBoundary>
+      <FormProvider {...methods}>
+        <div className={`relative ${isMobile ? 'p-3' : 'p-6'}`}>
+          {showBackButton && (
+            <Button 
+              variant="outline" 
+              className="mb-4" 
+              onClick={() => navigate(backPath)}
+            >
+              <ArrowLeft className="mr-2 h-4 w-4" /> {backText}
+            </Button>
+          )}
+          
+          {apiError ? (
+            <ApiErrorDisplay 
+              error={apiError} 
+              onRetry={() => handleSubmit(methods.getValues())}
+              onBack={() => setApiError(null)}
+            />
+          ) : (
+            <>
+              {!result && !showLoadingScreen && (
+                <TomROIForm 
+                  onSubmit={handleSubmit} 
+                  onLogoChange={handleLogoChange}
+                  logoPreviewUrl={logoPreviewUrl}
+                  isFormProcessing={isAnalysisLoading}
+                />
+              )}
+              
+              {showLoadingScreen && (
+                <AnalysisLoading 
+                  stage={progress?.stage || "running-assistant" as any}
+                  percentage={progress?.percentage || 45} 
+                  onRetry={() => handleSubmit(methods.getValues())}
+                />
+              )}
+              
+              {result && !showLoadingScreen && (
+                <div ref={resultRef}>
+                  <TomROIResults 
+                    result={result}
+                    logoUrl={uploadedLogoStorageUrl || logoPreviewUrl}
+                    propertyData={extractNumbersFromAnalysis(result.resultado_texto)}
+                    onNewAnalysis={handleReset}
+                    onSaveAsPDF={() => {
+                      if (resultRef.current) {
+                        exportToPDF(resultRef, `roi-analise-${methods.getValues().condominio || 'sem-nome'}`, 'A4');
+                      }
+                    }}
+                    onSaveAsImage={() => {
+                      if (resultRef.current) {
+                        exportToJPEG(resultRef, `roi-analise-${methods.getValues().condominio || 'sem-nome'}`);
+                      }
+                    }}
+                  />
+                  
+                  <div className="flex justify-between mt-8">
+                    <Button 
+                      variant="outline" 
+                      onClick={handleReset}
+                    >
+                      Reiniciar
+                    </Button>
+                    
+                    {!analysisSaved && user && (
+                      <Button
+                        variant="default"
+                        onClick={saveAnalysis}
+                        disabled={isSaving}
+                      >
+                        {isSaving ? 'Salvando...' : 'Salvar Análise'}
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      </FormProvider>
+    </ErrorBoundary>
+  );
+};
+
+export default TomROIAnalyzer;

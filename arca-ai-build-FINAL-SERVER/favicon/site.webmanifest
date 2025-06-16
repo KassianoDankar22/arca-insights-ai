@@ -1,0 +1,19 @@
+{
+  "name": "ARCA AI",
+  "short_name": "ARCA",
+  "icons": [
+    {
+      "src": "/android-chrome/android-chrome-192x192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/android-chrome/android-chrome-512x512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ],
+  "theme_color": "#00A7E1",
+  "background_color": "#ffffff",
+  "display": "standalone"
+} 

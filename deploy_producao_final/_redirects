@@ -1,0 +1,28 @@
+# SPA routing - redirect all routes to index.html
+# Para Netlify, Vercel e outros serviços de hosting
+
+# Arquivos estáticos devem ser servidos diretamente
+/*.js           200
+/*.css          200
+/*.png          200
+/*.jpg          200
+/*.jpeg         200
+/*.gif          200
+/*.svg          200
+/*.ico          200
+/*.woff         200
+/*.woff2        200
+/*.ttf          200
+/*.eot          200
+/*.mp4          200
+/*.mp3          200
+/*.pdf          200
+/*.json         200
+/*.xml          200
+/*.txt          200
+
+# APIs devem retornar 404 se não existirem
+/api/*          404
+
+# Todas as outras rotas redirecionam para index.html (SPA)
+/*              /index.html   200 

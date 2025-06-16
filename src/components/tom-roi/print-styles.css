@@ -1,0 +1,395 @@
+/* Estilos MÍNIMOS específicos para impressão */
+@media print {
+  /* Definir tamanho e orientação da página */
+  @page {
+    size: A4 portrait;
+    margin: 10mm; /* Margem para o PDF */
+  }
+
+  /* Reset básico e garantia de cores */
+  * {
+    box-sizing: border-box !important; /* Garantir box-sizing consistente */
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+    background-image: none !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    border-color: #dee2e6 !important; /* Cor de borda padrão suave */
+  }
+
+  body {
+    background-color: white !important;
+    font-size: 9pt !important;
+    line-height: 1.4 !important; /* Aumentar um pouco */
+    font-family: sans-serif !important;
+    overflow: hidden !important; /* Evitar scrollbars na página em si */
+  }
+
+  /* Container principal - Ajustar ao conteúdo */
+  .print-container, .pdf-export-mode {
+    width: 100% !important;
+    height: auto !important;
+    min-height: 277mm !important; /* Garantir altura mínima */
+    margin: 0 !important;
+    padding: 0 !important;
+    background-color: white !important;
+    box-sizing: border-box !important;
+    overflow: visible !important;
+    border: none !important;
+  }
+
+  /* Forçar o conteúdo a ficar visível */
+  .print-force-one-page {
+     overflow: visible !important;
+     height: auto !important;
+  }
+
+  /* Esconder elementos não necessários */
+  .no-print, 
+  .pdf-export-hide,
+  button,
+  .tabs-container,
+  .tab-selector {
+    display: none !important;
+    visibility: hidden !important;
+  }
+  
+  /* Garantir que o conteúdo principal seja exibido */
+  .print-content {
+    display: block !important;
+    visibility: visible !important;
+    background-color: transparent !important;
+    overflow: visible !important; /* Garantir visibilidade do conteúdo */
+  }
+
+  /* Manter cores dos banners principais */
+  .bg-arca-blue, .bg-blue-600, div[class*="ROI SOBRE INVESTIMENTO"] .bg-arca-blue {
+    background-color: #0051a0 !important;
+    color: white !important;
+    /* overflow: hidden !important; */ /* Comentado - Permitir conteúdo vazar se necessário */
+  }
+  
+  .bg-green-600, div[class*="RETORNO ANUAL"] .bg-green-600 {
+    background-color: #16a34a !important;
+    color: white !important;
+    /* overflow: hidden !important; */ /* Comentado - Permitir conteúdo vazar se necessário */
+  }
+  
+  /* Remover explicitamente fundos cinza */
+  *[class*="bg-gray"], 
+  *[style*="background-color: rgb(229, 231, 235)"],
+  *[style*="background-color: rgb(243, 244, 246)"],
+  *[style*="background-color: rgb(249, 250, 251)"] {
+    background-color: white !important;
+    background: white !important;
+  }
+
+  /* Evitar quebras de página indesejadas e garantir visibilidade */
+  .card, .section, .grid > div, div, span, p, h1, h2, h3, h4, h5, h6 {
+     page-break-inside: avoid !important;
+     break-inside: avoid !important;
+     overflow: visible !important; /* Mostrar todo o conteúdo dos elementos */
+     line-height: 1.4 !important;
+     overflow-wrap: break-word !important; /* Quebrar palavras longas */
+     word-wrap: break-word !important;
+  }
+  
+  .grid {
+      display: grid !important;
+      height: auto !important; /* Altura automática para grids */
+  }
+
+  /* Evitar quebras dentro de seções/cards */
+  .section, .card, .summary-container > div {
+    page-break-inside: avoid !important;
+  }
+}
+
+/* Estilos básicos para o modo de exportação */
+.pdf-export-mode {
+  font-family: sans-serif !important;
+  background-color: white !important;
+}
+
+.pdf-export-container {
+  margin: 0 !important;
+  padding: 0 !important;
+  background-color: white !important;
+}
+
+@media print {
+  /* Esconder elementos que não devem ser impressos */
+  .no-print {
+    display: none !important;
+  }
+
+  /* Ajustes gerais para impressão */
+  body {
+    margin: 0;
+    padding: 0;
+    background: #fff;
+    font-size: 12pt;
+    line-height: 1.4;
+  }
+
+  /* Garantir que as cores e imagens sejam impressas corretamente */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Ajustes de layout para impressão */
+  .print-container {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Ajustes de fonte para impressão */
+  .print-text-xxs {
+    font-size: 8pt;
+  }
+
+  .print-text-xs {
+    font-size: 10pt;
+  }
+
+  .print-text-sm {
+    font-size: 11pt;
+  }
+
+  .print-text-base {
+    font-size: 12pt;
+  }
+
+  .print-text-lg {
+    font-size: 14pt;
+  }
+
+  .print-text-xl {
+    font-size: 16pt;
+  }
+
+  /* Ajustes de margens e quebras de página */
+  .print-page-break {
+    page-break-before: always;
+  }
+
+  .print-avoid-break {
+    page-break-inside: avoid;
+  }
+
+  /* Ajustes de cores para impressão */
+  .print-text-black {
+    color: #000 !important;
+  }
+
+  .print-bg-white {
+    background-color: #fff !important;
+  }
+
+  /* Ajustes de borda para impressão */
+  .print-border {
+    border: 1px solid #000 !important;
+  }
+
+  .print-border-t {
+    border-top: 1px solid #000 !important;
+  }
+
+  .print-border-b {
+    border-bottom: 1px solid #000 !important;
+  }
+
+  /* Ajustes de espaçamento para impressão */
+  .print-p-0 {
+    padding: 0 !important;
+  }
+
+  .print-m-0 {
+    margin: 0 !important;
+  }
+
+  /* Ajustes de largura e altura para impressão */
+  .print-w-full {
+    width: 100% !important;
+  }
+
+  .print-h-full {
+    height: 100% !important;
+  }
+
+  /* Ajustes de imagem para impressão */
+  .print-img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Ajustes de tabela para impressão */
+  .print-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .print-table th,
+  .print-table td {
+    padding: 8pt;
+    border: 1px solid #000;
+  }
+
+  /* Ajustes de grid para impressão */
+  .print-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200pt, 1fr));
+    gap: 16pt;
+  }
+
+  /* Ajustes de flexbox para impressão */
+  .print-flex {
+    display: flex;
+  }
+
+  .print-flex-col {
+    flex-direction: column;
+  }
+
+  .print-items-center {
+    align-items: center;
+  }
+
+  .print-justify-between {
+    justify-content: space-between;
+  }
+
+  /* Ajustes de visibilidade para impressão */
+  .print-hidden {
+    display: none !important;
+  }
+
+  .print-visible {
+    display: block !important;
+  }
+
+  /* Ajustes de opacidade para impressão */
+  .print-opacity-100 {
+    opacity: 1 !important;
+  }
+
+  /* Ajustes de sombra para impressão */
+  .print-shadow-none {
+    box-shadow: none !important;
+  }
+
+  /* Ajustes de fundo para impressão */
+  .print-bg-transparent {
+    background-color: transparent !important;
+  }
+
+  /* Ajustes de texto para impressão */
+  .print-text-left {
+    text-align: left !important;
+  }
+
+  .print-text-center {
+    text-align: center !important;
+  }
+
+  .print-text-right {
+    text-align: right !important;
+  }
+
+  /* Ajustes de fonte para impressão */
+  .print-font-normal {
+    font-weight: normal !important;
+  }
+
+  .print-font-bold {
+    font-weight: bold !important;
+  }
+
+  /* Ajustes de linha para impressão */
+  .print-line-normal {
+    line-height: normal !important;
+  }
+
+  /* Ajustes de overflow para impressão */
+  .print-overflow-visible {
+    overflow: visible !important;
+  }
+
+  /* Ajustes de posição para impressão */
+  .print-relative {
+    position: relative !important;
+  }
+
+  .print-static {
+    position: static !important;
+  }
+
+  /* Ajustes de z-index para impressão */
+  .print-z-auto {
+    z-index: auto !important;
+  }
+
+  /* Ajustes de cursor para impressão */
+  .print-cursor-auto {
+    cursor: auto !important;
+  }
+
+  /* Ajustes de transformação para impressão */
+  .print-transform-none {
+    transform: none !important;
+  }
+
+  /* Ajustes de transição para impressão */
+  .print-transition-none {
+    transition: none !important;
+  }
+
+  /* Ajustes de animação para impressão */
+  .print-animation-none {
+    animation: none !important;
+  }
+
+  /* Ajustes de filtro para impressão */
+  .print-filter-none {
+    filter: none !important;
+  }
+
+  /* Ajustes de backdrop para impressão */
+  .print-backdrop-none {
+    backdrop-filter: none !important;
+  }
+
+  /* Ajustes de pointer-events para impressão */
+  .print-events-none {
+    pointer-events: none !important;
+  }
+
+  /* Ajustes de user-select para impressão */
+  .print-select-none {
+    user-select: none !important;
+  }
+
+  /* Ajustes de touch-action para impressão */
+  .print-touch-none {
+    touch-action: none !important;
+  }
+
+  /* Ajustes de will-change para impressão */
+  .print-will-auto {
+    will-change: auto !important;
+  }
+
+  /* Ajustes de contain para impressão */
+  .print-contain-none {
+    contain: none !important;
+  }
+
+  /* Ajustes de content-visibility para impressão */
+  .print-content-visible {
+    content-visibility: visible !important;
+  }
+} 

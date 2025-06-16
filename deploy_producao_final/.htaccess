@@ -1,0 +1,59 @@
+# CONFIGURAÇÃO PARA RESOLVER 403 FORBIDDEN
+Options +FollowSymLinks -Indexes
+DirectoryIndex index.html index.htm
+
+# CONFIGURAÇÃO PARA SPA (Single Page Application)
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  
+  # Base para reescrita
+  RewriteBase /
+  
+  # Não reescrever arquivos que existem
+  RewriteRule ^index\.html$ - [L]
+  
+  # Permitir acesso a arquivos estáticos
+  RewriteRule ^(assets|images|img|static|favicon|lovable-uploads|android-chrome|avatars)/.*$ - [L]
+  RewriteRule ^.*\.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot|mp4|webm|pdf)$ - [L]
+  
+  # Condições para redirecionamento SPA
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_FILENAME} !-l
+  
+  # Redirecionar tudo para index.html (essencial para React Router)
+  RewriteRule . /index.html [L]
+</IfModule>
+
+# CONFIGURAÇÃO DE TIPOS MIME ESSENCIAIS
+<IfModule mod_mime.c>
+  AddType application/javascript .js
+  AddType text/css .css
+  AddType image/svg+xml .svg
+  AddType image/png .png
+  AddType image/jpeg .jpg .jpeg
+  AddType image/gif .gif
+  AddType image/x-icon .ico
+  AddType text/html .html .htm
+</IfModule>
+
+# CONFIGURAÇÕES DE CACHE PARA PERFORMANCE
+<IfModule mod_expires.c>
+  ExpiresActive on
+  ExpiresByType text/css "access plus 1 year"
+  ExpiresByType application/javascript "access plus 1 year"
+  ExpiresByType image/png "access plus 1 year"
+  ExpiresByType image/jpg "access plus 1 year"
+  ExpiresByType image/jpeg "access plus 1 year"
+  ExpiresByType image/gif "access plus 1 year"
+  ExpiresByType image/svg+xml "access plus 1 year"
+  ExpiresByType text/html "access plus 0 seconds"
+</IfModule>
+
+# CONFIGURAÇÕES DE SEGURANÇA
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options nosniff
+  Header always set X-Frame-Options DENY
+  Header always set X-XSS-Protection "1; mode=block"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
